@@ -1,5 +1,5 @@
 INTLIT [0-9]
-CHARACTER [a-zA-z]
+CHARACTER [a-zA-Z]
 NEWLINE "\n"
 UNDERSCORE "_"
 CHAR "char"
@@ -35,7 +35,11 @@ PLUS "+"
 RBRACE "}"
 RPAR ")"
 SEMI ";"
+ESCAPE "\n"|"\t"|"\\"|"\'"|"\""
 RESERVED "auto"|"struct"|"break"|"long"|"switch"|"case"|"enum"|"register"|"typedef"|"extern"|"union"|"const"|"unsigned"|"continue"|"for"|"signed"|"default"|"goto"|"sizeof"|"volatile"|"do"|"static"|"_Bool"|"_Imaginary"|"restrict"|"inline"|"_Complex"|"["|"]"|"++"|"--"
+CHRLIT {CHARACTER}|\\[0-7]{3}
+EXPOENTE "e"|"E"
+
 
 
 %{
@@ -44,8 +48,6 @@ int i=0;
 %}
 
 %%
-{blockexcluded} ;
-{stringtype} {strcat(endstring, yytext); strcat(endstring, ", ");}
 .       ;
    
 %%
