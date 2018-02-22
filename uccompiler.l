@@ -3,7 +3,6 @@
 #include <string.h>
 int flag=0;
 %}
-
 INTLIT [0-9]+
 CHARACTER [a-zA-Z]
 NEWLINE "\n"
@@ -47,58 +46,51 @@ CHRLIT '([a-zA-Z]|\\[0-7]{3}|\_|\\\\|\\n|\\t|[0-9])'
 EXPOENTE "e"|"E"
 ID2 ([a-zA-z]+|\_+)|([a-zA-z]+|\_+)[0-9]?
 ID ([a-zA-Z]|[_])[a-zA-Z0-9]*
-
 %%
-{CHAR}  {if(flag==-1){printf("CHAR\n");}}
-{ELSE} {if(flag==-1){printf("ELSE\n");}}
-{IF}    {if(flag==-1){printf("IF\n");}}
-{INT}   {if(flag==-1){printf("INT\n");}}
-{SHORT} {if(flag==-1){printf("SHORT\n");}}
-{DOUBLE} {if(flag==-1){printf("DOUBLE\n");}}
-{RETURN} {if(flag==-1){printf("RETURN\n");}}
-{VOID} {if(flag==-1){printf("VOID\n");}}
-{BITWISEAND} {if(flag==-1){printf("BITWISEAND\n");}}
-{BITWISEOR} {if(flag==-1){printf("BITWISEOR\n");}}
-{BITWISEXOR} {if(flag==-1){printf("BITWISEXOR\n");}}
-{AND} {if(flag==-1){printf("AND\n");}}
-{ASSIGN} {if(flag==-1){printf("ASSIGN\n");}}
-{MUL} {if(flag==-1){printf("MUL\n");}}
-{COMMA} {if(flag==-1){printf("COMMA\n");}}
-{DIV} {if(flag==-1){printf("DIV\n");}}
-{EQ} {if(flag==-1){printf("EQ\n");}}
-{GE} {if(flag==-1){printf("GE\n");}}
-{GT} {if(flag==-1){printf("GT\n");}}
-{LBRACE} {if(flag==-1){printf("LBRACE\n");}}
-{LT} {if(flag==-1){printf("LT\n");}}
-{MINUS} {if(flag==-1){printf("MINUS\n");}}
-{MOD} {if(flag==-1){printf("MOD\n");}}
-{NE} {if(flag==-1){printf("NE\n");}}
-{NOT} {if(flag==-1){printf("NOT\n");}}
-{OR} {if(flag==-1){printf("OR\n");}}
-{PLUS} {if(flag==-1){printf("PLUS\n");}}
-{RBRACE} {if(flag==-1){printf("RBRACE\n");}}
-{RPAR} {if(flag==-1){printf("RPAR\n");}}
-{SEMI} {if(flag==-1){printf("SEMI\n");}}
-{INTLIT}    {if(flag==-1){printf("INTLIT(%d)\n", atoi(yytext));}}
-{CHRLIT}    {if(flag==-1){printf("CHRLIT(%s)\n", yytext);}}
-{ID}    {if(flag==-1){printf("ID(%s)\n", yytext);}}
-.       ;
-   
+{CHAR} {if(flag==-1){printf("CHAR");}}
+{ELSE} {if(flag==-1){printf("ELSE");}}
+{IF} {if(flag==-1){printf("IF");}}
+{INT} {if(flag==-1){printf("INT");}}
+{SHORT} {if(flag==-1){printf("SHORT");}}
+{DOUBLE} {if(flag==-1){printf("DOUBLE");}}
+{RETURN} {if(flag==-1){printf("RETURN");}}
+{VOID} {if(flag==-1){printf("VOID");}}
+{BITWISEAND} {if(flag==-1){printf("BITWISEAND");}}
+{BITWISEOR} {if(flag==-1){printf("BITWISEOR");}}
+{BITWISEXOR} {if(flag==-1){printf("BITWISEXOR");}}
+{AND} {if(flag==-1){printf("AND");}}
+{ASSIGN} {if(flag==-1){printf("ASSIGN");}}
+{MUL} {if(flag==-1){printf("MUL");}}
+{COMMA} {if(flag==-1){printf("COMMA");}}
+{DIV} {if(flag==-1){printf("DIV");}}
+{EQ} {if(flag==-1){printf("EQ");}}
+{GE} {if(flag==-1){printf("GE");}}
+{GT} {if(flag==-1){printf("GT");}}
+{LBRACE} {if(flag==-1){printf("LBRACE");}}
+{LT} {if(flag==-1){printf("LT");}}
+{MINUS} {if(flag==-1){printf("MINUS");}}
+{MOD} {if(flag==-1){printf("MOD");}}
+{NE} {if(flag==-1){printf("NE");}}
+{NOT} {if(flag==-1){printf("NOT");}}
+{OR} {if(flag==-1){printf("OR");}}
+{PLUS} {if(flag==-1){printf("PLUS");}}
+{RBRACE} {if(flag==-1){printf("RBRACE");}}
+{RPAR} {if(flag==-1){printf("RPAR");}}
+{SEMI} {if(flag==-1){printf("SEMI");}}
+{INTLIT} {if(flag==-1){printf("INTLIT(%d)", atoi(yytext));}}
+{CHRLIT} {if(flag==-1){printf("CHRLIT(%s)", yytext);}}
+{ID} {if(flag==-1){printf("ID(%s)", yytext);}}
+<<EOF>> {yyterminate();}
 %%
 int main(int argc, char* argv[]){
     if(argc > 1){
         if(strcmp(argv[1], "-l") == 0){
             flag=-1;
-            yylex();
         }
-        else{
-            yylex();
-        }
+        yylex();
     }
     return 0;
-
 }
-
 int yywrap()
 {
 return 1;
