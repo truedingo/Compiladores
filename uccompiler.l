@@ -4,10 +4,14 @@
 int flag=0;
 
 %}
+%x COMMENTS
+INTLIT [0-9]+ 
 ignorar "\n"|"\r"|"\t"|"//"|" "
-INTLIT [0-9]+
+START_COMMENT "/*"
+END_COMMENT "*/"
+SINGLE_COMMENT "//"
 CHARACTER [a-zA-Z]
-NEWLINE "\n"
+NEWLINE "\n"|"\r"
 UNDERSCORE "_"
 CHAR char
 ELSE else
@@ -45,8 +49,11 @@ SEMI ";"
 ESCAPE "\n"|"\t"|"\\"|"\'"|"\""
 RESERVED "extern"|"float"|"for"|"goto"|"if"|"int"|"inline"|"long"|"register"|"restrict"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"|"++"|"--"|"["|"]"|"_Bool"|"_Complex"|"_Imaginary"|"_Packed"|"asm"|"auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"
 EXPOENTE "e"|"E"
+REALLIT ([0-9]+[.][0-9]+([e]|[E])([+]|[-])?[0-9]+)|([0-9]+[.][0-9]+)|[0-9]+[.]([e]|[E])([+]|[-])?[0-9]+|[.][0-9]+([e]|[E])([+]|[-])?[0-9]+|[0-9]+([e]|[E])([+]|[-])?[0-9]+|([.][0-9]+([e]|[E])([+]|[-])?[0-9]+)|([.][0-9]+)
 ID ([a-zA-Z]|[_])[a-zA-Z0-9]*
-CHRLIT '([a-zA-Z]|\\[0-7]{3}|\_|\\\\|\\n|\\t|[0-9])'
+CHRLIT [']\\[0-7][0-7]?[0-7]?[']|['][^\n\\'][']|['][\\][n][']|['][\\][t][']|['][\\][\\][']|['][\\][\\'][']|['][\\][\"][']
+TEXT_COMMENT [^"\n"]
+
 %%
 {CHAR} {if(flag==-1){printf("CHAR\n");}}
 {ELSE} {if(flag==-1){printf("ELSE\n");}}
@@ -81,12 +88,18 @@ CHRLIT '([a-zA-Z]|\\[0-7]{3}|\_|\\\\|\\n|\\t|[0-9])'
 {RPAR} {if(flag==-1){printf("RPAR\n");}}
 {LPAR} {if(flag==-1){printf("LPAR\n");}}
 {SEMI} {if(flag==-1){printf("SEMI\n");}}
-{INTLIT} {if(flag==-1){printf("INTLIT(%d)\n", atoi(yytext));}}
+{REALLIT} {if(flag==-1){printf("REALLIT(%s)\n", yytext);}}
 {RESERVED} {if(flag==-1){printf("RESERVED(%s)\n", yytext);}}
 {CHRLIT} {if(flag==-1){printf("CHRLIT(%s)\n", yytext);}}
 {ID} {if(flag==-1){printf("ID(%s)\n", yytext);}}
+{INTLIT} {if(flag==-1){printf("INTLIT(%s)\n", yytext);}}
 
 
+
+{START_COMMENT} {BEGIN COMMENTS;}
+<COMMENTS>(.|"\n") ;
+<COMMENTS>{END_COMMENT} {BEGIN 0;}
+{SINGLE_COMMENT}{TEXT_COMMENT}*{NEWLINE} ;
 {ignorar}   ;
 .   ;
 %%
