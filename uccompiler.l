@@ -5,7 +5,6 @@ int flag=0;
 
 %}
 %x COMMENTS
-INTLIT [0-9]+ 
 ignorar "\n"|"\r"|"\t"|"//"|" "
 START_COMMENT "/*"
 END_COMMENT "*/"
@@ -52,7 +51,9 @@ EXPOENTE "e"|"E"
 REALLIT ([0-9]+[.][0-9]+([e]|[E])([+]|[-])?[0-9]+)|([0-9]+[.][0-9]+)|[0-9]+[.]([e]|[E])([+]|[-])?[0-9]+|[.][0-9]+([e]|[E])([+]|[-])?[0-9]+|[0-9]+([e]|[E])([+]|[-])?[0-9]+|([.][0-9]+([e]|[E])([+]|[-])?[0-9]+)|([.][0-9]+)
 ID ([a-zA-Z]|[_])[a-zA-Z0-9]*
 CHRLIT [']\\[0-7][0-7]?[0-7]?[']|['][^\n\\'][']|['][\\][n][']|['][\\][t][']|['][\\][\\][']|['][\\][\\'][']|['][\\][\"][']
+INTLIT [0-9]+ 
 TEXT_COMMENT [^"\n"]
+
 
 %%
 {CHAR} {if(flag==-1){printf("CHAR\n");}}
@@ -101,7 +102,8 @@ TEXT_COMMENT [^"\n"]
 <COMMENTS>{END_COMMENT} {BEGIN 0;}
 {SINGLE_COMMENT}{TEXT_COMMENT}*{NEWLINE} ;
 {ignorar}   ;
-.   ;
+
+.   {printf("Line col : illegal character (%s)\n",yytext);}
 %%
 int main(int argc, char* argv[]){
     if(argc > 1){
