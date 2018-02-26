@@ -6,6 +6,8 @@
 int flag=0;
 int linha =1;
 int coluna=1;
+int c_atual=1;
+int l_atual=1;
 %}
 %x COMMENTS
 START_COMMENT "/*"
@@ -16,16 +18,16 @@ UNDERSCORE "_"
 CHAR char
 ELSE else
 WHILE while
-IF "if"
-INT "int"
-SHORT "short"
-DOUBLE "double"
-RETURN "return"
-VOID "void"
-BITWISEAND "&"
+IF if
+INT int
+SHORT short
+DOUBLE double
+RETURN return
+VOID void
+BITWISEAND &
 BITWISEOR "|"
 BITWISEXOR "^"
-AND "&&"
+AND &&
 ASSIGN "="
 MUL "*"
 COMMA ","
@@ -46,25 +48,25 @@ PLUS "+"
 RBRACE "}"
 RPAR ")"
 SEMI ";"
-ESCAPE "\n"|"\t"|"\\"|"\'"|"\""
+ESCAPE \n|\t|\\|\'|\"
 RESERVED "extern"|"float"|"for"|"goto"|"if"|"int"|"inline"|"long"|"register"|"restrict"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"|"++"|"--"|"["|"]"|"_Bool"|"_Complex"|"_Imaginary"|"_Packed"|"asm"|"auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"
 EXPOENTE "e"|"E"
 REALLIT [0-9]+[.]([0-9]+)?(([e]|[E])([+]|[-])?[0-9]+)?|[0-9]+([e]|[E])([+]|[-])?[0-9]+|[.][0-9]+(([e]|[E])([+]|[-])?[0-9]+)?
 ID ([a-zA-Z]|[_])([a-zA-Z]|[_]|[0-9])*
 CHRLIT [']\\[0-7][0-7]?[0-7]?[']|['][^\n\\'][']|['][\\][n][']|['][\\][t][']|['][\\][\\][']|['][\\][\\'][']|['][\\][\"][']
-TEXT_COMMENT [^"\r""\n"]*
+TEXT_COMMENT [^\r\n]*
 INTLIT [0-9]+
-RETURNCHAR "\r"
-LINETERMINATOR "\n"|{RETURNCHAR}|({RETURNCHAR})"\n"
+RETURNCHAR \r
+LINETERMINATOR \n|{RETURNCHAR}|({RETURNCHAR})\n
 
 %%
 
-{SINGLE_COMMENT}{TEXT_COMMENT} ;
-{START_COMMENT} {BEGIN COMMENTS;COLUNA;}
+{SINGLE_COMMENT}{TEXT_COMMENT} {COLUNA;}
+{START_COMMENT} {BEGIN COMMENTS; c_atual=coluna; l_atual=linha;COLUNA;}
 <COMMENTS>("\n") {LINHA;}
 <COMMENTS>(.) {COLUNA;}
-<COMMENTS>{END_COMMENT} {BEGIN 0;}
-
+<COMMENTS><<EOF>> {BEGIN 0; printf("Line %d, col %d: unterminated comment\n", l_atual, c_atual);COLUNA;}
+<COMMENTS>{END_COMMENT} {BEGIN 0;COLUNA;}
 {CHAR} {if(flag==-1){printf("CHAR\n");}COLUNA;}
 {ELSE} {if(flag==-1){printf("ELSE\n");}COLUNA;}
 {IF} {if(flag==-1){printf("IF\n");}COLUNA;}
@@ -106,7 +108,7 @@ LINETERMINATOR "\n"|{RETURNCHAR}|({RETURNCHAR})"\n"
 {LINETERMINATOR} {LINHA;}
 
 "\t"|" "    {COLUNA;}
-.   {printf("Line %d, col %d: illegal character (%s)\n", linha, coluna, yytext); COLUNA} 
+.   {printf("Line %d, col %d: illegal character (%s)\n", linha, coluna, yytext); COLUNA;} 
 %%
 int main(int argc, char* argv[]){
     if(argc > 1){
