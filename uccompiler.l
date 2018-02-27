@@ -5,15 +5,16 @@ int val = 0;
 #include <stdio.h>
 #include <string.h>
 #define LINHA linha++; coluna=1;
-#define COLUNA coluna+=yyleng;
+#define COLUNA coluna += yyleng;
 int flag=0;
 int linha =1;
 int coluna=1;
 int c_atual=1;
 int l_atual=1;
 %}
-%x COMMENTS
+%x COMMENTS INVALIDCHAR
 START_COMMENT "/*"
+INICHAR "'"
 END_COMMENT "*/"
 SINGLE_COMMENT "//"
 CHARACTER [a-zA-Z]
@@ -61,15 +62,18 @@ TEXT_COMMENT [^\r\n]*
 INTLIT [0-9]+
 RETURNCHAR \r
 LINETERMINATOR \n|{RETURNCHAR}|({RETURNCHAR})\n
+INVPLICAIMPAR (\\)+
+INVPLICAPAR (\\\\)+
+SPACE " "
 
 %%
-
 {SINGLE_COMMENT}{TEXT_COMMENT} {COLUNA;}
 {START_COMMENT} {BEGIN COMMENTS; c_atual=coluna; l_atual=linha;COLUNA;}
 <COMMENTS>("\n") {LINHA;}
 <COMMENTS>(.) {COLUNA;}
 <COMMENTS><<EOF>> {BEGIN 0; printf("Line %d, col %d: unterminated comment\n", l_atual, c_atual);COLUNA;}
 <COMMENTS>{END_COMMENT} {BEGIN 0;COLUNA;}
+
 {CHAR} {if(flag==-1 && val == 1){printf("CHAR\n");}COLUNA;}
 {ELSE} {if(flag==-1 && val == 1){printf("ELSE\n");}COLUNA;}
 {IF} {if(flag==-1 && val == 1){printf("IF\n");}COLUNA;}
@@ -111,6 +115,8 @@ LINETERMINATOR \n|{RETURNCHAR}|({RETURNCHAR})\n
 {LINETERMINATOR} {LINHA;}
 
 "\t"|" "    {COLUNA;}
+
+'.+' {printf("Line %d, col %d: invalid char constant (%s)\n", linha, coluna, yytext); COLUNA;} 
 .   {printf("Line %d, col %d: illegal character (%s)\n", linha, coluna, yytext); COLUNA;} 
 %%
 int main(int argc, char* argv[]){
