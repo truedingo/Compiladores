@@ -69,6 +69,7 @@ ParamDeclaration:
                     ;
 
 Declaration:
+                    error SEMI
                     TypeSpec Declarator SEMI
                     |TypeSpec Declarator COMMA Declarator
                     ;
