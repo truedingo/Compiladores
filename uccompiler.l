@@ -1,19 +1,20 @@
 /* Diogo Amores 2015231975 damores@student.uc.pt */
 /* Maria Roseiro 2015233281 miroseiro@student.uc.pt */
 %{
-int yylex();
-int yyparse();
-int val = 0;
-#include <stdio.h>
-#include <string.h>
-#include <y.tab.h>
-#define LINHA linha++; coluna=1;
-#define COLUNA coluna+=yyleng;
-int flag=0;
-int linha =1;
-int coluna=1;
-int c_atual=1;
-int l_atual=1;
+    int val = 0;
+    #include <stdio.h>
+    #include <string.h>
+    #include "y.tab.h"
+
+    #define LINHA linha++; coluna=1;
+    #define COLUNA coluna+=yyleng;
+
+    int flag=0;
+    int linha =1;
+    int coluna=1;
+    int c_atual=1;
+    int l_atual=1; 
+
 %}
 %x COMMENTS
 START_COMMENT "/*"
@@ -132,4 +133,8 @@ int main(int argc, char* argv[]){
 int yywrap()
 {
 return 1;
+}
+
+void yyerror (const char *s) { 
+     printf ("Line %d, col %d: %s: %s\n",linha,(int)(coluna-strlen(yytext)), s, yytext);
 }

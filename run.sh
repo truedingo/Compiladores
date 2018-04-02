@@ -1,2 +1,4 @@
 #!/bin/sh 
-lex uccompiler.l yacc -d -v uccompiler.y cc -o uccompiler y.tab.c lex.yy.c 
+lex uccompiler.l 
+yacc -d uccompiler.y
+cc -o y.output y.tab.c lex.yy.c 

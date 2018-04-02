@@ -1,8 +1,12 @@
 %{
     #include <stdio.h>
-    int yylex(void);
-    void yyerror (const char *s);
-    char typing;
+	#include <stdlib.h>
+	#include <string.h>
+	#include <stdarg.h>
+    void yyerror(const char* s);
+    int yylex();
+
+
 %}
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI REALLIT RESERVED CHRLIT ID INTLIT
@@ -97,17 +101,32 @@ Statement:
 Expr:
                     |Expr ASSIGN Expr
                     |Expr COMMA Expr
-
-
-
-
-
+                    |Expr PLUS Expr
+                    |Expr MINUS Expr
+                    |Expr MUL Expr
+                    |Expr DIV Expr
+                    |Expr MOD Expr
+                    |Expr OR Expr
+                    |Expr AND Expr
+                    |Expr BITWISEAND Expr
+                    |Expr BITWISEOR Expr
+                    |Expr BITWISEXOR Expr
+                    |Expr EQ Expr
+                    |Expr NE Expr
+                    |Expr LE Expr
+                    |Expr GE Expr
+                    |Expr LT Expr
+                    |Expr GT Expr
+                    |PLUS Expr
+                    |MINUS Expr
+                    |NOT Expr
+                    |ID LPAR RPAR
+                    |ID LPAR Expr RPAR
+                    |ID LPAR Expr COMMA Expr RPAR
+                    |INTLIT LPAR Expr RPAR
+                    |CHRLIT LPAR Expr RPAR
+                    |REALLIT LPAR Expr RPAR
+                    ;
 
 
 %%
-
-
-int main() {
-    yyparse();
-    return 0;
-}
