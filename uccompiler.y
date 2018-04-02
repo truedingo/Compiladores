@@ -27,9 +27,11 @@
 %right ASSIGN
 %left COMMA
 
+%nonassoc ELSE
+
 %%
 FuncAndDeclarations:
-                    |FuncDefinition 
+                    FuncDefinition 
                     |FuncDeclaration
                     |Declaration
                     |FuncDefinition FuncAndDeclarations
@@ -41,12 +43,12 @@ FuncDefinition: TypeSpec FuncDeclarator FuncBody
                 ;
 
 FuncBody:
-            |LBRACE DeclarationAndStates RBRACE
+            LBRACE DeclarationAndStates RBRACE
             |LBRACE RBRACE
             ;
 
 DeclarationAndStates:
-                        |Statement DeclarationAndStates
+                        Statement DeclarationAndStates
                         |Declaration DeclarationAndStates
                         |Statement
                         |Declaration
@@ -59,22 +61,22 @@ FuncDeclarator: ID LPAR ParamList RPAR
                     ;
 
 ParamList:
-                    |ParamDeclaration
+                    ParamDeclaration
                     |ParamDeclaration COMMA ParamDeclaration
                     ;
 
 ParamDeclaration:
-                    |TypeSpec
+                    TypeSpec
                     |TypeSpec ID
                     ;
 
 Declaration:
-                    |TypeSpec Declarator SEMI
+                    TypeSpec Declarator SEMI
                     |TypeSpec Declarator COMMA Declarator
                     ;
 
 TypeSpec:
-                    |CHAR
+                    CHAR
                     |INT
                     |VOID
                     |DOUBLE
@@ -82,12 +84,12 @@ TypeSpec:
                     ;
 
 Declarator:
-                    |ID
+                    ID
                     |ID ASSIGN Expr
                     ;
 
 Statement:
-                    |SEMI
+                    SEMI
                     |Expr SEMI
                     |LBRACE RBRACE
                     |LBRACE Statement RBRACE
@@ -99,7 +101,7 @@ Statement:
                     ;
 
 Expr:
-                    |Expr ASSIGN Expr
+                    Expr ASSIGN Expr
                     |Expr COMMA Expr
                     |Expr PLUS Expr
                     |Expr MINUS Expr
