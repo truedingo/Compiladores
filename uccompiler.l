@@ -1,9 +1,12 @@
+/* Diogo Amores 2015231975 damores@student.uc.pt */
+/* Maria Roseiro 2015233281 miroseiro@student.uc.pt */
 %{
 int yylex();
 int yyparse();
 int val = 0;
 #include <stdio.h>
 #include <string.h>
+#include <y.tab.h>
 #define LINHA linha++; coluna=1;
 #define COLUNA coluna+=yyleng;
 int flag=0;
@@ -70,44 +73,44 @@ LINETERMINATOR \n|{RETURNCHAR}|({RETURNCHAR})\n
 <COMMENTS>(.) {COLUNA;}
 <COMMENTS><<EOF>> {BEGIN 0; printf("Line %d, col %d: unterminated comment\n", l_atual, c_atual);COLUNA;}
 <COMMENTS>{END_COMMENT} {BEGIN 0;COLUNA;}
-{CHAR} {if(flag==-1 && val == 1){printf("CHAR\n");}COLUNA;}
-{ELSE} {if(flag==-1 && val == 1){printf("ELSE\n");}COLUNA;}
-{IF} {if(flag==-1 && val == 1){printf("IF\n");}COLUNA;}
-{INT} {if(flag==-1 && val == 1){printf("INT\n");}COLUNA;}
-{SHORT} {if(flag==-1 && val == 1){printf("SHORT\n");}COLUNA;}
-{DOUBLE} {if(flag==-1 && val == 1){printf("DOUBLE\n");}COLUNA;}
-{RETURN} {if(flag==-1 && val == 1){printf("RETURN\n");}COLUNA;}
-{VOID} {if(flag==-1 && val == 1){printf("VOID\n");}COLUNA;}
-{WHILE} {if(flag==-1 && val == 1){printf("WHILE\n");}COLUNA;}
-{BITWISEAND} {if(flag==-1 && val == 1){printf("BITWISEAND\n");}COLUNA;}
-{BITWISEOR} {if(flag==-1 && val == 1){printf("BITWISEOR\n");}COLUNA;}
-{BITWISEXOR} {if(flag==-1 && val == 1){printf("BITWISEXOR\n");}COLUNA;}
-{AND} {if(flag==-1 && val == 1){printf("AND\n");}COLUNA;}
-{ASSIGN} {if(flag==-1 && val == 1){printf("ASSIGN\n");}COLUNA;}
-{MUL} {if(flag==-1 && val == 1){printf("MUL\n");}COLUNA;}
-{COMMA} {if(flag==-1 && val == 1){printf("COMMA\n");}COLUNA;}
-{DIV} {if(flag==-1 && val == 1){printf("DIV\n");}COLUNA;}
-{EQ} {if(flag==-1 && val == 1){printf("EQ\n");}COLUNA;}
-{GE} {if(flag==-1 && val == 1){printf("GE\n");}COLUNA;}
-{GT} {if(flag==-1 && val == 1){printf("GT\n");}COLUNA;}
-{LBRACE} {if(flag==-1 && val == 1){printf("LBRACE\n");}COLUNA;}
-{LE} {if(flag==-1 && val == 1){printf("LE\n");}COLUNA;}
-{LT} {if(flag==-1 && val == 1){printf("LT\n");}COLUNA;}
-{MINUS} {if(flag==-1 && val == 1){printf("MINUS\n");}COLUNA;}
-{MOD} {if(flag==-1 && val == 1){printf("MOD\n");}COLUNA;}
-{NE} {if(flag==-1 && val == 1){printf("NE\n");}COLUNA;}
-{NOT} {if(flag==-1 && val == 1){printf("NOT\n");}COLUNA;}
-{OR} {if(flag==-1 && val == 1){printf("OR\n");}COLUNA;}
-{PLUS} {if(flag==-1 && val == 1){printf("PLUS\n");}COLUNA;}
-{RBRACE} {if(flag==-1 && val == 1){printf("RBRACE\n");}COLUNA;}
-{RPAR} {if(flag==-1 && val == 1){printf("RPAR\n");}COLUNA;}
-{LPAR} {if(flag==-1 && val == 1){printf("LPAR\n");}COLUNA;}
-{SEMI} {if(flag==-1 && val == 1){printf("SEMI\n");}COLUNA;}
-{REALLIT} {if(flag==-1 && val == 1){printf("REALLIT(%s)\n", yytext);}COLUNA;}
-{RESERVED} {if(flag==-1 && val == 1){printf("RESERVED(%s)\n", yytext);}COLUNA;}
-{CHRLIT} {if(flag==-1 && val == 1){printf("CHRLIT(%s)\n", yytext);}COLUNA;}
-{ID} {if(flag==-1 && val == 1){printf("ID(%s)\n", yytext);}COLUNA;}
-{INTLIT} {if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA;}
+{CHAR} {if(flag==-1 && val == 1){printf("CHAR\n");}COLUNA;return CHAR;}
+{ELSE} {if(flag==-1 && val == 1){printf("ELSE\n");}COLUNA;return ELSE;}
+{IF} {if(flag==-1 && val == 1){printf("IF\n");}COLUNA;return IF;}
+{INT} {if(flag==-1 && val == 1){printf("INT\n");}COLUNA;return INT;}
+{SHORT} {if(flag==-1 && val == 1){printf("SHORT\n");}COLUNA;return SHORT;}
+{DOUBLE} {if(flag==-1 && val == 1){printf("DOUBLE\n");}COLUNA;return DOUBLE;}
+{RETURN} {if(flag==-1 && val == 1){printf("RETURN\n");}COLUNA;return RETURN;}
+{VOID} {if(flag==-1 && val == 1){printf("VOID\n");}COLUNA;return VOID;}
+{WHILE} {if(flag==-1 && val == 1){printf("WHILE\n");}COLUNA;return WHILE;}
+{BITWISEAND} {if(flag==-1 && val == 1){printf("BITWISEAND\n");}COLUNA;return BITWISEAND;}
+{BITWISEOR} {if(flag==-1 && val == 1){printf("BITWISEOR\n");}COLUNA;return BITWISEOR;}
+{BITWISEXOR} {if(flag==-1 && val == 1){printf("BITWISEXOR\n");}COLUNA;return BITWISEXOR;}
+{AND} {if(flag==-1 && val == 1){printf("AND\n");}COLUNA;return AND;}
+{ASSIGN} {if(flag==-1 && val == 1){printf("ASSIGN\n");}COLUNA;return ASSIGN;}
+{MUL} {if(flag==-1 && val == 1){printf("MUL\n");}COLUNA;return MUL;}
+{COMMA} {if(flag==-1 && val == 1){printf("COMMA\n");}COLUNA;return COMMA;}
+{DIV} {if(flag==-1 && val == 1){printf("DIV\n");}COLUNA;return DIV;}
+{EQ} {if(flag==-1 && val == 1){printf("EQ\n");}COLUNA;return EQ;}
+{GE} {if(flag==-1 && val == 1){printf("GE\n");}COLUNA;return GE;}
+{GT} {if(flag==-1 && val == 1){printf("GT\n");}COLUNA;return GT;}
+{LBRACE} {if(flag==-1 && val == 1){printf("LBRACE\n");}COLUNA;return LBRACE;}
+{LE} {if(flag==-1 && val == 1){printf("LE\n");}COLUNA;return LE;}
+{LT} {if(flag==-1 && val == 1){printf("LT\n");}COLUNA;return LT;}
+{MINUS} {if(flag==-1 && val == 1){printf("MINUS\n");}COLUNA;return MINUS;}
+{MOD} {if(flag==-1 && val == 1){printf("MOD\n");}COLUNA;return MOD;}
+{NE} {if(flag==-1 && val == 1){printf("NE\n");}COLUNA;return NE;}
+{NOT} {if(flag==-1 && val == 1){printf("NOT\n");}COLUNA;return NOT;}
+{OR} {if(flag==-1 && val == 1){printf("OR\n");}COLUNA;return OR;}
+{PLUS} {if(flag==-1 && val == 1){printf("PLUS\n");}COLUNA;return PLUS;}
+{RBRACE} {if(flag==-1 && val == 1){printf("RBRACE\n");}COLUNA;return RBRACE;}
+{RPAR} {if(flag==-1 && val == 1){printf("RPAR\n");}COLUNA;return RPAR;}
+{LPAR} {if(flag==-1 && val == 1){printf("LPAR\n");}COLUNA;return LPAR;}
+{SEMI} {if(flag==-1 && val == 1){printf("SEMI\n");}COLUNA;return SEMI;}
+{REALLIT} {if(flag==-1 && val == 1){printf("REALLIT(%s)\n", yytext);}COLUNA;return REALLIT;}
+{RESERVED} {if(flag==-1 && val == 1){printf("RESERVED(%s)\n", yytext);}COLUNA;return RESERVED;}
+{CHRLIT} {if(flag==-1 && val == 1){printf("CHRLIT(%s)\n", yytext);}COLUNA;return CHRLIT;}
+{ID} {if(flag==-1 && val == 1){printf("ID(%s)\n", yytext);}COLUNA;return ID;}
+{INTLIT} {if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA;return INTLIT;}
 {LINETERMINATOR} {LINHA;}
 
 "\t"|" "    {COLUNA;}
