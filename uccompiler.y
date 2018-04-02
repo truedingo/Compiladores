@@ -29,7 +29,7 @@
 
 %%
 FuncAndDeclarations:
-                    |FuncDefinition 
+                    FuncDefinition 
                     |FuncDeclaration
                     |Declaration
                     |FuncDefinition FuncAndDeclarations
@@ -41,12 +41,12 @@ FuncDefinition: TypeSpec FuncDeclarator FuncBody
                 ;
 
 FuncBody:
-            |LBRACE DeclarationAndStates RBRACE
+            LBRACE DeclarationAndStates RBRACE
             |LBRACE RBRACE
             ;
 
 DeclarationAndStates:
-                        |Statement DeclarationAndStates
+                        Statement DeclarationAndStates
                         |Declaration DeclarationAndStates
                         |Statement
                         |Declaration
@@ -59,22 +59,25 @@ FuncDeclarator: ID LPAR ParamList RPAR
                     ;
 
 ParamList:
-                    |ParamDeclaration
+                    ParamDeclaration
                     |ParamDeclaration COMMA ParamDeclaration
                     ;
 
 ParamDeclaration:
-                    |TypeSpec
+                    TypeSpec
                     |TypeSpec ID
                     ;
 
 Declaration:
+                    error SEMI;
                     |TypeSpec Declarator SEMI
-                    |TypeSpec Declarator COMMA Declarator
+                    |TypeSpec Declarator COMMA AuxDeclarator SEMI
                     ;
-
+AuxDeclarator:
+                    COMMA Declarator
+                    |AuxDeclarator COMMA Declarator;
 TypeSpec:
-                    |CHAR
+                    CHAR
                     |INT
                     |VOID
                     |DOUBLE
@@ -82,51 +85,90 @@ TypeSpec:
                     ;
 
 Declarator:
-                    |ID
+                    ID
                     |ID ASSIGN Expr
                     ;
 
 Statement:
-                    |SEMI
+                    SEMI
                     |Expr SEMI
+                    |LBRACE error RBRACE
                     |LBRACE RBRACE
-                    |LBRACE Statement RBRACE
-                    |IF LPAR Expr RPAR Statement
-                    |IF LPAR Expr RPAR Statement ELSE Statement
-                    |WHILE LPAR Expr RPAR Statement
+                    |LBRACE AuxStatement RBRACE
+                    |IF LPAR Expr RPAR ErrorStatement
+                    |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement
+                    |WHILE LPAR Expr RPAR ErrorStatement
                     |RETURN SEMI
                     |RETURN Expr SEMI
                     ;
+ErrorStatement:
+                    Statement
+                    |error SEMI            
+                    ;   
+AuxStatement:
+                    AuxStatement ErrorStatement
+                    |ErrorStatement
+                    ;
 
 Expr:
-                    |Expr ASSIGN Expr
+                    Expr ASSIGN Expr
                     |Expr COMMA Expr
-                    |Expr PLUS Expr
-                    |Expr MINUS Expr
-                    |Expr MUL Expr
-                    |Expr DIV Expr
-                    |Expr MOD Expr
-                    |Expr OR Expr
-                    |Expr AND Expr
-                    |Expr BITWISEAND Expr
-                    |Expr BITWISEOR Expr
-                    |Expr BITWISEXOR Expr
-                    |Expr EQ Expr
+                    |LPAR error RPAR
+                    |ID LPAR error RPAR    
+                    |ExprOperations
+                    |ExprLogical
+                    |ExprRelation
+                    |ExprUnary
+                    |ExprFunction
+                    |ExprPrimary
+                    ;
+
+                   
+                    
+                  
+
+ExprRelation:
+                    Expr EQ Expr
                     |Expr NE Expr
                     |Expr LE Expr
                     |Expr GE Expr
                     |Expr LT Expr
                     |Expr GT Expr
-                    |PLUS Expr
+                    ;
+
+ExprLogical:
+                    Expr OR Expr
+                    |Expr AND Expr
+                    |Expr BITWISEAND Expr
+                    |Expr BITWISEOR Expr
+                    |Expr BITWISEXOR Expr
+                    ;
+ExprOperations:
+                    Expr PLUS Expr
+                    |Expr MINUS Expr
+                    |Expr MUL Expr
+                    |Expr DIV Expr
+                    |Expr MOD Expr
+                    ;
+ExprFunction:
+                    ID LPAR RPAR
+                    |ID LPAR Expr RPAR
+                    ;
+
+ExprUnary:
+                    PLUS Expr
                     |MINUS Expr
                     |NOT Expr
-                    |ID LPAR RPAR
-                    |ID LPAR Expr RPAR
-                    |ID LPAR Expr COMMA Expr RPAR
-                    |INTLIT LPAR Expr RPAR
-                    |CHRLIT LPAR Expr RPAR
-                    |REALLIT LPAR Expr RPAR
                     ;
+
+ExprPrimary:
+                    ID
+                    |INTLIT
+                    |REALLIT
+                    |CHRLIT
+                    |LPAR Expr RPAR
+                    ;
+
 
 
 %%
