@@ -5,8 +5,6 @@
 	#include <stdarg.h>
     void yyerror(const char* s);
     int yylex();
-
-
 %}
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI REALLIT RESERVED CHRLIT ID INTLIT
@@ -26,6 +24,8 @@
 %left OR
 %right ASSIGN
 %left COMMA
+
+%nonassoc ELSE
 
 %%
 FuncAndDeclarations:
@@ -52,7 +52,7 @@ DeclarationAndStates:
                         |Declaration
                         ;
 
-FuncDeclaration: TypeSpec FuncDeclaration SEMI
+FuncDeclaration: TypeSpec FuncDeclarator SEMI
                     ;
 
 FuncDeclarator: ID LPAR ParamList RPAR
@@ -69,13 +69,10 @@ ParamDeclaration:
                     ;
 
 Declaration:
-                    error SEMI;
-                    |TypeSpec Declarator SEMI
-                    |TypeSpec Declarator COMMA AuxDeclarator SEMI
+                    TypeSpec Declarator SEMI
+                    |TypeSpec Declarator COMMA Declarator
                     ;
-AuxDeclarator:
-                    COMMA Declarator
-                    |AuxDeclarator COMMA Declarator;
+
 TypeSpec:
                     CHAR
                     |INT
@@ -92,83 +89,44 @@ Declarator:
 Statement:
                     SEMI
                     |Expr SEMI
-                    |LBRACE error RBRACE
                     |LBRACE RBRACE
-                    |LBRACE AuxStatement RBRACE
-                    |IF LPAR Expr RPAR ErrorStatement
-                    |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement
-                    |WHILE LPAR Expr RPAR ErrorStatement
+                    |LBRACE Statement RBRACE
+                    |IF LPAR Expr RPAR Statement
+                    |IF LPAR Expr RPAR Statement ELSE Statement
+                    |WHILE LPAR Expr RPAR Statement
                     |RETURN SEMI
                     |RETURN Expr SEMI
-                    ;
-ErrorStatement:
-                    Statement
-                    |error SEMI            
-                    ;   
-AuxStatement:
-                    AuxStatement ErrorStatement
-                    |ErrorStatement
                     ;
 
 Expr:
                     Expr ASSIGN Expr
                     |Expr COMMA Expr
-                    |LPAR error RPAR
-                    |ID LPAR error RPAR    
-                    |ExprOperations
-                    |ExprLogical
-                    |ExprRelation
-                    |ExprUnary
-                    |ExprFunction
-                    |ExprPrimary
-                    ;
-
-                   
-                    
-                  
-
-ExprRelation:
-                    Expr EQ Expr
+                    |Expr PLUS Expr
+                    |Expr MINUS Expr
+                    |Expr MUL Expr
+                    |Expr DIV Expr
+                    |Expr MOD Expr
+                    |Expr OR Expr
+                    |Expr AND Expr
+                    |Expr BITWISEAND Expr
+                    |Expr BITWISEOR Expr
+                    |Expr BITWISEXOR Expr
+                    |Expr EQ Expr
                     |Expr NE Expr
                     |Expr LE Expr
                     |Expr GE Expr
                     |Expr LT Expr
                     |Expr GT Expr
-                    ;
-
-ExprLogical:
-                    Expr OR Expr
-                    |Expr AND Expr
-                    |Expr BITWISEAND Expr
-                    |Expr BITWISEOR Expr
-                    |Expr BITWISEXOR Expr
-                    ;
-ExprOperations:
-                    Expr PLUS Expr
-                    |Expr MINUS Expr
-                    |Expr MUL Expr
-                    |Expr DIV Expr
-                    |Expr MOD Expr
-                    ;
-ExprFunction:
-                    ID LPAR RPAR
-                    |ID LPAR Expr RPAR
-                    ;
-
-ExprUnary:
-                    PLUS Expr
+                    |PLUS Expr
                     |MINUS Expr
                     |NOT Expr
+                    |ID LPAR RPAR
+                    |ID LPAR Expr RPAR
+                    |ID LPAR Expr COMMA Expr RPAR
+                    |INTLIT LPAR Expr RPAR
+                    |CHRLIT LPAR Expr RPAR
+                    |REALLIT LPAR Expr RPAR
                     ;
-
-ExprPrimary:
-                    ID
-                    |INTLIT
-                    |REALLIT
-                    |CHRLIT
-                    |LPAR Expr RPAR
-                    ;
-
 
 
 %%
