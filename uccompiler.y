@@ -3,15 +3,24 @@
 	    #include <stdlib.h>
 	    #include <string.h>
 	    #include <stdarg.h>
+    #include "ast.h"
     void yyerror(const char* s);
     int yylex();
     int yyparse();
-   
-
+    int cnt;
+	no root;
+	no aux;
+	no aux2;
 %}
 
+%union{
+int inteiro;
+char* string;
+struct node* ynode;
+}
+
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI REALLIT RESERVED CHRLIT ID INTLIT
-//FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
+%type <ynode> Program FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
 
 %left COMMA
 %right ASSIGN
@@ -31,20 +40,21 @@
 %nonassoc ELSE
 
 %%
+
 FuncAndDeclarations:
                     FuncDefinition 
-                    |FuncDeclaration
-                    |Declaration
-                    |FuncDefinition FuncAndDeclarations
-                    |FuncDeclaration FuncAndDeclarations
-                    |Declaration FuncAndDeclarations
+                    |FuncDeclaration {root=create(root_node, "","Program");$$=root}
+                    |Declaration {}
+                    |FuncDefinition FuncAndDeclarations {}
+                    |FuncDeclaration FuncAndDeclarations {}
+                    |Declaration FuncAndDeclarations {}
                     ;
 
-FuncDefinition: TypeSpec FuncDeclarator FuncBody
+FuncDefinition: TypeSpec FuncDeclarator FuncBody 
                 ;
 
 FuncBody:
-            LBRACE DeclarationAndStates RBRACE
+            LBRACE DeclarationAndStates RBRACE 
             |LBRACE RBRACE
             ;
 
@@ -55,7 +65,7 @@ DeclarationAndStates:
                         |Declaration
                         ;
 
-FuncDeclaration: TypeSpec FuncDeclarator SEMI
+FuncDeclaration: TypeSpec FuncDeclarator SEMI {{$$=$1;addbro($$,$2);}}
                     ;
 
 FuncDeclarator: ID LPAR ParamList RPAR
@@ -72,7 +82,7 @@ ParamDeclaration:
                     ;
 
 Declaration:
-                    error SEMI
+                    error SEMI 
                     |TypeSpec Declarator SEMI
                     |TypeSpec Declarator AuxDeclarator SEMI
                     ;
@@ -106,9 +116,10 @@ Statement:
                     |RETURN SEMI
                     |RETURN Expr SEMI
                     ;
+                    
 ErrorStatement:
                     Statement
-                    |error SEMI
+                    |error SEMI 
                     ;
 
 AuxStatement:
@@ -116,35 +127,19 @@ AuxStatement:
                     |ErrorStatement
                     ;            
 
-Expr:              
+Expr:
                     Expr ASSIGN Expr
-                    |Expr COMMA Expr
+                    |Expr COMMA Expr 
                     |LPAR error RPAR
                     |ExprOper
                     |ExprLogic
                     |ExprRelat
-                    |ExprSigleOp
+                    |ExprSingleOp
                     |ExprFunction
                     |ExprPrim
                     |ID LPAR error RPAR
                     ;
-ExprOper:
-                    Expr PLUS Expr
-                    |Expr MINUS Expr
-                    |Expr MUL Expr
-                    |Expr DIV Expr
-                    |Expr MOD Expr
-                    ;
-
-ExprLogic:
-                    Expr OR Expr
-                    |Expr AND Expr
-                    |Expr BITWISEAND Expr
-                    |Expr BITWISEOR Expr
-                    |Expr BITWISEXOR Expr
-                    ;
-
-ExprRelat:
+ExprRelat:          
                     Expr EQ Expr
                     |Expr NE Expr
                     |Expr LE Expr
@@ -153,9 +148,26 @@ ExprRelat:
                     |Expr GT Expr
                     ;
 
-ExprSigleOp:
-                    PLUS Expr
-                    |MINUS Expr
+ExprOper:           
+                    Expr PLUS Expr 
+                    |Expr MINUS Expr
+                    |Expr MUL Expr 
+                    |Expr DIV Expr
+                    |Expr MOD Expr 
+                    ;
+
+
+ExprLogic:          
+                    Expr OR Expr 
+                    |Expr AND Expr
+                    |Expr BITWISEAND Expr 
+                    |Expr BITWISEOR Expr
+                    |Expr BITWISEXOR Expr 
+                    ;
+
+ExprSingleOp:       
+                    PLUS Expr 
+                    |MINUS Expr 
                     |NOT Expr
                     ;
 
@@ -166,7 +178,7 @@ ExprFunction:
 
 
 ExprPrim:
-                    ID
+                    ID  
                     |INTLIT
                     |REALLIT
                     |CHRLIT
