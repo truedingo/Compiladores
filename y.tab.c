@@ -153,9 +153,9 @@
 #line 1 "uccompiler.y"
 
     #include <stdio.h>
-	    #include <stdlib.h>
-	    #include <string.h>
-	    #include <stdarg.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <stdarg.h>
     #include "ast.h"
     void yyerror(const char* s);
     int yylex();
@@ -1620,7 +1620,7 @@ yyreduce:
     {
         case 3:
 #line 46 "uccompiler.y"
-    {}
+    {root=create(root_node, "","Program");(yyval.ynode)=root;}
     break;
 
   case 4:

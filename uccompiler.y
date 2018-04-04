@@ -1,8 +1,8 @@
 %{
     #include <stdio.h>
-	    #include <stdlib.h>
-	    #include <string.h>
-	    #include <stdarg.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <stdarg.h>
     #include "ast.h"
     void yyerror(const char* s);
     int yylex();
@@ -20,7 +20,7 @@ struct node* ynode;
 }
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI REALLIT RESERVED CHRLIT ID INTLIT
-%type <ynode> Program FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
+%type <ynode> FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
 
 %left COMMA
 %right ASSIGN
@@ -41,9 +41,9 @@ struct node* ynode;
 
 %%
 
-FuncAndDeclarations:
-                    FuncDefinition 
-                    |FuncDeclaration {root=create(root_node, "","Program");$$=root}
+FuncAndDeclarations: %empty {$$ = NULL;}
+                    |FuncDefinition {$$ = $1; addbro()} 
+                    |FuncDeclaration {root=create(root_node, "","Program");$$=root;}
                     |Declaration {}
                     |FuncDefinition FuncAndDeclarations {}
                     |FuncDeclaration FuncAndDeclarations {}
@@ -84,11 +84,7 @@ ParamDeclaration:
 Declaration:
                     error SEMI 
                     |TypeSpec Declarator SEMI
-                    |TypeSpec Declarator AuxDeclarator SEMI
-                    ;
-AuxDeclarator:
-                    COMMA Declarator
-                    | AuxDeclarator COMMA Declarator
+                    |TypeSpec Declarator Declarator SEMI
                     ;
 
 TypeSpec:
@@ -102,30 +98,29 @@ TypeSpec:
 Declarator:
                     ID
                     |ID ASSIGN Expr
+                    |COMMA Declarator
+                    |Declarator COMMA Declarator
                     ;
 
 Statement:
                     SEMI
                     |Expr SEMI
                     |LBRACE RBRACE
-                    |LBRACE AuxStatement RBRACE
+                    |LBRACE Statement RBRACE
                     |LBRACE error RBRACE
                     |IF LPAR Expr RPAR ErrorStatement
                     |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement
                     |WHILE LPAR Expr RPAR ErrorStatement
                     |RETURN SEMI
                     |RETURN Expr SEMI
+                    |Statement ErrorStatement
+                    |ErrorStatement
                     ;
                     
 ErrorStatement:
                     Statement
                     |error SEMI 
-                    ;
-
-AuxStatement:
-                    AuxStatement ErrorStatement
-                    |ErrorStatement
-                    ;            
+                    ;          
 
 Expr:
                     Expr ASSIGN Expr
