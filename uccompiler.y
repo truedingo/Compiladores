@@ -10,8 +10,11 @@
     int cnt;
     int num_erros=0;
 	no *root;
+    no *aux1;
 	no *aux;
 	no *aux2;
+    no *aux3;
+    int first=0;
 %}
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI
@@ -76,7 +79,7 @@ DeclarationAndStates:
 
 FuncDeclaration: TypeSpec FuncDeclarator SEMI {$$=createNode("FuncDeclaration", NULL);
                                             addChild($$,$1);
-                                            addChild($1,$2);
+                                            addBrother($1,$2);
                                             }
                     ;
 
@@ -100,19 +103,43 @@ ParamDeclaration:
                     |TypeSpec ID {
                         $$=createNode("ParamDeclaration", NULL);
                         addChild($$,$1);
-                        aux=createNode("Id", NULL);
-                        addChild($1,aux);
+                        aux=createNode("Id", $2);
+                        addBrother($1,aux);
                     }
                     ;
 
 Declaration:
                     error SEMI {$$=createNode("Null", NULL);num_erros+=1;}
-                    |TypeSpec Declarator SEMI {$$=createNode("", NULL);}
-                    |TypeSpec Declarator AuxDeclarator SEMI {$$=createNode("", NULL);}
+                    |TypeSpec AuxDeclarator SEMI { 
+                        aux = $2;
+						first = 0;
+						while(aux != NULL){
+							aux1 = aux;
+							aux = aux->brother;
+							aux1->brother = NULL;
+							aux2 = createNode("Declaration",NULL);
+							aux3 = createNode($1->label,NULL);
+							addChild(aux2,aux3);
+							if(aux1->child != NULL){
+								aux1->brother = aux1->child;
+								aux1->child = NULL;							
+							}
+							addBrother(aux3,aux1);
+							if(first==0){
+								first = 1;							
+								 $$ = aux2;
+							}
+							else addBrother($$,aux2);
+							
+						
+							}
+						free($1);
+						
+                    }
                     ;
 AuxDeclarator:
-                    COMMA Declarator {$$=createNode("", NULL);}
-                    |AuxDeclarator COMMA Declarator {$$=createNode("", NULL);}
+                    Declarator {$$=$1;}
+                    |AuxDeclarator COMMA Declarator {$$ = $1; addBrother($1,$3);}
                     ;
 
 TypeSpec:
@@ -124,32 +151,65 @@ TypeSpec:
                     ;
 
 Declarator:
-                    ID {$$=createNode("", NULL);}
-                    |ID ASSIGN Expr {$$=createNode("", NULL);}
+                    ID {$$=createNode("Id", $1);}
+                    |ID ASSIGN Expr {$$=createNode("Id", $1); addChild($$, $3); }
                     ;
 
 Statement:
-                    SEMI {$$=createNode("", NULL);}
-                    |Expr SEMI {$$=createNode("", NULL);}
-                    |LBRACE RBRACE {$$=createNode("", NULL);}
-                    |LBRACE AuxStatement RBRACE {$$=createNode("", NULL);}
+                    SEMI {$$=NULL;}
+                    |Expr SEMI {$$=$1;}
+                    |LBRACE RBRACE {$$=NULL;}
+                    |LBRACE AuxStatement RBRACE {
+                        if(cntBrothers($2) >= 2){
+						    $$=createNode("StatList",NULL);
+						    addChild($$,$2);
+                        }
+					    else{
+						$$ = $2;
+				    	}
+                    }
                     |LBRACE error RBRACE {$$=createNode("Null", NULL);num_erros+=1;}
-                    |IF LPAR Expr RPAR ErrorStatement {$$=createNode("", NULL);}
-                    |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement {$$=createNode("", NULL);}
-                    |WHILE LPAR Expr RPAR ErrorStatement {$$=createNode("", NULL);}
-                    |RETURN SEMI {$$=createNode("", NULL);}
-                    |RETURN Expr SEMI {$$=createNode("", NULL);}
+                    |IF LPAR Expr RPAR ErrorStatement { 
+                                    $$=createNode("If",NULL);
+                                    addChild($$,$3);
+									if($5 == NULL){
+                                        aux = createNode("Null",NULL);
+										addBrother($3,aux);
+                                    }	
+                                }
+                    |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement {
+                                    $$=createNode("If",NULL);
+									addChild($$,$3);
+									if($5 == NULL){
+                                        aux = createNode("Null",NULL);
+                                    }
+                                }
+                    |WHILE LPAR Expr RPAR ErrorStatement {
+			 						$$=createNode("While",NULL);
+									addChild($$,$3);
+									if($5 == NULL){
+                                        aux = createNode("Null",NULL);
+										addBrother($3,aux);		
+									}								
+									else addBrother($3,$5);
+									}                        
+                    |RETURN SEMI {$$=createNode("Return", NULL);
+                                addChild($$, createNode("Null", NULL));
+                                }
+                        
+                    |RETURN Expr SEMI {
+                                    $$=createNode("Return", NULL);
+                                    addChild($$, $2);
+                                    }
                     ;
 ErrorStatement:
-                    Statement {$$=createNode("", NULL);}
+                    Statement  {$$ =$1;}
                     |error SEMI {$$=createNode("Null", NULL);num_erros+=1;}
                     ;
-
 AuxStatement:
-                    AuxStatement ErrorStatement {$$=createNode("", NULL);}
-                    |ErrorStatement {$$=createNode("", NULL);}
-                    ;            
-
+                    AuxStatement ErrorStatement {$$=$1;addBrother($1,$2);}
+                    |ErrorStatement {$$=$1;}
+                    ;    
 Expr:              
                     Expr ASSIGN Expr {$$=createNode("Store", NULL);addBrother($$,$1);addBrother($1,$3);}
                     |Expr COMMA Expr {$$=createNode("Comma", NULL);addBrother($$,$1);addBrother($1,$3);}
@@ -194,16 +254,16 @@ ExprSingleOp:
                     ;
 
 ExprFunction:
-                    ID LPAR RPAR {$$=createNode("Call", NULL);aux=createNode("Id",NULL); addChild($$,aux);}
-                    |ID LPAR Expr RPAR{$$=createNode("Call", NULL);aux=createNode("Id",NULL); addChild($$,aux);addBrother(aux,$3);}
+                    ID LPAR RPAR {$$=createNode("Call", NULL);aux=createNode("Id",$1); addChild($$,aux);}
+                    |ID LPAR Expr RPAR{$$=createNode("Call", NULL);aux=createNode("Id",$1); addChild($$,aux);addBrother(aux,$3);}
                     ;
 
 
 ExprPrim:
-                    ID {aux=createNode("Id", NULL);$$=aux;}
-                    |INTLIT {aux=createNode("IntLit", NULL);$$=aux;}
-                    |REALLIT {aux=createNode("RealLit", NULL);$$=aux;}
-                    |CHRLIT {aux=createNode("ChrLit", NULL);$$=aux;}
+                    ID {aux=createNode("Id", $1);$$=aux;}
+                    |INTLIT {aux=createNode("IntLit", $1);$$=aux;}
+                    |REALLIT {aux=createNode("RealLit",$1);$$=aux;}
+                    |CHRLIT {aux=createNode("ChrLit", $1);$$=aux;}
                     |LPAR Expr RPAR {$$=$2;}
                     ;
 %%

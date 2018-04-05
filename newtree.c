@@ -37,6 +37,18 @@ void addBrother(no* oldbro, no* newbro){
     }
     aux->brother = newbro;
 }
+
+int cntBrothers(no* root){
+	int cnt = 0;
+	no* aux;
+	aux=root;
+	while(aux!=NULL){
+		aux=aux->brother;
+		cnt++;
+	}
+	return cnt;
+}
+
 void printAST(no *current, int n){
     int i;
 

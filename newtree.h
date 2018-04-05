@@ -16,3 +16,4 @@ no *createNode(char *label, char *value);
 void addChild(no* father, no* child);
 void addBrother(no* oldbro, no* newbro);
 void printAST(no *current, int n);
+int cntBrothers(no* root);

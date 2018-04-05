@@ -2182,9 +2182,6 @@ int main(int argc, char* argv[]){
 		    yyparse();
             yylex_destroy();
         }
-
     }
-
-   
     return 0;
 }
