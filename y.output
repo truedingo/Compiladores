@@ -12,9 +12,9 @@ Grammar
     2 FuncAndDeclarations: FuncDefinition
     3                    | FuncDeclaration
     4                    | Declaration
-    5                    | FuncDefinition FuncAndDeclarations
-    6                    | FuncDeclaration FuncAndDeclarations
-    7                    | Declaration FuncAndDeclarations
+    5                    | FuncAndDeclarations FuncDefinition
+    6                    | FuncAndDeclarations FuncDeclaration
+    7                    | FuncAndDeclarations Declaration
 
     8 FuncDefinition: TypeSpec FuncDeclarator FuncBody
 
@@ -31,7 +31,7 @@ Grammar
    16 FuncDeclarator: ID LPAR ParamList RPAR
 
    17 ParamList: ParamDeclaration
-   18          | ParamDeclaration COMMA ParamList
+   18          | ParamList COMMA ParamDeclaration
 
    19 ParamDeclaration: TypeSpec
    20                 | TypeSpec ID
@@ -289,71 +289,44 @@ state 7
 state 8
 
     1 Start: FuncAndDeclarations .
+    5 FuncAndDeclarations: FuncAndDeclarations . FuncDefinition
+    6                    | FuncAndDeclarations . FuncDeclaration
+    7                    | FuncAndDeclarations . Declaration
 
-    $default  reduce using rule 1 (Start)
+    error   shift, and go to state 1
+    CHAR    shift, and go to state 2
+    INT     shift, and go to state 3
+    SHORT   shift, and go to state 4
+    DOUBLE  shift, and go to state 5
+    VOID    shift, and go to state 6
+
+    $end  reduce using rule 1 (Start)
+
+    FuncDefinition   go to state 15
+    FuncDeclaration  go to state 16
+    Declaration      go to state 17
+    TypeSpec         go to state 12
 
 
 state 9
 
     2 FuncAndDeclarations: FuncDefinition .
-    5                    | FuncDefinition . FuncAndDeclarations
 
-    error   shift, and go to state 1
-    CHAR    shift, and go to state 2
-    INT     shift, and go to state 3
-    SHORT   shift, and go to state 4
-    DOUBLE  shift, and go to state 5
-    VOID    shift, and go to state 6
-
-    $end  reduce using rule 2 (FuncAndDeclarations)
-
-    FuncAndDeclarations  go to state 15
-    FuncDefinition       go to state 9
-    FuncDeclaration      go to state 10
-    Declaration          go to state 11
-    TypeSpec             go to state 12
+    $default  reduce using rule 2 (FuncAndDeclarations)
 
 
 state 10
 
     3 FuncAndDeclarations: FuncDeclaration .
-    6                    | FuncDeclaration . FuncAndDeclarations
 
-    error   shift, and go to state 1
-    CHAR    shift, and go to state 2
-    INT     shift, and go to state 3
-    SHORT   shift, and go to state 4
-    DOUBLE  shift, and go to state 5
-    VOID    shift, and go to state 6
-
-    $end  reduce using rule 3 (FuncAndDeclarations)
-
-    FuncAndDeclarations  go to state 16
-    FuncDefinition       go to state 9
-    FuncDeclaration      go to state 10
-    Declaration          go to state 11
-    TypeSpec             go to state 12
+    $default  reduce using rule 3 (FuncAndDeclarations)
 
 
 state 11
 
     4 FuncAndDeclarations: Declaration .
-    7                    | Declaration . FuncAndDeclarations
 
-    error   shift, and go to state 1
-    CHAR    shift, and go to state 2
-    INT     shift, and go to state 3
-    SHORT   shift, and go to state 4
-    DOUBLE  shift, and go to state 5
-    VOID    shift, and go to state 6
-
-    $end  reduce using rule 4 (FuncAndDeclarations)
-
-    FuncAndDeclarations  go to state 17
-    FuncDefinition       go to state 9
-    FuncDeclaration      go to state 10
-    Declaration          go to state 11
-    TypeSpec             go to state 12
+    $default  reduce using rule 4 (FuncAndDeclarations)
 
 
 state 12
@@ -385,21 +358,21 @@ state 14
 
 state 15
 
-    5 FuncAndDeclarations: FuncDefinition FuncAndDeclarations .
+    5 FuncAndDeclarations: FuncAndDeclarations FuncDefinition .
 
     $default  reduce using rule 5 (FuncAndDeclarations)
 
 
 state 16
 
-    6 FuncAndDeclarations: FuncDeclaration FuncAndDeclarations .
+    6 FuncAndDeclarations: FuncAndDeclarations FuncDeclaration .
 
     $default  reduce using rule 6 (FuncAndDeclarations)
 
 
 state 17
 
-    7 FuncAndDeclarations: Declaration FuncAndDeclarations .
+    7 FuncAndDeclarations: FuncAndDeclarations Declaration .
 
     $default  reduce using rule 7 (FuncAndDeclarations)
 
@@ -770,16 +743,15 @@ state 44
 state 45
 
    16 FuncDeclarator: ID LPAR ParamList . RPAR
+   18 ParamList: ParamList . COMMA ParamDeclaration
 
-    RPAR  shift, and go to state 85
+    COMMA  shift, and go to state 85
+    RPAR   shift, and go to state 86
 
 
 state 46
 
    17 ParamList: ParamDeclaration .
-   18          | ParamDeclaration . COMMA ParamList
-
-    COMMA  shift, and go to state 86
 
     $default  reduce using rule 17 (ParamList)
 
@@ -1486,14 +1458,7 @@ state 84
 
 state 85
 
-   16 FuncDeclarator: ID LPAR ParamList RPAR .
-
-    $default  reduce using rule 16 (FuncDeclarator)
-
-
-state 86
-
-   18 ParamList: ParamDeclaration COMMA . ParamList
+   18 ParamList: ParamList COMMA . ParamDeclaration
 
     CHAR    shift, and go to state 2
     INT     shift, and go to state 3
@@ -1501,9 +1466,15 @@ state 86
     DOUBLE  shift, and go to state 5
     VOID    shift, and go to state 6
 
-    ParamList         go to state 125
-    ParamDeclaration  go to state 46
+    ParamDeclaration  go to state 125
     TypeSpec          go to state 47
+
+
+state 86
+
+   16 FuncDeclarator: ID LPAR ParamList RPAR .
+
+    $default  reduce using rule 16 (FuncDeclarator)
 
 
 state 87
@@ -2203,11 +2174,9 @@ state 120
    73          | Expr . LT Expr
    74          | Expr . GT Expr
 
-    MUL    shift, and go to state 73
-    DIV    shift, and go to state 74
-    MINUS  shift, and go to state 80
-    MOD    shift, and go to state 81
-    PLUS   shift, and go to state 84
+    MUL  shift, and go to state 73
+    DIV  shift, and go to state 74
+    MOD  shift, and go to state 81
 
     $default  reduce using rule 60 (ExprOper)
 
@@ -2331,18 +2300,16 @@ state 124
    73          | Expr . LT Expr
    74          | Expr . GT Expr
 
-    MUL    shift, and go to state 73
-    DIV    shift, and go to state 74
-    MINUS  shift, and go to state 80
-    MOD    shift, and go to state 81
-    PLUS   shift, and go to state 84
+    MUL  shift, and go to state 73
+    DIV  shift, and go to state 74
+    MOD  shift, and go to state 81
 
     $default  reduce using rule 59 (ExprOper)
 
 
 state 125
 
-   18 ParamList: ParamDeclaration COMMA ParamList .
+   18 ParamList: ParamList COMMA ParamDeclaration .
 
     $default  reduce using rule 18 (ParamList)
 

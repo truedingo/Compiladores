@@ -30,7 +30,7 @@
 %left BITWISEAND
 %left EQ NE
 %left GT GE LE LT
-%right PLUS MINUS
+%left PLUS MINUS
 %left MUL DIV MOD
 %right NOT
 %left LPAR RPAR
@@ -51,9 +51,9 @@ FuncAndDeclarations:
                     FuncDefinition {$$ = $1;} 
                     |FuncDeclaration {$$ = $1;}
                     |Declaration {$$ = $1;}
-                    |FuncDefinition FuncAndDeclarations {$$ = $1; addBrother($1, $2);}
-                    |FuncDeclaration FuncAndDeclarations {$$ = $1; addBrother($1, $2);}
-                    |Declaration FuncAndDeclarations {$$ = $1; addBrother($1, $2);}
+                    |FuncAndDeclarations FuncDefinition  {$$ = $1; addBrother($1, $2);}
+                    |FuncAndDeclarations FuncDeclaration  {$$ = $1; addBrother($1, $2);}
+                    |FuncAndDeclarations Declaration  {$$ = $1; addBrother($1, $2);}
                     ;
 
 FuncDefinition: TypeSpec FuncDeclarator FuncBody {$$=createNode("FuncDefinition", NULL);
@@ -92,7 +92,7 @@ FuncDeclarator: ID LPAR ParamList RPAR {$$=createNode("Id", $1);
 
 ParamList:
                     ParamDeclaration {$$=$1;}
-                    |ParamDeclaration COMMA ParamList { $$=$1;
+                    |ParamList COMMA ParamDeclaration { $$=$1;
                                                         addBrother($1,$3);}
                     ;
 
@@ -192,7 +192,7 @@ Statement:
 									}								
 									else{
                                         addBrother($3,$5);
-									}}                     
+									}} 
                     |RETURN SEMI {$$=createNode("Return", NULL);
                                 addChild($$, createNode("Null", NULL));
                                 }
@@ -228,7 +228,7 @@ Expr:
                     |ExprSingleOp {$$=$1;}
                     |ExprFunction {$$=$1;}
                     |ExprPrim {$$=$1;}
-                    |ID LPAR error RPAR {$$=createNode("Error", NULL);erro_check=1;}
+                    |ID LPAR error RPAR {$$=createNode("Error", NULL);erro_check=1;free($1);}
                     ;
 ExprOper:
                     Expr PLUS Expr {$$=createNode("Add", NULL);addChild($$,$1);addBrother($1,$3);}
