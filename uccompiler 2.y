@@ -1,26 +1,17 @@
 %{
     #include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include <stdarg.h>
-    #include "ast.h"
+	    #include <stdlib.h>
+	    #include <string.h>
+	    #include <stdarg.h>
     void yyerror(const char* s);
     int yylex();
     int yyparse();
-    int cnt;
-	no root;
-	no aux;
-	no aux2;
+   
+
 %}
 
-%union{
-int inteiro;
-char* string;
-struct node* ynode;
-}
-
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI REALLIT RESERVED CHRLIT ID INTLIT
-%type <ynode> FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
+//FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
 
 %left COMMA
 %right ASSIGN
@@ -40,7 +31,6 @@ struct node* ynode;
 %nonassoc ELSE
 
 %%
-
 FuncAndDeclarations:
                     FuncDefinition 
                     |FuncDeclaration
@@ -182,4 +172,6 @@ ExprPrim:
                     |CHRLIT
                     |LPAR Expr RPAR
                     ;
+
+
 %%
