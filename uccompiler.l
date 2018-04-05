@@ -16,7 +16,7 @@
     int l_atual=1; 
     int yyparse();
     extern no* root;
-    extern int num_erros;
+    extern int error_check;
 
 %}
 
@@ -145,7 +145,9 @@ int main(int argc, char* argv[]){
             flag=2;
             yyparse();
             yylex_destroy();
-            printAST(root,0);
+            if(error_check!=1){
+                printAST(root,0);
+            }
         }
     }
     else{

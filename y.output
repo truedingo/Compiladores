@@ -994,9 +994,6 @@ state 61
    74          | Expr . GT Expr
    76 ExprSingleOp: MINUS Expr .
 
-    MINUS  shift, and go to state 80
-    PLUS   shift, and go to state 84
-
     $default  reduce using rule 76 (ExprSingleOp)
 
 
@@ -1021,9 +1018,6 @@ state 62
    74          | Expr . GT Expr
    77 ExprSingleOp: NOT Expr .
 
-    MINUS  shift, and go to state 80
-    PLUS   shift, and go to state 84
-
     $default  reduce using rule 77 (ExprSingleOp)
 
 
@@ -1047,9 +1041,6 @@ state 63
    73          | Expr . LT Expr
    74          | Expr . GT Expr
    75 ExprSingleOp: PLUS Expr .
-
-    MINUS  shift, and go to state 80
-    PLUS   shift, and go to state 84
 
     $default  reduce using rule 75 (ExprSingleOp)
 
@@ -2010,9 +2001,6 @@ state 113
    73          | Expr . LT Expr
    74          | Expr . GT Expr
 
-    MINUS  shift, and go to state 80
-    PLUS   shift, and go to state 84
-
     $default  reduce using rule 61 (ExprOper)
 
 
@@ -2036,9 +2024,6 @@ state 114
    72          | Expr . GE Expr
    73          | Expr . LT Expr
    74          | Expr . GT Expr
-
-    MINUS  shift, and go to state 80
-    PLUS   shift, and go to state 84
 
     $default  reduce using rule 62 (ExprOper)
 
@@ -2222,7 +2207,10 @@ state 120
    73          | Expr . LT Expr
    74          | Expr . GT Expr
 
+    MUL    shift, and go to state 73
+    DIV    shift, and go to state 74
     MINUS  shift, and go to state 80
+    MOD    shift, and go to state 81
     PLUS   shift, and go to state 84
 
     $default  reduce using rule 60 (ExprOper)
@@ -2248,9 +2236,6 @@ state 121
    72          | Expr . GE Expr
    73          | Expr . LT Expr
    74          | Expr . GT Expr
-
-    MINUS  shift, and go to state 80
-    PLUS   shift, and go to state 84
 
     $default  reduce using rule 63 (ExprOper)
 
@@ -2350,7 +2335,10 @@ state 124
    73          | Expr . LT Expr
    74          | Expr . GT Expr
 
+    MUL    shift, and go to state 73
+    DIV    shift, and go to state 74
     MINUS  shift, and go to state 80
+    MOD    shift, and go to state 81
     PLUS   shift, and go to state 84
 
     $default  reduce using rule 59 (ExprOper)
