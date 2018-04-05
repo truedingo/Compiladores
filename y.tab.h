@@ -72,10 +72,10 @@
      RPAR = 288,
      LPAR = 289,
      SEMI = 290,
-     REALLIT = 291,
-     RESERVED = 292,
-     CHRLIT = 293,
-     ID = 294,
+     ID = 291,
+     CHRLIT = 292,
+     REALLIT = 293,
+     RESERVED = 294,
      INTLIT = 295
    };
 #endif
@@ -113,10 +113,10 @@
 #define RPAR 288
 #define LPAR 289
 #define SEMI 290
-#define REALLIT 291
-#define RESERVED 292
-#define CHRLIT 293
-#define ID 294
+#define ID 291
+#define CHRLIT 292
+#define REALLIT 293
+#define RESERVED 294
 #define INTLIT 295
 
 
@@ -124,14 +124,13 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 16 "uccompiler.y"
+#line 37 "uccompiler.y"
 {
-int inteiro;
-char* string;
-struct node* ynode;
+    char *string;
+    struct no* node;
 }
 /* Line 1529 of yacc.c.  */
-#line 135 "y.tab.h"
+#line 134 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

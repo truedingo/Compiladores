@@ -618,7 +618,7 @@ char *yytext;
     #include <stdio.h>
     #include <string.h>
     #include "y.tab.h"
-    #include "ast.h"
+    #include "newtree.h"
     
     #define LINHA linha++; coluna=1;
     #define COLUNA coluna+=yyleng;
@@ -629,7 +629,7 @@ char *yytext;
     int c_atual=1;
     int l_atual=1; 
     int yyparse();
-    extern no root;
+    extern no* root;
 
 
 #line 636 "lex.yy.c"
@@ -2173,7 +2173,7 @@ int main(int argc, char* argv[]){
         flag=2;
         yyparse();
         yylex_destroy();
-        printftree(root,0);
+        printAST(root,0);
 
         }
         
