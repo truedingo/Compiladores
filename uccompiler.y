@@ -81,7 +81,7 @@ FuncDeclaration: TypeSpec FuncDeclarator SEMI {$$=createNode("FuncDeclaration", 
                                             }
                     ;
 
-FuncDeclarator: ID LPAR ParamList RPAR {$$=createNode("Id", NULL);
+FuncDeclarator: ID LPAR ParamList RPAR {$$=createNode("Id", $1);
                                         aux = createNode("ParamList", NULL);
                                         addChild(aux,$3);
                                         addBrother($$,aux);
@@ -90,8 +90,8 @@ FuncDeclarator: ID LPAR ParamList RPAR {$$=createNode("Id", NULL);
 
 ParamList:
                     ParamDeclaration {$$=$1;}
-                    |ParamDeclaration COMMA ParamList { $$=$3;
-                                                        addBrother($3,$1);}
+                    |ParamDeclaration COMMA ParamList { $$=$1;
+                                                        addBrother($1,$3);}
                     ;
 
 ParamDeclaration:
@@ -199,19 +199,19 @@ Statement:
                                     $$=createNode("Return", NULL);
                                     addChild($$, $2);
                                     }
+                    |LPAR error RPAR {$$=createNode("Null", NULL);num_erros+=1;}
                     ;
 ErrorStatement:
                     Statement  {$$ =$1;}
                     |error SEMI {$$=createNode("Null", NULL);num_erros+=1;}
                     ;
 AuxStatement:
-                    AuxStatement ErrorStatement {$$=$1;addBrother($1,$2);}
+                    ErrorStatement AuxStatement {$$=$1;addBrother($1,$2);}
                     |ErrorStatement {$$=$1;}
                     ;    
 Expr:              
-                    Expr ASSIGN Expr {$$=createNode("Store", NULL);addBrother($$,$1);addBrother($1,$3);}
-                    |Expr COMMA Expr {$$=createNode("Comma", NULL);addBrother($$,$1);addBrother($1,$3);}
-                    |LPAR error RPAR {$$=createNode("Null", NULL);num_erros+=1;}
+                    Expr ASSIGN Expr {$$=createNode("Store", NULL);addChild($$,$1);addBrother($1,$3);}
+                    |Expr COMMA Expr {$$=createNode("Comma", NULL);addChild($$,$1);addBrother($1,$3);}
                     |ExprOper {$$=$1;}
                     |ExprLogic {$$=$1;}
                     |ExprRelat {$$=$1;}

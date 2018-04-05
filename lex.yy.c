@@ -1120,7 +1120,7 @@ YY_RULE_SETUP
 case 43:
 YY_RULE_SETUP
 #line 118 "uccompiler.l"
-{if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA; if(flag==2)return INTLIT;}
+{if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return INTLIT;}
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */

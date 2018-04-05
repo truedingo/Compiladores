@@ -115,7 +115,7 @@ LINETERMINATOR \n|{RETURNCHAR}|({RETURNCHAR})\n
 {RESERVED} {if(flag==-1 && val == 1){printf("RESERVED(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return RESERVED;}
 {CHRLIT} {if(flag==-1 && val == 1){printf("CHRLIT(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return CHRLIT;}
 {ID} {if(flag==-1 && val == 1){printf("ID(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return ID;}
-{INTLIT} {if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA; if(flag==2)return INTLIT;}
+{INTLIT} {if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return INTLIT;}
 {LINETERMINATOR} {LINHA;}
 
 "\t"|" "    {COLUNA;}
