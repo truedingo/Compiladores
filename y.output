@@ -19,8 +19,8 @@ Grammar
     8 FuncBody: LBRACE DeclarationAndStates RBRACE
     9         | LBRACE RBRACE
 
-   10 DeclarationAndStates: Statement DeclarationAndStates
-   11                     | Declaration DeclarationAndStates
+   10 DeclarationAndStates: DeclarationAndStates Statement
+   11                     | DeclarationAndStates Declaration
    12                     | Statement
    13                     | Declaration
 
@@ -854,14 +854,8 @@ state 51
 state 52
 
     8 FuncBody: LBRACE DeclarationAndStates . RBRACE
-
-    RBRACE  shift, and go to state 95
-
-
-state 53
-
-   11 DeclarationAndStates: Declaration . DeclarationAndStates
-   13                     | Declaration .
+   10 DeclarationAndStates: DeclarationAndStates . Statement
+   11                     | DeclarationAndStates . Declaration
 
     error    shift, and go to state 1
     CHAR     shift, and go to state 2
@@ -876,6 +870,7 @@ state 53
     MINUS    shift, and go to state 28
     NOT      shift, and go to state 29
     PLUS     shift, and go to state 30
+    RBRACE   shift, and go to state 95
     LPAR     shift, and go to state 31
     SEMI     shift, and go to state 51
     ID       shift, and go to state 32
@@ -883,19 +878,23 @@ state 53
     REALLIT  shift, and go to state 34
     INTLIT   shift, and go to state 35
 
-    RBRACE  reduce using rule 13 (DeclarationAndStates)
+    Declaration   go to state 96
+    TypeSpec      go to state 54
+    Statement     go to state 97
+    Expr          go to state 56
+    ExprOper      go to state 37
+    ExprLogic     go to state 38
+    ExprRelat     go to state 39
+    ExprSingleOp  go to state 40
+    ExprFunction  go to state 41
+    ExprPrim      go to state 42
 
-    DeclarationAndStates  go to state 96
-    Declaration           go to state 53
-    TypeSpec              go to state 54
-    Statement             go to state 55
-    Expr                  go to state 56
-    ExprOper              go to state 37
-    ExprLogic             go to state 38
-    ExprRelat             go to state 39
-    ExprSingleOp          go to state 40
-    ExprFunction          go to state 41
-    ExprPrim              go to state 42
+
+state 53
+
+   13 DeclarationAndStates: Declaration .
+
+    $default  reduce using rule 13 (DeclarationAndStates)
 
 
 state 54
@@ -910,42 +909,9 @@ state 54
 
 state 55
 
-   10 DeclarationAndStates: Statement . DeclarationAndStates
-   12                     | Statement .
+   12 DeclarationAndStates: Statement .
 
-    error    shift, and go to state 1
-    CHAR     shift, and go to state 2
-    IF       shift, and go to state 46
-    INT      shift, and go to state 3
-    SHORT    shift, and go to state 4
-    DOUBLE   shift, and go to state 5
-    RETURN   shift, and go to state 47
-    VOID     shift, and go to state 6
-    WHILE    shift, and go to state 48
-    LBRACE   shift, and go to state 49
-    MINUS    shift, and go to state 28
-    NOT      shift, and go to state 29
-    PLUS     shift, and go to state 30
-    LPAR     shift, and go to state 31
-    SEMI     shift, and go to state 51
-    ID       shift, and go to state 32
-    CHRLIT   shift, and go to state 33
-    REALLIT  shift, and go to state 34
-    INTLIT   shift, and go to state 35
-
-    RBRACE  reduce using rule 12 (DeclarationAndStates)
-
-    DeclarationAndStates  go to state 97
-    Declaration           go to state 53
-    TypeSpec              go to state 54
-    Statement             go to state 55
-    Expr                  go to state 56
-    ExprOper              go to state 37
-    ExprLogic             go to state 38
-    ExprRelat             go to state 39
-    ExprSingleOp          go to state 40
-    ExprFunction          go to state 41
-    ExprPrim              go to state 42
+    $default  reduce using rule 12 (DeclarationAndStates)
 
 
 state 56
@@ -1759,14 +1725,14 @@ state 95
 
 state 96
 
-   11 DeclarationAndStates: Declaration DeclarationAndStates .
+   11 DeclarationAndStates: DeclarationAndStates Declaration .
 
     $default  reduce using rule 11 (DeclarationAndStates)
 
 
 state 97
 
-   10 DeclarationAndStates: Statement DeclarationAndStates .
+   10 DeclarationAndStates: DeclarationAndStates Statement .
 
     $default  reduce using rule 10 (DeclarationAndStates)
 

@@ -69,10 +69,8 @@ FuncBody:
             ;
 
 DeclarationAndStates:
-                        Statement DeclarationAndStates {$$=$2; 
-                                                        addBrother($$,$1);}
-                        |Declaration DeclarationAndStates {$$=$2; 
-                                                        addBrother($$,$1);}
+                        DeclarationAndStates Statement {$$=$1; addBrother($1, $2);}
+                        |DeclarationAndStates Declaration {$$=$1; addBrother($1, $2);}
                         |Statement {$$=$1;}
                         |Declaration {$$=$1;}
                         ;
@@ -260,10 +258,10 @@ ExprFunction:
 
 
 ExprPrim:
-                    ID {aux=createNode("Id", $1);$$=aux;}
-                    |INTLIT {aux=createNode("IntLit", $1);$$=aux;}
-                    |REALLIT {aux=createNode("RealLit",$1);$$=aux;}
-                    |CHRLIT {aux=createNode("ChrLit", $1);$$=aux;}
+                    ID {$$=createNode("Id", $1);}
+                    |INTLIT {$$=createNode("IntLit", $1);}
+                    |REALLIT {$$=createNode("RealLit",$1);}
+                    |CHRLIT {$$=createNode("ChrLit", $1);}
                     |LPAR Expr RPAR {$$=$2;}
                     ;
 %%
