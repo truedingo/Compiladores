@@ -8,14 +8,13 @@
     int yylex();
     int yyparse();
     int cnt;
-    int num_erros=0;
 	no *root;
     no *aux1;
 	no *aux;
 	no *aux2;
     no *aux3;
-    int error_check = 0;
     int stat_check=0;
+    int erro_check=0;
 %}
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI
@@ -32,9 +31,9 @@
 %left EQ NE
 %left GT GE
 %left LE LT
-%right PLUS MINUS
 %left MUL DIV MOD
 %right NOT
+%right PLUS MINUS
 %left LPAR RPAR
 
 %nonassoc ELSE
@@ -111,7 +110,7 @@ ParamDeclaration:
                     ;
 
 Declaration:
-                    error SEMI {$$=createNode("Error", NULL);error_check=1;}
+                    error SEMI {$$=createNode("Error", NULL);erro_check=1;}
                     | TypeSpec AuxDeclarator SEMI {
                         $$ = $2;
 
@@ -153,7 +152,7 @@ Statement:
 						    $$ = $2;
 				    	}
                     }
-                    |LBRACE error RBRACE {$$=createNode("Error", NULL);error_check=1;}
+                    |LBRACE error RBRACE {$$=createNode("Error", NULL);erro_check=1;}
                     |IF LPAR ExprComma RPAR ErrorStatement { 
                                     $$ = createNode("If",NULL);
                                     addChild($$,$3);
@@ -206,7 +205,7 @@ Statement:
                     ;
 ErrorStatement:
                     Statement  {$$ =$1;}
-                    |error SEMI {$$=createNode("Error", NULL);error_check=1;}
+                    |error SEMI {$$=createNode("Error", NULL);erro_check=1;}
                     ;
 AuxStatement:
                     AuxStatement ErrorStatement {stat_check = 1; $$=$1;addBrother($1,$2);}
@@ -223,15 +222,14 @@ ExprCall: ExprCall COMMA Expr {addBrother($1, $3);}
 
 Expr:              
                     Expr ASSIGN Expr {$$=createNode("Store", NULL);addChild($$,$1);addBrother($1,$3);}
-                    |LPAR error RPAR {$$=createNode("Error", NULL);error_check=1;}
+                    |LPAR error RPAR {$$=createNode("Error", NULL);erro_check=1;}
                     |ExprOper {$$=$1;}
                     |ExprLogic {$$=$1;}
                     |ExprRelat {$$=$1;}
                     |ExprSingleOp {$$=$1;}
                     |ExprFunction {$$=$1;}
                     |ExprPrim {$$=$1;}
-                    |ID LPAR error RPAR {$$=createNode("Error", NULL);error_check=1;
-                    }
+                    |ID LPAR error RPAR {$$=createNode("Error", NULL);erro_check=1;}
                     ;
 ExprOper:
                     Expr PLUS Expr {$$=createNode("Add", NULL);addChild($$,$1);addBrother($1,$3);}
@@ -266,7 +264,7 @@ ExprSingleOp:
 
 ExprFunction:
                     ID LPAR RPAR {$$=createNode("Call", NULL);aux=createNode("Id",$1); addChild($$,aux);}
-                    |ID LPAR ExprCall RPAR {$$=createNode("Call", NULL);aux=createNode("Id",$1); addChild($$,aux);addBrother(aux,$3);}
+                    |ID LPAR ExprCall RPAR {$$=createNode("Call", NULL); aux=createNode("Id",$1); addChild($$,aux);addBrother(aux,$3);}
                     ;
 
 ExprPrim:

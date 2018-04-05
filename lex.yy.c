@@ -630,7 +630,7 @@ char *yytext;
     int l_atual=1; 
     int yyparse();
     extern no* root;
-    extern int error_check;
+    extern int erro_check;
 
 
 #line 637 "lex.yy.c"
@@ -2174,7 +2174,7 @@ int main(int argc, char* argv[]){
             flag=2;
             yyparse();
             yylex_destroy();
-            if(error_check!=1){
+            if(erro_check==0){
                 printAST(root,0);
             }
         }
