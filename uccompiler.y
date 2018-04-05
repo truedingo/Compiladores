@@ -29,11 +29,10 @@
 %left BITWISEXOR
 %left BITWISEAND
 %left EQ NE
-%left GT GE
-%left LE LT
+%left GT GE LE LT
+%right PLUS MINUS
 %left MUL DIV MOD
 %right NOT
-%right PLUS MINUS
 %left LPAR RPAR
 
 %nonassoc ELSE
