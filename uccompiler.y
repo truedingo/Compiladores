@@ -202,6 +202,7 @@ Statement:
                                     $$=createNode("Return", NULL);
                                     addChild($$, $2);
                                     }
+                    |LPAR error RPAR {$$=createNode("Null", NULL);num_erros+=1;}
                     ;
 ErrorStatement:
                     Statement  {$$ =$1;}
