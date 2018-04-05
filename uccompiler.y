@@ -20,7 +20,7 @@ struct node* ynode;
 }
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI REALLIT RESERVED CHRLIT ID INTLIT
-%type <ynode> FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
+%type <no> FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
 
 %left COMMA
 %right ASSIGN
@@ -42,144 +42,144 @@ struct node* ynode;
 %%
 
 FuncAndDeclarations:
-                    FuncDefinition 
-                    |FuncDeclaration
-                    |Declaration
-                    |FuncDefinition FuncAndDeclarations
-                    |FuncDeclaration FuncAndDeclarations
-                    |Declaration FuncAndDeclarations
+                    FuncDefinition {} 
+                    |FuncDeclaration {}
+                    |Declaration {}
+                    |FuncDefinition FuncAndDeclarations {}
+                    |FuncDeclaration FuncAndDeclarations {}
+                    |Declaration FuncAndDeclarations {}
                     ;
 
-FuncDefinition: TypeSpec FuncDeclarator FuncBody
+FuncDefinition: TypeSpec FuncDeclarator FuncBody {}
                 ;
 
 FuncBody:
-            LBRACE DeclarationAndStates RBRACE
-            |LBRACE RBRACE
+            LBRACE DeclarationAndStates RBRACE {}
+            |LBRACE RBRACE {}
             ;
 
 DeclarationAndStates:
-                        Statement DeclarationAndStates
-                        |Declaration DeclarationAndStates
-                        |Statement
-                        |Declaration
+                        Statement DeclarationAndStates {}
+                        |Declaration DeclarationAndStates {}
+                        |Statement {}
+                        |Declaration {}
                         ;
 
-FuncDeclaration: TypeSpec FuncDeclarator SEMI
+FuncDeclaration: TypeSpec FuncDeclarator SEMI {}
                     ;
 
-FuncDeclarator: ID LPAR ParamList RPAR
+FuncDeclarator: ID LPAR ParamList RPAR {}
                     ;
 
 ParamList:
-                    ParamDeclaration
-                    |ParamDeclaration COMMA ParamList
+                    ParamDeclaration {}
+                    |ParamDeclaration COMMA ParamList {}
                     ;
 
 ParamDeclaration:
-                    TypeSpec
-                    |TypeSpec ID
+                    TypeSpec {}
+                    |TypeSpec ID {}
                     ;
 
 Declaration:
-                    error SEMI
-                    |TypeSpec Declarator SEMI
-                    |TypeSpec Declarator AuxDeclarator SEMI
+                    error SEMI {}
+                    |TypeSpec Declarator SEMI {}
+                    |TypeSpec Declarator AuxDeclarator SEMI {}
                     ;
 AuxDeclarator:
-                    COMMA Declarator
-                    | AuxDeclarator COMMA Declarator
+                    COMMA Declarator {}
+                    | AuxDeclarator COMMA Declarator {}
                     ;
 
 TypeSpec:
-                    CHAR
-                    |INT
-                    |VOID
-                    |DOUBLE
-                    |SHORT
+                    CHAR {}
+                    |INT {}
+                    |VOID {}
+                    |DOUBLE {}
+                    |SHORT {}
                     ;
 
 Declarator:
-                    ID
-                    |ID ASSIGN Expr
+                    ID {}
+                    |ID ASSIGN Expr {}
                     ;
 
 Statement:
-                    SEMI
-                    |Expr SEMI
-                    |LBRACE RBRACE
-                    |LBRACE AuxStatement RBRACE
-                    |LBRACE error RBRACE
-                    |IF LPAR Expr RPAR ErrorStatement
-                    |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement
-                    |WHILE LPAR Expr RPAR ErrorStatement
-                    |RETURN SEMI
-                    |RETURN Expr SEMI
+                    SEMI {}
+                    |Expr SEMI {}
+                    |LBRACE RBRACE {}
+                    |LBRACE AuxStatement RBRACE {}
+                    |LBRACE error RBRACE {}
+                    |IF LPAR Expr RPAR ErrorStatement {}
+                    |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement {}
+                    |WHILE LPAR Expr RPAR ErrorStatement {}
+                    |RETURN SEMI {}
+                    |RETURN Expr SEMI {}
                     ;
 ErrorStatement:
-                    Statement
-                    |error SEMI
+                    Statement {}
+                    |error SEMI {}
                     ;
 
 AuxStatement:
-                    AuxStatement ErrorStatement
-                    |ErrorStatement
+                    AuxStatement ErrorStatement {}
+                    |ErrorStatement {}
                     ;            
 
 Expr:              
-                    Expr ASSIGN Expr
-                    |Expr COMMA Expr
-                    |LPAR error RPAR
-                    |ExprOper
-                    |ExprLogic
-                    |ExprRelat
-                    |ExprSigleOp
-                    |ExprFunction
-                    |ExprPrim
-                    |ID LPAR error RPAR
+                    Expr ASSIGN Expr {}
+                    |Expr COMMA Expr {}
+                    |LPAR error RPAR {}
+                    |ExprOper {}
+                    |ExprLogic {}
+                    |ExprRelat {}
+                    |ExprSigleOp {}
+                    |ExprFunction {}
+                    |ExprPrim {}
+                    |ID LPAR error RPAR {}
                     ;
 ExprOper:
-                    Expr PLUS Expr
-                    |Expr MINUS Expr
-                    |Expr MUL Expr
-                    |Expr DIV Expr
-                    |Expr MOD Expr
+                    Expr PLUS Expr {}
+                    |Expr MINUS Expr {}
+                    |Expr MUL Expr {}
+                    |Expr DIV Expr {}
+                    |Expr MOD Expr {}
                     ;
 
 ExprLogic:
-                    Expr OR Expr
-                    |Expr AND Expr
-                    |Expr BITWISEAND Expr
-                    |Expr BITWISEOR Expr
-                    |Expr BITWISEXOR Expr
+                    Expr OR Expr {}
+                    |Expr AND Expr {}
+                    |Expr BITWISEAND Expr {}
+                    |Expr BITWISEOR Expr {}
+                    |Expr BITWISEXOR Expr {}
                     ;
 
 ExprRelat:
-                    Expr EQ Expr
-                    |Expr NE Expr
-                    |Expr LE Expr
-                    |Expr GE Expr
-                    |Expr LT Expr
-                    |Expr GT Expr
+                    Expr EQ Expr {}
+                    |Expr NE Expr {}
+                    |Expr LE Expr {}
+                    |Expr GE Expr {}
+                    |Expr LT Expr {}
+                    |Expr GT Expr {}
                     ;
 
 ExprSigleOp:
-                    PLUS Expr
-                    |MINUS Expr
-                    |NOT Expr
+                    PLUS Expr {}
+                    |MINUS Expr {}
+                    |NOT Expr {}
                     ;
 
 ExprFunction:
-                    ID LPAR RPAR
-                    |ID LPAR Expr RPAR
+                    ID LPAR RPAR {}
+                    |ID LPAR Expr RPAR {}
                     ;
 
 
 ExprPrim:
-                    ID
-                    |INTLIT
-                    |REALLIT
-                    |CHRLIT
-                    |LPAR Expr RPAR
+                    ID {}
+                    |INTLIT {}
+                    |REALLIT {}
+                    |CHRLIT {}
+                    |LPAR Expr RPAR {}
                     ;
 %%
