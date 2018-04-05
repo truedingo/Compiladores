@@ -16,6 +16,7 @@
     int l_atual=1; 
     int yyparse();
     extern no* root;
+    extern int num_erros;
 
 %}
 
@@ -138,17 +139,20 @@ int main(int argc, char* argv[]){
         if(strcmp(argv[1],"-l") == 0){
             flag=-1;
             val = 1;
-            yyparse();
-        }
+            yyparse(); 
+        } 
         if(strcmp(argv[1],"-t")==0){
-        flag=2;
-        yyparse();
-        yylex_destroy();
-        printAST(root,0);
-
+            flag=2;
+            yyparse();
+            yylex_destroy();
+            if(num_erros==0){
+                printAST(root,0);}
         }
-        
+        else{
+            flag=2;
+		    yyparse();
+            yylex_destroy();
+        }
     }
-    
     return 0;
 }

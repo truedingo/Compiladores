@@ -8,6 +8,7 @@
     int yylex();
     int yyparse();
     int cnt;
+    int num_erros=0;
 	no *root;
 	no *aux;
 	no *aux2;
@@ -105,7 +106,7 @@ ParamDeclaration:
                     ;
 
 Declaration:
-                    error SEMI {$$=createNode("", NULL);}
+                    error SEMI {$$=createNode("Null", NULL);num_erros+=1;}
                     |TypeSpec Declarator SEMI {$$=createNode("", NULL);}
                     |TypeSpec Declarator AuxDeclarator SEMI {$$=createNode("", NULL);}
                     ;
@@ -132,7 +133,7 @@ Statement:
                     |Expr SEMI {$$=createNode("", NULL);}
                     |LBRACE RBRACE {$$=createNode("", NULL);}
                     |LBRACE AuxStatement RBRACE {$$=createNode("", NULL);}
-                    |LBRACE error RBRACE {$$=createNode("", NULL);}
+                    |LBRACE error RBRACE {$$=createNode("Null", NULL);num_erros+=1;}
                     |IF LPAR Expr RPAR ErrorStatement {$$=createNode("", NULL);}
                     |IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement {$$=createNode("", NULL);}
                     |WHILE LPAR Expr RPAR ErrorStatement {$$=createNode("", NULL);}
@@ -141,7 +142,7 @@ Statement:
                     ;
 ErrorStatement:
                     Statement {$$=createNode("", NULL);}
-                    |error SEMI {$$=createNode("", NULL);}
+                    |error SEMI {$$=createNode("Null", NULL);num_erros+=1;}
                     ;
 
 AuxStatement:
@@ -152,14 +153,14 @@ AuxStatement:
 Expr:              
                     Expr ASSIGN Expr {$$=createNode("Store", NULL);addBrother($$,$1);addBrother($1,$3);}
                     |Expr COMMA Expr {$$=createNode("Comma", NULL);addBrother($$,$1);addBrother($1,$3);}
-                    |LPAR error RPAR {$$=createNode("Null", NULL);}
+                    |LPAR error RPAR {$$=createNode("Null", NULL);num_erros+=1;}
                     |ExprOper {$$=$1;}
                     |ExprLogic {$$=$1;}
                     |ExprRelat {$$=$1;}
                     |ExprSingleOp {$$=$1;}
                     |ExprFunction {$$=$1;}
                     |ExprPrim {$$=$1;}
-                    |ID LPAR error RPAR {$$=createNode("Null", NULL);}
+                    |ID LPAR error RPAR {$$=createNode("Null", NULL);num_erros+=1;}
                     ;
 ExprOper:
                     Expr PLUS Expr {$$=createNode("Add", NULL);addChild($$,$1);addBrother($1,$3);}
