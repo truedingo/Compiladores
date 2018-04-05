@@ -115,7 +115,7 @@ LINETERMINATOR \n|{RETURNCHAR}|({RETURNCHAR})\n
 {RESERVED} {if(flag==-1 && val == 1){printf("RESERVED(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return RESERVED;}
 {CHRLIT} {if(flag==-1 && val == 1){printf("CHRLIT(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return CHRLIT;}
 {ID} {if(flag==-1 && val == 1){printf("ID(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return ID;}
-{INTLIT} {if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA; if(flag==2)return INTLIT;}
+{INTLIT} {if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return INTLIT;}
 {LINETERMINATOR} {LINHA;}
 
 "\t"|" "    {COLUNA;}
@@ -135,24 +135,23 @@ void yyerror (const char *s) {
 }
 
 int main(int argc, char* argv[]){
-    if(argc >1){
+    if(argc > 1){
         if(strcmp(argv[1],"-l") == 0){
             flag=-1;
             val = 1;
-            yyparse(); 
+            yylex(); 
         } 
         if(strcmp(argv[1],"-t")==0){
             flag=2;
             yyparse();
             yylex_destroy();
-            if(num_erros==0){
-                printAST(root,0);}
+            printAST(root,0);
         }
-        else{
-            flag=2;
-		    yyparse();
-            yylex_destroy();
-        }
+    }
+    else{
+        flag=2;
+        yyparse();
+        yylex_destroy();
     }
     return 0;
 }

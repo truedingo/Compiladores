@@ -1120,7 +1120,7 @@ YY_RULE_SETUP
 case 43:
 YY_RULE_SETUP
 #line 118 "uccompiler.l"
-{if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA; if(flag==2)return INTLIT;}
+{if(flag==-1 && val == 1){printf("INTLIT(%s)\n", yytext);}COLUNA;yylval.string=(char*)strdup(yytext); if(flag==2)return INTLIT;}
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */
@@ -2164,24 +2164,23 @@ void yyerror (const char *s) {
 }
 
 int main(int argc, char* argv[]){
-    if(argc >1){
+    if(argc > 1){
         if(strcmp(argv[1],"-l") == 0){
             flag=-1;
             val = 1;
-            yyparse(); 
+            yylex(); 
         } 
         if(strcmp(argv[1],"-t")==0){
             flag=2;
             yyparse();
             yylex_destroy();
-            if(num_erros==0){
-                printAST(root,0);}
+            printAST(root,0);
         }
-        else{
-            flag=2;
-		    yyparse();
-            yylex_destroy();
-        }
+    }
+    else{
+        flag=2;
+        yyparse();
+        yylex_destroy();
     }
     return 0;
 }
