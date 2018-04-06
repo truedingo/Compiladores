@@ -150,7 +150,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "uccompiler.y"
+#line 4 "uccompiler.y"
 
     #include <stdio.h>
 	#include <stdlib.h>
@@ -190,7 +190,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 40 "uccompiler.y"
+#line 43 "uccompiler.y"
 {
     char *string;
     struct no* node;
@@ -529,15 +529,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    47,    47,    51,    52,    53,    54,    55,    56,    59,
-      67,    70,    74,    75,    76,    77,    80,    86,    94,    95,
-     100,   103,   112,   113,   124,   125,   129,   130,   131,   132,
-     133,   137,   138,   142,   143,   144,   145,   154,   155,   167,
-     186,   196,   200,   206,   207,   210,   211,   214,   215,   218,
-     219,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     234,   235,   236,   237,   238,   242,   243,   244,   245,   246,
-     250,   251,   252,   253,   254,   255,   259,   260,   261,   265,
-     266,   270,   271,   272,   273,   274
+       0,    50,    50,    54,    55,    56,    57,    58,    59,    62,
+      70,    73,    77,    78,    79,    80,    83,    89,    97,    98,
+     103,   106,   115,   116,   127,   128,   132,   133,   134,   135,
+     136,   140,   141,   145,   146,   147,   148,   157,   158,   170,
+     189,   199,   203,   209,   210,   213,   214,   217,   218,   221,
+     222,   226,   227,   228,   229,   230,   231,   232,   233,   234,
+     237,   238,   239,   240,   241,   245,   246,   247,   248,   249,
+     253,   254,   255,   256,   257,   258,   262,   263,   264,   268,
+     269,   273,   274,   275,   276,   277
 };
 #endif
 
@@ -1587,42 +1587,42 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 47 "uccompiler.y"
+#line 50 "uccompiler.y"
     {root = createNode("Program", NULL); addChild(root, (yyvsp[(1) - (1)].node));}
     break;
 
   case 3:
-#line 51 "uccompiler.y"
+#line 54 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (1)].node);}
     break;
 
   case 4:
-#line 52 "uccompiler.y"
+#line 55 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (1)].node);}
     break;
 
   case 5:
-#line 53 "uccompiler.y"
+#line 56 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (1)].node);}
     break;
 
   case 6:
-#line 54 "uccompiler.y"
+#line 57 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (2)].node); addBrother((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node));}
     break;
 
   case 7:
-#line 55 "uccompiler.y"
+#line 58 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (2)].node); addBrother((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node));}
     break;
 
   case 8:
-#line 56 "uccompiler.y"
+#line 59 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (2)].node); addBrother((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node));}
     break;
 
   case 9:
-#line 59 "uccompiler.y"
+#line 62 "uccompiler.y"
     {(yyval.node)=createNode("FuncDefinition", NULL);
                                                   addChild((yyval.node),(yyvsp[(1) - (3)].node));
                                                   addBrother((yyvsp[(1) - (3)].node),(yyvsp[(2) - (3)].node));
@@ -1631,39 +1631,39 @@ yyreduce:
     break;
 
   case 10:
-#line 67 "uccompiler.y"
+#line 70 "uccompiler.y"
     {(yyval.node)=createNode("FuncBody", NULL);
                                                 addChild((yyval.node),(yyvsp[(2) - (3)].node));    
                                                 }
     break;
 
   case 11:
-#line 70 "uccompiler.y"
+#line 73 "uccompiler.y"
     {(yyval.node)=createNode("FuncBody", NULL);}
     break;
 
   case 12:
-#line 74 "uccompiler.y"
+#line 77 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (2)].node); addBrother((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node));}
     break;
 
   case 13:
-#line 75 "uccompiler.y"
+#line 78 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (2)].node); addBrother((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node));}
     break;
 
   case 14:
-#line 76 "uccompiler.y"
+#line 79 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
   case 15:
-#line 77 "uccompiler.y"
+#line 80 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
   case 16:
-#line 80 "uccompiler.y"
+#line 83 "uccompiler.y"
     {(yyval.node)=createNode("FuncDeclaration", NULL);
                                             addChild((yyval.node),(yyvsp[(1) - (3)].node));
                                             addBrother((yyvsp[(1) - (3)].node),(yyvsp[(2) - (3)].node));
@@ -1671,7 +1671,7 @@ yyreduce:
     break;
 
   case 17:
-#line 86 "uccompiler.y"
+#line 89 "uccompiler.y"
     {(yyval.node)=createNode("Id", (yyvsp[(1) - (4)].string));
                                         aux = createNode("ParamList", NULL);
                                         addChild(aux,(yyvsp[(3) - (4)].node));
@@ -1680,25 +1680,25 @@ yyreduce:
     break;
 
   case 18:
-#line 94 "uccompiler.y"
+#line 97 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
   case 19:
-#line 95 "uccompiler.y"
+#line 98 "uccompiler.y"
     { (yyval.node)=(yyvsp[(1) - (3)].node);
                                                         addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 20:
-#line 100 "uccompiler.y"
+#line 103 "uccompiler.y"
     {(yyval.node)=createNode("ParamDeclaration", NULL);
                             addChild((yyval.node),(yyvsp[(1) - (1)].node));
                             }
     break;
 
   case 21:
-#line 103 "uccompiler.y"
+#line 106 "uccompiler.y"
     {
                         (yyval.node)=createNode("ParamDeclaration", NULL);
                         addChild((yyval.node),(yyvsp[(1) - (2)].node));
@@ -1708,12 +1708,12 @@ yyreduce:
     break;
 
   case 22:
-#line 112 "uccompiler.y"
+#line 115 "uccompiler.y"
     {(yyval.node)=createNode("Error", NULL);erro_check=1;}
     break;
 
   case 23:
-#line 113 "uccompiler.y"
+#line 116 "uccompiler.y"
     {
                         (yyval.node) = (yyvsp[(2) - (3)].node);
 
@@ -1726,67 +1726,67 @@ yyreduce:
     break;
 
   case 24:
-#line 124 "uccompiler.y"
+#line 127 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
   case 25:
-#line 125 "uccompiler.y"
+#line 128 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (3)].node); addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 26:
-#line 129 "uccompiler.y"
+#line 132 "uccompiler.y"
     {(yyval.node)=createNode("Char", NULL);}
     break;
 
   case 27:
-#line 130 "uccompiler.y"
+#line 133 "uccompiler.y"
     {(yyval.node)=createNode("Int", NULL);}
     break;
 
   case 28:
-#line 131 "uccompiler.y"
+#line 134 "uccompiler.y"
     {(yyval.node)=createNode("Void", NULL);}
     break;
 
   case 29:
-#line 132 "uccompiler.y"
+#line 135 "uccompiler.y"
     {(yyval.node)=createNode("Double", NULL);}
     break;
 
   case 30:
-#line 133 "uccompiler.y"
+#line 136 "uccompiler.y"
     {(yyval.node)=createNode("Short", NULL);}
     break;
 
   case 31:
-#line 137 "uccompiler.y"
+#line 140 "uccompiler.y"
     {(yyval.node) = createNode("Declaration", NULL); aux = createNode("Id", (yyvsp[(1) - (1)].string)); aux1 = createNode("AuxNode", NULL); addChild((yyval.node), aux1); addBrother(aux1, aux);}
     break;
 
   case 32:
-#line 138 "uccompiler.y"
+#line 141 "uccompiler.y"
     {(yyval.node) = createNode("Declaration", NULL); aux = createNode("Id", (yyvsp[(1) - (3)].string)); aux1 = createNode("AuxNode", NULL); addChild((yyval.node), aux1); addBrother(aux1, aux); addBrother(aux1, (yyvsp[(3) - (3)].node));}
     break;
 
   case 33:
-#line 142 "uccompiler.y"
+#line 145 "uccompiler.y"
     {(yyval.node)=NULL;}
     break;
 
   case 34:
-#line 143 "uccompiler.y"
+#line 146 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (2)].node);}
     break;
 
   case 35:
-#line 144 "uccompiler.y"
+#line 147 "uccompiler.y"
     {(yyval.node)=NULL;}
     break;
 
   case 36:
-#line 145 "uccompiler.y"
+#line 148 "uccompiler.y"
     {
                         if(stat_check == 1){
 						    (yyval.node)=createNode("StatList",NULL);
@@ -1799,12 +1799,12 @@ yyreduce:
     break;
 
   case 37:
-#line 154 "uccompiler.y"
+#line 157 "uccompiler.y"
     {(yyval.node)=createNode("Error", NULL);erro_check=1;}
     break;
 
   case 38:
-#line 155 "uccompiler.y"
+#line 158 "uccompiler.y"
     { 
                                     (yyval.node) = createNode("If",NULL);
                                     addChild((yyval.node),(yyvsp[(3) - (5)].node));
@@ -1820,7 +1820,7 @@ yyreduce:
     break;
 
   case 39:
-#line 167 "uccompiler.y"
+#line 170 "uccompiler.y"
     {
                                     (yyval.node)=createNode("If",NULL);
 									addChild((yyval.node),(yyvsp[(3) - (7)].node));
@@ -1843,7 +1843,7 @@ yyreduce:
     break;
 
   case 40:
-#line 186 "uccompiler.y"
+#line 189 "uccompiler.y"
     {
 			 						(yyval.node)=createNode("While",NULL);
 									addChild((yyval.node),(yyvsp[(3) - (5)].node));
@@ -1857,14 +1857,14 @@ yyreduce:
     break;
 
   case 41:
-#line 196 "uccompiler.y"
+#line 199 "uccompiler.y"
     {(yyval.node)=createNode("Return", NULL);
                                 addChild((yyval.node), createNode("Null", NULL));
                                 }
     break;
 
   case 42:
-#line 200 "uccompiler.y"
+#line 203 "uccompiler.y"
     {
                                     (yyval.node)=createNode("Return", NULL);
                                     addChild((yyval.node), (yyvsp[(2) - (3)].node));
@@ -1872,217 +1872,217 @@ yyreduce:
     break;
 
   case 43:
-#line 206 "uccompiler.y"
+#line 209 "uccompiler.y"
     {(yyval.node) =(yyvsp[(1) - (1)].node);}
     break;
 
   case 44:
-#line 207 "uccompiler.y"
+#line 210 "uccompiler.y"
     {(yyval.node)=createNode("Error", NULL);erro_check=1;}
     break;
 
   case 45:
-#line 210 "uccompiler.y"
+#line 213 "uccompiler.y"
     {stat_check = 1; (yyval.node)=(yyvsp[(1) - (2)].node);addBrother((yyvsp[(1) - (2)].node),(yyvsp[(2) - (2)].node));}
     break;
 
   case 46:
-#line 211 "uccompiler.y"
+#line 214 "uccompiler.y"
     {stat_check = 0; (yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
   case 47:
-#line 214 "uccompiler.y"
+#line 217 "uccompiler.y"
     {(yyval.node) = createNode("Comma", NULL); addBrother((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); addChild((yyval.node), (yyvsp[(1) - (3)].node));}
     break;
 
   case 48:
-#line 215 "uccompiler.y"
+#line 218 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (1)].node);}
     break;
 
   case 49:
-#line 218 "uccompiler.y"
+#line 221 "uccompiler.y"
     {addBrother((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node));}
     break;
 
   case 50:
-#line 219 "uccompiler.y"
+#line 222 "uccompiler.y"
     {(yyval.node) = (yyvsp[(1) - (1)].node);}
     break;
 
   case 51:
-#line 223 "uccompiler.y"
+#line 226 "uccompiler.y"
     {(yyval.node)=createNode("Store", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 52:
-#line 224 "uccompiler.y"
+#line 227 "uccompiler.y"
     {(yyval.node)=createNode("Error", NULL);erro_check=1;}
     break;
 
   case 53:
-#line 225 "uccompiler.y"
-    {(yyval.node)=(yyvsp[(1) - (1)].node);}
-    break;
-
-  case 54:
-#line 226 "uccompiler.y"
-    {(yyval.node)=(yyvsp[(1) - (1)].node);}
-    break;
-
-  case 55:
-#line 227 "uccompiler.y"
-    {(yyval.node)=(yyvsp[(1) - (1)].node);}
-    break;
-
-  case 56:
 #line 228 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
-  case 57:
+  case 54:
 #line 229 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
-  case 58:
+  case 55:
 #line 230 "uccompiler.y"
     {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
-  case 59:
+  case 56:
 #line 231 "uccompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (1)].node);}
+    break;
+
+  case 57:
+#line 232 "uccompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (1)].node);}
+    break;
+
+  case 58:
+#line 233 "uccompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (1)].node);}
+    break;
+
+  case 59:
+#line 234 "uccompiler.y"
     {(yyval.node)=createNode("Error", NULL);erro_check=1;free((yyvsp[(1) - (4)].string));}
     break;
 
   case 60:
-#line 234 "uccompiler.y"
+#line 237 "uccompiler.y"
     {(yyval.node)=createNode("Add", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 61:
-#line 235 "uccompiler.y"
+#line 238 "uccompiler.y"
     {(yyval.node)=createNode("Sub", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 62:
-#line 236 "uccompiler.y"
+#line 239 "uccompiler.y"
     {(yyval.node)=createNode("Mul", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 63:
-#line 237 "uccompiler.y"
+#line 240 "uccompiler.y"
     {(yyval.node)=createNode("Div", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 64:
-#line 238 "uccompiler.y"
+#line 241 "uccompiler.y"
     {(yyval.node)=createNode("Mod", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 65:
-#line 242 "uccompiler.y"
+#line 245 "uccompiler.y"
     {(yyval.node)=createNode("Or", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 66:
-#line 243 "uccompiler.y"
+#line 246 "uccompiler.y"
     {(yyval.node)=createNode("And", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 67:
-#line 244 "uccompiler.y"
+#line 247 "uccompiler.y"
     {(yyval.node)=createNode("BitWiseAnd", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 68:
-#line 245 "uccompiler.y"
+#line 248 "uccompiler.y"
     {(yyval.node)=createNode("BitWiseOr", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 69:
-#line 246 "uccompiler.y"
+#line 249 "uccompiler.y"
     {(yyval.node)=createNode("BitWiseXor", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 70:
-#line 250 "uccompiler.y"
+#line 253 "uccompiler.y"
     {(yyval.node)=createNode("Eq", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 71:
-#line 251 "uccompiler.y"
+#line 254 "uccompiler.y"
     {(yyval.node)=createNode("Ne", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 72:
-#line 252 "uccompiler.y"
+#line 255 "uccompiler.y"
     {(yyval.node)=createNode("Le", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 73:
-#line 253 "uccompiler.y"
+#line 256 "uccompiler.y"
     {(yyval.node)=createNode("Ge", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 74:
-#line 254 "uccompiler.y"
+#line 257 "uccompiler.y"
     {(yyval.node)=createNode("Lt", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 75:
-#line 255 "uccompiler.y"
+#line 258 "uccompiler.y"
     {(yyval.node)=createNode("Gt", NULL);addChild((yyval.node),(yyvsp[(1) - (3)].node));addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 76:
-#line 259 "uccompiler.y"
+#line 262 "uccompiler.y"
     {(yyval.node)=createNode("Plus", NULL);addChild((yyval.node),(yyvsp[(2) - (2)].node));}
     break;
 
   case 77:
-#line 260 "uccompiler.y"
+#line 263 "uccompiler.y"
     {(yyval.node)=createNode("Minus", NULL);addChild((yyval.node),(yyvsp[(2) - (2)].node));}
     break;
 
   case 78:
-#line 261 "uccompiler.y"
+#line 264 "uccompiler.y"
     {(yyval.node)=createNode("Not", NULL);addChild((yyval.node),(yyvsp[(2) - (2)].node));}
     break;
 
   case 79:
-#line 265 "uccompiler.y"
+#line 268 "uccompiler.y"
     {(yyval.node)=createNode("Call", NULL);aux=createNode("Id",(yyvsp[(1) - (3)].string)); addChild((yyval.node),aux);}
     break;
 
   case 80:
-#line 266 "uccompiler.y"
+#line 269 "uccompiler.y"
     {(yyval.node)=createNode("Call", NULL); aux=createNode("Id",(yyvsp[(1) - (4)].string)); addChild((yyval.node),aux);addBrother(aux,(yyvsp[(3) - (4)].node));}
     break;
 
   case 81:
-#line 270 "uccompiler.y"
+#line 273 "uccompiler.y"
     {(yyval.node)=createNode("Id", (yyvsp[(1) - (1)].string));}
     break;
 
   case 82:
-#line 271 "uccompiler.y"
+#line 274 "uccompiler.y"
     {(yyval.node)=createNode("IntLit", (yyvsp[(1) - (1)].string));}
     break;
 
   case 83:
-#line 272 "uccompiler.y"
+#line 275 "uccompiler.y"
     {(yyval.node)=createNode("RealLit",(yyvsp[(1) - (1)].string));}
     break;
 
   case 84:
-#line 273 "uccompiler.y"
+#line 276 "uccompiler.y"
     {(yyval.node)=createNode("ChrLit", (yyvsp[(1) - (1)].string));}
     break;
 
   case 85:
-#line 274 "uccompiler.y"
+#line 277 "uccompiler.y"
     {(yyval.node)=(yyvsp[(2) - (3)].node);}
     break;
 
@@ -2302,5 +2302,5 @@ yyreturn:
 }
 
 
-#line 276 "uccompiler.y"
+#line 279 "uccompiler.y"
 

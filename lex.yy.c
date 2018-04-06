@@ -2175,7 +2175,7 @@ int main(int argc, char* argv[]){
             yyparse();
             yylex_destroy();
             if(erro_check==0){
-                printAST(root,0);
+               print_ast(root,0);
             }
         }
     }

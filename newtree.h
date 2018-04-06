@@ -1,3 +1,6 @@
+/* Diogo Amores 2015231975 damores@student.uc.pt */
+/* Maria Roseiro 2015233281 miroseiro@student.uc.pt */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,5 +18,5 @@ typedef struct no{
 no *createNode(char *label, char *value);
 void addChild(no* father, no* child);
 void addBrother(no* oldbro, no* newbro);
-void printAST(no *current, int n);
 int cntBrothers(no* root);
+void print_ast(no *root, int n);

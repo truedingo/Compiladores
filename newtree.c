@@ -1,3 +1,6 @@
+/* Diogo Amores 2015231975 damores@student.uc.pt */
+/* Maria Roseiro 2015233281 miroseiro@student.uc.pt */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -49,31 +52,31 @@ int cntBrothers(no* root){
 	return cnt;
 }
 
-void printAST(no *current, int n){
-    int i;
+void print_ast(no *root, int n){
+    int i =0;
 
-    if(current == NULL){
+    if(root == NULL){
         return;
     }
 
-    if(strcmp(current->label, "NULL") == 0){
-        printAST(current->brother, n);
+    if(strcmp(root->label, "NULL") == 0){
+        print_ast(root->brother, n);
         return;
     }
 
-    if(strcmp(current->label, "NULL") != 0){
+    else{
         for(i=0;i<n;i++){
             printf("..");
         }
 
-        if(current->value != NULL){
-            printf("%s(%s)\n",current->label, current->value);
+        if(root->value != NULL){
+            printf("%s(%s)\n",root->label, root->value);
         }
         else{
-            printf("%s\n",current->label);
+            printf("%s\n",root->label);
         }
     }
     
-    printAST(current->child, n+1);
-    printAST(current->brother, n);
+    print_ast(root->child, n+1);
+    print_ast(root->brother, n);
 }

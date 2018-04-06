@@ -1,3 +1,6 @@
+/* Diogo Amores 2015231975 damores@student.uc.pt */
+/* Maria Roseiro 2015233281 miroseiro@student.uc.pt */
+
 %{
     #include <stdio.h>
 	#include <stdlib.h>
