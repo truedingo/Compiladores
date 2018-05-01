@@ -4,6 +4,8 @@
 	#include <string.h>
 	#include <stdarg.h>
     #include "newtree.h"
+    #include "symbol_table.h"
+
     void yyerror(const char* s);
     int yylex();
     int yyparse();

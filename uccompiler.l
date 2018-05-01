@@ -5,6 +5,10 @@
     #include <string.h>
     #include "y.tab.h"
     #include "newtree.h"
+    #include "symbol_table.h"
+
+   table_element* symtab;
+
     
     #define LINHA linha++; coluna=1;
     #define COLUNA coluna+=yyleng;
@@ -148,6 +152,15 @@ int main(int argc, char* argv[]){
             if(error_check!=1){
                 printAST(root,0);
             }
+        }
+        if(strcmp(argv[1],"-s")==0){
+            flag=2;
+            yyparse();
+            yylex_destroy();
+            if(error_check!=1){
+                printAST(root,0);
+            }
+            show_table();
         }
     }
     else{

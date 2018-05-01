@@ -1,9 +1,9 @@
 #include "symbol_table.h"
-#include<string.h>
+#include <string.h>
+#include <stdlib.h>
 #include<stdio.h>
 
 extern table_element* symtab;
-
 
 //Insere um novo identificador na cauda de uma lista ligada de simbolo
 table_element *insert_el(char *str, basic_type t, int isParam)
