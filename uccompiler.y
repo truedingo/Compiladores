@@ -18,7 +18,7 @@
     no *aux3;
     int error_check = 0;
     int stat_check=0;
-    table_element *symtab=NULL;
+    symb_list *symtab=NULL;
 %}
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI

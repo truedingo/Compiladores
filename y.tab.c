@@ -171,7 +171,7 @@
     no *aux3;
     int error_check = 0;
     int stat_check=0;
-    table_element *symtab=NULL;
+    symb_list *symtab=NULL;
 
 
 /* Enabling traces.  */

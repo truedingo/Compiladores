@@ -621,7 +621,7 @@ char *yytext;
     #include "newtree.h"
     #include "symbol_table.h"
 
-   table_element* symtab;
+   symb_list symtab;
 
     
     #define LINHA linha++; coluna=1;
@@ -2189,6 +2189,7 @@ int main(int argc, char* argv[]){
             if(error_check!=1){
                 printAST(root,0);
             }
+            handle_ast(root);
             show_table();
         }
     }
