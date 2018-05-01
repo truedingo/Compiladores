@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "symbol_table.h": "c"
+        "symbol_table.h": "c",
+        "newtree.h": "c"
     }
 }

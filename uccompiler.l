@@ -5,7 +5,6 @@
     #include <string.h>
     #include "y.tab.h"
     #include "newtree.h"
-    #include "symbol_table.h"
 
    symb_list symtab;
 
