@@ -7,6 +7,7 @@
 extern symb_list symtab;
 symb_list global;
 symb_list tabela_atual;
+extern table_list tlist;
 
 //Insere um novo identificador na cauda de uma lista ligada de simbolo
 symb_list insert_el(char *str, basic_type t, int isParam)
@@ -46,6 +47,14 @@ symb_list search_el(char *str){
 	symb_list aux;
 	for(aux=symtab; aux; aux=aux->next)
 		if(strcmp(aux->name, str)==0)
+			return aux;
+return NULL;
+}
+
+table_list search_table(char *str){
+	table_list aux;
+	for(aux=tlist; aux; aux=aux->next)
+		if(strcmp(aux->table->name, str)==0)
 			return aux;
 return NULL;
 }

@@ -1,5 +1,5 @@
 #ifndef SYMBOL_TABLE_H
-#define SYMBOL_TABLE_H
+#define SYMBOL_TABLE_Hc
 
 typedef enum {chr, integer, shortint, doubleint, voidret, charlit, reallit, intlit} basic_type;
 typedef struct table * symb_list;
@@ -16,8 +16,10 @@ typedef struct functions{
 }_t;
 
 symb_list insert_el(char *str, basic_type t, int isParam);
-void show_table();
 symb_list search_el(char *str);
+void show_table();
+void handle_funcdefinition(no* root);
+void handle_ast(no* root);
 symb_list create_table();
 
 #endif
