@@ -87,7 +87,10 @@ void handle_funcdefinition(no* root){
     	tabela_atual = create_table(aux->label); //current table vai ter a tabela da função que estamos a tratar, para mais tarde sabermos em que tabela inserir os simbolos
     	tabela_atual->is_param = 1;
 	}
-}
+	insert_el(tabela_atual->name,returne,0);
+	
+	handle_ast(root->child->brother->brother);
+	}
 
 void handle_ast(no* root){
 	if (root == NULL){
