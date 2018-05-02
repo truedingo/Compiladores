@@ -95,6 +95,16 @@ void print_global_table(symb_list global){
         if(aux->is_param == 0){
             printf("%s\t\t%s", aux->name, aux->type);
         }
+        if(aux->is_param != 0){
+            printf("%s\t\t%s", aux->name, aux->type);
+            printf("(");
+            while(aux->next != NULL){
+                printf("%s\t",aux->type);
+            }
+            aux = aux->next;
+            printf(")");
+        }
+        
         printf("\n");
         aux = aux->next;
     }
@@ -111,36 +121,25 @@ symb_list insert_el(char *str, char *type, int isParam)
     printf("str: %s\n",str);
 
     newSymbol->name = strdup(str);
-    printf("new simb name: %s\n",newSymbol->name);
-
     newSymbol->type = strdup(type);
-        printf("new simb name: %s\n",newSymbol->name);
-
     newSymbol->next = NULL;
-        printf("new simb name: %s\n",newSymbol->name);
-
     newSymbol->is_param = isParam;	
-        printf("new simb name: %s\n",newSymbol->name);
 
 
 	if(symtab)	//Se table ja tem elementos
 	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
-        printf("before for new simb name: %s\n",newSymbol->name);
         for(aux=symtab; aux; previous=aux, aux=aux->next)
 			if(strcmp(aux->name, str)==0)
 				return NULL;
 		previous->next=newSymbol;	//adiciona ao final da lista
-        printf("after for new simb name: %s\n",newSymbol->name);
 	}
 	else{
     
-//symtab tem um elemento -> o novo simbolo
+    //symtab tem um elemento -> o novo simbolo
 		symtab=newSymbol;
-        printf("else new simb name: %s\n",newSymbol->name);
 	
     }		
 	
-    printf("Inserted %s, %s\n", newSymbol->name, newSymbol->type);
 	return newSymbol; 
 }
 
@@ -232,6 +231,7 @@ void handle_funcdefinition(no* node){
             insert_el(aux->value, "char", 0);
         }
     }
+
 	while(strcmp(aux->label,"Id") != 0){ 
     	aux_p++;
     	aux = aux->brother;
@@ -281,35 +281,39 @@ void handle_ast(no* node){
 	}
 		if(strcmp(node->label, "FuncDeclaration") ==0){
 			//printf("Encontrei Func Declaration.\n");
+          
 			//criar tabela func
 			//inserir o simbolo na tabela global
             char *type = node->child->label;
             //printf("%s\n",type);
             char *id_func = node->child->brother->value;
             //printf("%s\n",id_func);
-
             insert_el(id_func,type,0);
+            
+             printf("this is : %s\n",node->brother->label);
+            if(strcmp(node->brother->label, "ParamList")==0){
+                printf("entrei aqui\n");
+                char *param_type;
+                char *param_label;
+                param_type = node->child->child->value;
+                param_label = node->child->child->label;
+            }
+
 
 			if(node->child != NULL)
 			handle_ast(node->child);
-			if(node->brother != NULL)
+			if(node->brother->child != NULL)
 			handle_ast(node->brother);
 			return;		
 	}
 
 	if(strcmp(node->label, "Declaration") ==0){
-		printf("Encontrei Declaration.\n");
+		//printf("Encontrei Declaration.\n");
 		//inserir o simbolo na tabela atual
         no * type_spec = node->child;
         //tipo de funcao
         no * id = type_spec->brother;
-
         insert_el(id->value,type_spec->label,0);
-        print_global_table(symtab);
-
-        printf("%s %s\n",id->label, id->value);
-        printf("%s\n", type_spec->label);
-
 		if(node->child != NULL)
 		    handle_ast(node->child);
 		if(node->brother != NULL)
