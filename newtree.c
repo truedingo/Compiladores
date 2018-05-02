@@ -87,24 +87,28 @@ void printAST(no *current, int n){
 //print global table
 void print_global_table(symb_list global){
     symb_list aux = global;
-    
+    symb_list auxP;
     printf("===== Global Symbol Table =====\n");
-    
+    printf("putchar\tint(int)\n");
+    printf("getchar\tint(void)\n");
     while(aux != NULL){
         // nao e funcao!
         if(aux->is_param == 0){
-            printf("%s\t\t%s", aux->name, aux->type);
+            printf("%s\t%s", aux->name, aux->type);
         }
-        if(aux->is_param != 0){
-            printf("%s\t\t%s", aux->name, aux->type);
-            printf("(");
-            while(aux->next != NULL){
-                printf("%s\t",aux->type);
+        else{
+            printf("entrei aqui\n");
+            auxP = aux;
+            printf("%s\t(", aux->name);
+            while(auxP != NULL){
+                printf("%s", auxP->type);
+                if(auxP->next != NULL){
+                    printf(",");
+                }
+                auxP = auxP->next;
             }
-            aux = aux->next;
-            printf(")");
+            printf(")\t%s", aux->type);
         }
-        
         printf("\n");
         aux = aux->next;
     }
@@ -118,11 +122,13 @@ symb_list insert_el(char *str, char *type, int isParam)
 	symb_list newSymbol=(symb_list) malloc(sizeof(_s));
 	symb_list aux;
 	symb_list previous;
-    printf("str: %s\n",str);
 
     newSymbol->name = strdup(str);
+
     newSymbol->type = strdup(type);
+
     newSymbol->next = NULL;
+
     newSymbol->is_param = isParam;	
 
 
@@ -133,13 +139,11 @@ symb_list insert_el(char *str, char *type, int isParam)
 				return NULL;
 		previous->next=newSymbol;	//adiciona ao final da lista
 	}
-	else{
-    
+	else{  
     //symtab tem um elemento -> o novo simbolo
 		symtab=newSymbol;
 	
     }		
-	
 	return newSymbol; 
 }
 
@@ -181,7 +185,6 @@ void handle_funcdefinition(no* node){
 	no *aux = node->child;
 	int aux_p = 0;
 	// O primeiro filho é label da funcao
-  	char *label= aux->label;
 	aux = aux->brother;
 
     tabela_atual = search_el(aux->label);
@@ -231,7 +234,6 @@ void handle_funcdefinition(no* node){
             insert_el(aux->value, "char", 0);
         }
     }
-
 	while(strcmp(aux->label,"Id") != 0){ 
     	aux_p++;
     	aux = aux->brother;
@@ -239,18 +241,6 @@ void handle_funcdefinition(no* node){
 	insert_el(tabela_atual->name,"Id",0);
 	handle_ast(aux->brother);
 	}
-
-
-void handle_fdeclaration(no *node){
-    no *aux = aux->child;
-    //primeiro filho - tipo da funcao
-    char *func_type = aux->label;
-    //passar ao irmao que e o ID
-    aux = aux->brother;
-    //isto e o ID
-    char *func_id = aux->label;
-
-}
 
 void handle_ast(no* node){
 	if (node == NULL){
@@ -281,7 +271,6 @@ void handle_ast(no* node){
 	}
 		if(strcmp(node->label, "FuncDeclaration") ==0){
 			//printf("Encontrei Func Declaration.\n");
-          
 			//criar tabela func
 			//inserir o simbolo na tabela global
             char *type = node->child->label;
@@ -289,20 +278,17 @@ void handle_ast(no* node){
             char *id_func = node->child->brother->value;
             //printf("%s\n",id_func);
             insert_el(id_func,type,0);
-            
-             printf("this is : %s\n",node->brother->label);
-            if(strcmp(node->brother->label, "ParamList")==0){
-                printf("entrei aqui\n");
-                char *param_type;
-                char *param_label;
-                param_type = node->child->child->value;
-                param_label = node->child->child->label;
+
+            if(strcmp(node->child->brother->brother->label, "ParamList")==0){
+                no *aux = node->child->brother->brother->child;
+                while(aux != NULL){
+                    //printf("label: %s\n", aux->child->label);
+                    aux = aux->brother;
+                }
             }
-
-
 			if(node->child != NULL)
 			handle_ast(node->child);
-			if(node->brother->child != NULL)
+			if(node->brother != NULL)
 			handle_ast(node->brother);
 			return;		
 	}
@@ -313,7 +299,51 @@ void handle_ast(no* node){
         no * type_spec = node->child;
         //tipo de funcao
         no * id = type_spec->brother;
-        insert_el(id->value,type_spec->label,0);
+    
+    if(strcmp(type_spec->label, "Int") == 0){
+        if (id == NULL){
+            insert_el(NULL, "int", 0);
+        }
+        else{
+            insert_el(id->value, "int", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Void") == 0){
+        if (id == NULL){
+            insert_el(NULL, "void", 0);
+        }
+        else{
+            insert_el(id->value, "void", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Double") == 0){
+        if (id == NULL){
+            insert_el(NULL, "double", 0);
+        }
+        else{
+            insert_el(id->value, "double", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Short") == 0){
+        if (id == NULL){
+            insert_el(NULL, "short", 0);
+        }
+        else{
+            insert_el(id->value, "short", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Char") == 0){
+        if (id == NULL){
+            insert_el(NULL, "char", 0);
+        }
+        else{
+            insert_el(id->value, "char", 0);
+        }
+    }
+    
+        //insert_el(id->value,type_spec->label,0);
+        //printf("%s %s\n",id->label, id->value);
+        //printf("%s\n", type_spec->label);
 		if(node->child != NULL)
 		    handle_ast(node->child);
 		if(node->brother != NULL)
@@ -324,7 +354,3 @@ void handle_ast(no* node){
 
 	
 }
-
-
-
-

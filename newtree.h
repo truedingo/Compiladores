@@ -22,6 +22,7 @@ typedef struct table{
 typedef struct functions * table_list;
 typedef struct functions{
 	symb_list table; //table element para table
+	symb_list args;
 	table_list next; //apontador next
 }_t;
 
