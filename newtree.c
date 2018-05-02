@@ -82,29 +82,65 @@ void printAST(no *current, int n){
     printAST(current->child, n+1);
     printAST(current->brother, n);
 }
+ // ---------------- SEMANTICS --------------------------------
+
+//print global table
+void print_global_table(symb_list global){
+    symb_list aux = global;
+    
+    printf("===== Global Symbol Table =====\n");
+    
+    while(aux != NULL){
+        // nao e funcao!
+        if(aux->is_param == 0){
+            printf("%s\t\t%s", aux->name, aux->type);
+        }
+        printf("\n");
+        aux = aux->next;
+    }
+    printf("\n");
+}
+
 
 //Insere um novo identificador na cauda de uma lista ligada de simbolo
 symb_list insert_el(char *str, char *type, int isParam)
 {
-	symb_list newSymbol=(symb_list) malloc(sizeof(symb_list));
+	symb_list newSymbol=(symb_list) malloc(sizeof(_s));
 	symb_list aux;
 	symb_list previous;
-    newSymbol->name = (char*)strdup(str);
-    newSymbol->type = (char*)strdup(type);
+    printf("str: %s\n",str);
+
+    newSymbol->name = strdup(str);
+    printf("new simb name: %s\n",newSymbol->name);
+
+    newSymbol->type = strdup(type);
+        printf("new simb name: %s\n",newSymbol->name);
+
     newSymbol->next = NULL;
+        printf("new simb name: %s\n",newSymbol->name);
+
     newSymbol->is_param = isParam;	
+        printf("new simb name: %s\n",newSymbol->name);
+
 
 	if(symtab)	//Se table ja tem elementos
 	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
-		for(aux=symtab; aux; previous=aux, aux=aux->next)
+        printf("before for new simb name: %s\n",newSymbol->name);
+        for(aux=symtab; aux; previous=aux, aux=aux->next)
 			if(strcmp(aux->name, str)==0)
 				return NULL;
-		
 		previous->next=newSymbol;	//adiciona ao final da lista
+        printf("after for new simb name: %s\n",newSymbol->name);
 	}
-	else	//symtab tem um elemento -> o novo simbolo
-		symtab=newSymbol;		
+	else{
+    
+//symtab tem um elemento -> o novo simbolo
+		symtab=newSymbol;
+        printf("else new simb name: %s\n",newSymbol->name);
 	
+    }		
+	
+    printf("Inserted %s, %s\n", newSymbol->name, newSymbol->type);
 	return newSymbol; 
 }
 
@@ -142,8 +178,6 @@ symb_list create_table(char *name){
 }
 
 // PERCORRER ARVORE E ADICIONAR A TABELA
-
-
 void handle_funcdefinition(no* node){
 	no *aux = node->child;
 	int aux_p = 0;
@@ -165,8 +199,6 @@ void handle_funcdefinition(no* node){
             insert_el(aux->value, "int", 0);
         }
     }
-
-
     if(strcmp(aux->label, "Void") == 0){
         if (aux->brother != NULL){
             insert_el(NULL, "void", 0);
@@ -184,8 +216,6 @@ void handle_funcdefinition(no* node){
             insert_el(aux->value, "double", 0);
         }
     }
-
-
     if(strcmp(aux->label, "Short") == 0){
         if (aux->brother != NULL){
             insert_el(NULL, "short", 0);
@@ -194,8 +224,6 @@ void handle_funcdefinition(no* node){
             insert_el(aux->value, "short", 0);
         }
     }
-
-
     if(strcmp(aux->label, "Char") == 0){
         if (aux->brother != NULL){
             insert_el(NULL, "char", 0);
@@ -204,7 +232,6 @@ void handle_funcdefinition(no* node){
             insert_el(aux->value, "char", 0);
         }
     }
-
 	while(strcmp(aux->label,"Id") != 0){ 
     	aux_p++;
     	aux = aux->brother;
@@ -213,12 +240,24 @@ void handle_funcdefinition(no* node){
 	handle_ast(aux->brother);
 	}
 
+
+void handle_fdeclaration(no *node){
+    no *aux = aux->child;
+    //primeiro filho - tipo da funcao
+    char *func_type = aux->label;
+    //passar ao irmao que e o ID
+    aux = aux->brother;
+    //isto e o ID
+    char *func_id = aux->label;
+
+}
+
 void handle_ast(no* node){
 	if (node == NULL){
 		return;
 	}
 	if(strcmp(node->label, "Program") ==0){
-		printf("Encontrei Program.\n");
+		//printf("Encontrei Program.\n");
 		//criar tabelas global
 		//dizer que e tabela atual 
 		if(node->child != NULL)
@@ -228,12 +267,12 @@ void handle_ast(no* node){
     	return;
 	}
 	if(strcmp(node->label, "FuncDefinition") ==0){
-		printf("Encontrei Func Definition.\n");
+		//printf("Encontrei Func Definition.\n");
 		//criar tabela func
 		//global = create_table();
 		//dizer que e tabela atual 
 		//inserir o simbolo na tabela global
-        handle_funcdefinition(node);
+
 		if(node->child != NULL)
 		handle_ast(node->child);
 		if(node->brother != NULL)
@@ -241,26 +280,44 @@ void handle_ast(no* node){
     	return;
 	}
 		if(strcmp(node->label, "FuncDeclaration") ==0){
-			printf("Encontrei Func Declaration.\n");
+			//printf("Encontrei Func Declaration.\n");
 			//criar tabela func
 			//inserir o simbolo na tabela global
+            char *type = node->child->label;
+            //printf("%s\n",type);
+            char *id_func = node->child->brother->value;
+            //printf("%s\n",id_func);
+
+            insert_el(id_func,type,0);
+
 			if(node->child != NULL)
 			handle_ast(node->child);
 			if(node->brother != NULL)
 			handle_ast(node->brother);
-			return;
-			
+			return;		
 	}
 
 	if(strcmp(node->label, "Declaration") ==0){
 		printf("Encontrei Declaration.\n");
 		//inserir o simbolo na tabela atual
+        no * type_spec = node->child;
+        //tipo de funcao
+        no * id = type_spec->brother;
+
+        insert_el(id->value,type_spec->label,0);
+        print_global_table(symtab);
+
+        printf("%s %s\n",id->label, id->value);
+        printf("%s\n", type_spec->label);
+
 		if(node->child != NULL)
-		handle_ast(node->child);
+		    handle_ast(node->child);
 		if(node->brother != NULL)
-		handle_ast(node->brother);
+		    handle_ast(node->brother);
 		return;
 	}
+
+
 	
 }
 

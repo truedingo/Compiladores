@@ -2184,12 +2184,12 @@ int main(int argc, char* argv[]){
         if(strcmp(argv[1],"-s")==0){
             flag=2;
             yyparse();
-            yylex_destroy();
             if(error_check!=1){
+                handle_ast(root);
+                print_global_table(symtab);
                 printAST(root,0);
             }
-            handle_ast(root);
-            show_table();
+            yylex_destroy();
         }
     }
     else{
