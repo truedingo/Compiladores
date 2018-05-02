@@ -180,10 +180,53 @@ symb_list create_table(char *name){
   	return new_table;
 }
 
+void change_types(no* type_spec){
+    no * id = type_spec->brother;
+   if(strcmp(type_spec->label, "Int") == 0){
+        if (id == NULL){
+            insert_el(NULL, "int", 0);
+        }
+        else{
+            insert_el(id->value, "int", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Void") == 0){
+        if (id == NULL){
+            insert_el(NULL, "void", 0);
+        }
+        else{
+            insert_el(id->value, "void", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Double") == 0){
+        if (id == NULL){
+            insert_el(NULL, "double", 0);
+        }
+        else{
+            insert_el(id->value, "double", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Short") == 0){
+        if (id == NULL){
+            insert_el(NULL, "short", 0);
+        }
+        else{
+            insert_el(id->value, "short", 0);
+        }
+    }
+    if(strcmp(type_spec->label, "Char") == 0){
+        if (id == NULL){
+            insert_el(NULL, "char", 0);
+        }
+        else{
+            insert_el(id->value, "char", 0);
+        }
+    }
+}
+
 // PERCORRER ARVORE E ADICIONAR A TABELA
 void handle_funcdefinition(no* node){
 	no *aux = node->child;
-	int aux_p = 0;
 	// O primeiro filho é label da funcao
 	aux = aux->brother;
 
@@ -192,52 +235,7 @@ void handle_funcdefinition(no* node){
     	tabela_atual = create_table(aux->label); //current table vai ter a tabela da função que estamos a tratar, para mais tarde sabermos em que tabela inserir os simbolos
     	tabela_atual->is_param = 0;
 	}
-
-    if(strcmp(aux->label, "Int") == 0){
-        if (aux->brother != NULL){
-            insert_el(NULL, "int", 0);
-        }
-        else{
-            insert_el(aux->value, "int", 0);
-        }
-    }
-    if(strcmp(aux->label, "Void") == 0){
-        if (aux->brother != NULL){
-            insert_el(NULL, "void", 0);
-        }
-        else{
-            insert_el(aux->value, "void", 0);
-        }
-    }
-
-    if(strcmp(aux->label, "Double") == 0){
-        if (aux->brother != NULL){
-            insert_el(NULL, "double", 0);
-        }
-        else{
-            insert_el(aux->value, "double", 0);
-        }
-    }
-    if(strcmp(aux->label, "Short") == 0){
-        if (aux->brother != NULL){
-            insert_el(NULL, "short", 0);
-        }
-        else{
-            insert_el(aux->value, "short", 0);
-        }
-    }
-    if(strcmp(aux->label, "Char") == 0){
-        if (aux->brother != NULL){
-            insert_el(NULL, "char", 0);
-        }
-        else{
-            insert_el(aux->value, "char", 0);
-        }
-    }
-	while(strcmp(aux->label,"Id") != 0){ 
-    	aux_p++;
-    	aux = aux->brother;
-	}
+    change_types(aux);
 	insert_el(tabela_atual->name,"Id",0);
 	handle_ast(aux->brother);
 	}
@@ -278,7 +276,6 @@ void handle_ast(no* node){
             char *id_func = node->child->brother->value;
             //printf("%s\n",id_func);
             insert_el(id_func,type,0);
-
             if(strcmp(node->child->brother->brother->label, "ParamList")==0){
                 no *aux = node->child->brother->brother->child;
                 while(aux != NULL){
@@ -298,52 +295,10 @@ void handle_ast(no* node){
 		//inserir o simbolo na tabela atual
         no * type_spec = node->child;
         //tipo de funcao
-        no * id = type_spec->brother;
-    
-    if(strcmp(type_spec->label, "Int") == 0){
-        if (id == NULL){
-            insert_el(NULL, "int", 0);
-        }
-        else{
-            insert_el(id->value, "int", 0);
-        }
-    }
-    if(strcmp(type_spec->label, "Void") == 0){
-        if (id == NULL){
-            insert_el(NULL, "void", 0);
-        }
-        else{
-            insert_el(id->value, "void", 0);
-        }
-    }
-    if(strcmp(type_spec->label, "Double") == 0){
-        if (id == NULL){
-            insert_el(NULL, "double", 0);
-        }
-        else{
-            insert_el(id->value, "double", 0);
-        }
-    }
-    if(strcmp(type_spec->label, "Short") == 0){
-        if (id == NULL){
-            insert_el(NULL, "short", 0);
-        }
-        else{
-            insert_el(id->value, "short", 0);
-        }
-    }
-    if(strcmp(type_spec->label, "Char") == 0){
-        if (id == NULL){
-            insert_el(NULL, "char", 0);
-        }
-        else{
-            insert_el(id->value, "char", 0);
-        }
-    }
-    
         //insert_el(id->value,type_spec->label,0);
         //printf("%s %s\n",id->label, id->value);
         //printf("%s\n", type_spec->label);
+        change_types(type_spec);
 		if(node->child != NULL)
 		    handle_ast(node->child);
 		if(node->brother != NULL)

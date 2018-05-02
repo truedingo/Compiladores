@@ -36,6 +36,5 @@ void addChild(no* father, no* child);
 void addBrother(no* oldbro, no* newbro);
 void printAST(no *current, int n);
 int cntBrothers(no* root);
-
+void change_types(no* type_spec);
 void print_global_table(symb_list tabela_atual);
-void change_types(no *node);
