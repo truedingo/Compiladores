@@ -117,7 +117,8 @@ void print_global_table()
         else
         {
             params_list auxP = lista->args;
-            printf("%s\t(", lista->table->name);
+            printf("%s\t", lista->table->name);
+            printf("%s\t(",lista->table->type);
             //printf("params type: %s\n", auxP->params);
             while (auxP != NULL)
             {
@@ -128,7 +129,7 @@ void print_global_table()
                 }
                 auxP = auxP->next;
             }
-            printf(")\t%s", aux->table->type);
+            printf(")");
         }
         printf("\n");
         global_table = global_table->next;
@@ -166,7 +167,7 @@ symb_list insert_el(char *str, char *type)
         //Se nao tiver elementos a lista passa a ser este elemento
         tabela_atual->table = newSymbol;
     }
-    printf("Inseri %s em %s\n", str, tabela_atual->table->name);
+    //printf("Inseri %s em %s\n", str, tabela_atual->table->name);
     return newSymbol;
 }
 
@@ -193,14 +194,14 @@ functions_list insert_function(char *name, char *type)
     }
     else
     {
-        printf("boas\n");
+        //printf("boas\n");
         //a lista esta vazia
         nova_funcao->args = NULL;
         nova_funcao->next = NULL;
         nova_funcao->table = newSymbol;
         global->next = nova_funcao;
     }
-    printf("Inseri %s em Global\n", name);
+    //printf("Inseri %s em Global\n", name);
 
     return nova_funcao;
 }
@@ -208,21 +209,21 @@ functions_list insert_function(char *name, char *type)
 void insert_param(functions_list function, char *name, char *type)
 {
     params_list newParam = (params_list)malloc(sizeof(_pl));
-    printf("no insert\n");
+    //printf("no insert\n");
 
     if (name == NULL)
         newParam->name = NULL;
     else
         newParam->name = strdup(name);
-    printf("depois do name\n");
+    //printf("depois do name\n");
 
     newParam->type = strdup(type);
     newParam->next = NULL;
 
-    printf("morri no aux\n");
+    //printf("morri no aux\n");
 
     params_list aux = function->args;
-    printf("fake\n");
+    //printf("fake\n");
 
     if (aux != NULL)
     {
@@ -242,7 +243,7 @@ void print_local_table(functions_list atual)
 {
     symb_list sym_aux = atual->table;
     params_list param_aux = atual->args;
-    printf("===== Function %s Symbol Table =====\n", sym_aux->name);
+    printf("\n===== Function %s Symbol Table =====\n", sym_aux->name);
     printf("return\t%s\n", atual->table->type);
     while (param_aux != NULL)
     {
@@ -254,6 +255,7 @@ void print_local_table(functions_list atual)
         printf("%s\t%s\n", sym_aux->name, sym_aux->type);
         sym_aux = sym_aux->next;
     }
+    //printf("\n");
 }
 //Procura um identificador, devolve 0 caso nao exista
 symb_list search_el(functions_list list, char *str)
@@ -341,10 +343,10 @@ void handle_ast(no *node)
     {
         return;
     }
-    printf("node label: %s\n", node->label);
+    //printf("node label: %s\n", node->label);
     if (strcmp(node->label, "Program") == 0)
     {
-        printf("Encontrei Program.\n");
+        //printf("Encontrei Program.\n");
         global = (functions_list)malloc(sizeof(_t));
         global->table = (symb_list)malloc(sizeof(_s));
         global->table->type = NULL;
@@ -364,7 +366,7 @@ void handle_ast(no *node)
         no *param_list = id->brother;
 
         functions_list funcao = search_table_name(id->value);
-        printf("%s %s\n", id->value, type_spec->label);
+        //printf("%s %s\n", id->value, type_spec->label);
 
         if (funcao == NULL)
             funcao = insert_function(id->value, type_spec->label);
@@ -372,20 +374,20 @@ void handle_ast(no *node)
         if (strcmp(param_list->label, "ParamList") == 0)
         {
             no *param_declaration = param_list->child;
-            printf("sasasas\n");
+            //printf("sasasas\n");
             while (param_declaration != NULL)
             {
-                printf("sasasas\n");
+                //printf("sasasas\n");
                 no *param_type = param_declaration->child;
                 no *param_id = param_type->brother;
                 if (param_id != NULL)
                 {
-                    printf("ashajsha %s    %s\n", param_id->value, param_type->label);
+                    //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
                     insert_param(funcao, param_id->value, param_type->label);
                 }
                 else
                 {
-                    printf("ashajsha null    %s\n", param_type->label);
+                    //printf("ashajsha null    %s\n", param_type->label);
                     insert_param(funcao, NULL, param_type->label);
                     //ver se a funcao ja tem algum parametro
                     //se nao tiver, a lista passa a ser este novo parametro
@@ -404,7 +406,7 @@ void handle_ast(no *node)
     }
     else if (strcmp(node->label, "FuncDeclaration") == 0)
     {
-        printf("sasasas\n");
+       // printf("sasasas\n");
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
@@ -414,20 +416,20 @@ void handle_ast(no *node)
         if (strcmp(param_list->label, "ParamList") == 0)
         {
             no *param_declaration = param_list->child;
-            printf("sasasas\n");
+            //printf("sasasas\n");
             while (param_declaration != NULL)
             {
-                printf("sasasas\n");
+                //printf("sasasas\n");
                 no *param_type = param_declaration->child;
                 no *param_id = param_type->brother;
                 if (param_id != NULL)
                 {
-                    printf("ashajsha %s    %s\n", param_id->value, param_type->label);
+                    //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
                     insert_param(funcao, param_id->value, param_type->label);
                 }
                 else
                 {
-                    printf("ashajsha null    %s\n", param_type->label);
+                    //printf("ashajsha null    %s\n", param_type->label);
                     insert_param(funcao, NULL, param_type->label);
                     //ver se a funcao ja tem algum parametro
                     //se nao tiver, a lista passa a ser este novo parametro
@@ -443,7 +445,7 @@ void handle_ast(no *node)
     }
     else if (strcmp(node->label, "Declaration") == 0)
     {
-        printf("Encontrei Declaration.\n");
+        //printf("Encontrei Declaration.\n");
         //inserir o simbolo na tabela atual
         no *type_spec = node->child;
         no *id = type_spec->brother;
