@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include "newtree.h"
 
 no *createNode(char *label, char *value)
@@ -254,23 +255,24 @@ void print_local_table(functions_list atual)
     //printf("copia: %s\n", copia);
 
     while (param_aux != NULL)
-    {  
-        if (strcmp(param_aux->type, "Void")!=0){
-        printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
+    {
+        if (strcmp(param_aux->type, "void") != 0)
+        {
+            printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
         }
         param_aux = param_aux->next;
-
     }
 
     while (sym_aux != NULL)
-    {      
-        if (strcmp(sym_aux->type, "Void")!=0){
-            if(strcmp(sym_aux->name, copia)!=0){
+    {
+        if (strcmp(sym_aux->type, "void") != 0)
+        {
+            if (strcmp(sym_aux->name, copia) != 0)
+            {
                 printf("%s\t%s\n", sym_aux->name, sym_aux->type);
             }
         }
         sym_aux = sym_aux->next;
-
     }
     //printf("\n");
 }
@@ -353,67 +355,6 @@ void change_types(no *type_spec)
     }
 }
 
-functions_list change_func_types(no *type_spec)
-{
-    no *id = type_spec->brother;
-    if (strcmp(type_spec->label, "Int") == 0)
-    {
-        if (id == NULL)
-        {
-            //insert_function(id->value, type_spec->label);
-            insert_function(NULL, "int");
-        }
-        else
-        {
-            insert_function(id->value, "int");
-        }
-    }
-    if (strcmp(type_spec->label, "Void") == 0)
-    {
-        if (id == NULL)
-        {
-            insert_function(NULL, "void");
-        }
-        else
-        {
-            insert_function(id->value, "void");
-        }
-    }
-    if (strcmp(type_spec->label, "Double") == 0)
-    {
-        if (id == NULL)
-        {
-            insert_function(NULL, "double");
-        }
-        else
-        {
-            insert_function(id->value, "double");
-        }
-    }
-    if (strcmp(type_spec->label, "Short") == 0)
-    {
-        if (id == NULL)
-        {
-            insert_function(NULL, "short");
-        }
-        else
-        {
-            insert_function(id->value, "short");
-        }
-    }
-    if (strcmp(type_spec->label, "Char") == 0)
-    {
-        if (id == NULL)
-        {
-            insert_function(NULL, "char");
-        }
-        else
-        {
-            insert_function(id->value, "char");
-        }
-    }
-}
-
 void handle_ast(no *node)
 {
 
@@ -445,9 +386,16 @@ void handle_ast(no *node)
 
         functions_list funcao = search_table_name(id->value);
         //printf("%s %s\n", id->value, type_spec->label);
-
+        char *label_minusculo = malloc(sizeof(type_spec->label));
+        int i = 0;
+        while (type_spec->label[i])
+        {
+            label_minusculo[i] = tolower(type_spec->label[i]);
+            i++;
+        }
+        //printf("...%s...\n", label_minusculo);
         if (funcao == NULL)
-            funcao = insert_function(id->value, type_spec->label);
+            funcao = insert_function(id->value, label_minusculo);
 
         if (strcmp(param_list->label, "ParamList") == 0)
         {
@@ -458,15 +406,24 @@ void handle_ast(no *node)
                 //printf("sasasas\n");
                 no *param_type = param_declaration->child;
                 no *param_id = param_type->brother;
+                char *param_minusculo = malloc(sizeof(param_type->label));
+                int i = 0;
+                while (param_type->label[i])
+                {
+                    param_minusculo[i] = tolower(param_type->label[i]);
+                    i++;
+                }
                 if (param_id != NULL)
                 {
                     //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
-                    insert_param(funcao, param_id->value, param_type->label);
+                    //printf("lll %s lll\n",param_minusculo);
+                    insert_param(funcao, param_id->value, param_minusculo);
                 }
                 else
                 {
+                    //printf("lll %s lll\n",param_minusculo);
                     //printf("ashajsha null    %s\n", param_type->label);
-                    insert_param(funcao, NULL, param_type->label);
+                    insert_param(funcao, NULL, param_minusculo);
                     //ver se a funcao ja tem algum parametro
                     //se nao tiver, a lista passa a ser este novo parametro
                     //caso contrario, encontram o fim da lista e metem la o param
@@ -488,8 +445,17 @@ void handle_ast(no *node)
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-        functions_list funcao = insert_function(id->value, type_spec->label);
-    
+
+        char *label_minusculo = malloc(sizeof(type_spec->label));
+        int i = 0;
+        while (type_spec->label[i])
+        {
+            label_minusculo[i] = tolower(type_spec->label[i]);
+            i++;
+        }
+
+        functions_list funcao = insert_function(id->value, label_minusculo);
+
         if (strcmp(param_list->label, "ParamList") == 0)
         {
             no *param_declaration = param_list->child;
@@ -499,15 +465,23 @@ void handle_ast(no *node)
                 //printf("sasasas\n");
                 no *param_type = param_declaration->child;
                 no *param_id = param_type->brother;
+                char *param_minusculo = malloc(sizeof(param_type->label));
+                int i = 0;
+                while (param_type->label[i])
+                {
+                    param_minusculo[i] = tolower(param_type->label[i]);
+                    i++;
+                }
+
                 if (param_id != NULL)
                 {
                     //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
-                    insert_param(funcao, param_id->value, param_type->label);
+                    insert_param(funcao, param_id->value, param_minusculo);
                 }
                 else
                 {
                     //printf("ashajsha null    %s\n", param_type->label);
-                    insert_param(funcao, NULL, param_type->label);
+                    insert_param(funcao, NULL, param_minusculo);
                     //ver se a funcao ja tem algum parametro
                     //se nao tiver, a lista passa a ser este novo parametro
                     //caso contrario, encontram o fim da lista e metem la o param

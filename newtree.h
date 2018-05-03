@@ -48,4 +48,3 @@ functions_list create_functions_list();
 functions_list search_table_name(char *str);
 functions_list global;
 functions_list tabela_atual;
-functions_list change_func_types(no *type_spec);
