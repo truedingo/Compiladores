@@ -7,6 +7,7 @@
     #include "newtree.h"
 
    symb_list symtab;
+   functions_list flist;
 
     
     #define LINHA linha++; coluna=1;

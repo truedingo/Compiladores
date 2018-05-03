@@ -5,6 +5,7 @@
 #include "newtree.h"
 
 extern symb_list symtab;
+symb_list func_list;
 symb_list global;
 symb_list tabela_atual;
 functions_list flist;
@@ -98,7 +99,6 @@ void print_global_table(symb_list global){
             printf("%s\t%s", aux->name, aux->type);
         }
         else{
-            printf("entrei aqui\n");
             auxP = aux;
             printf("%s\t(", aux->name);
             while(auxP != NULL){
@@ -137,6 +137,32 @@ symb_list insert_el(char *str, char *type, int isParam)
 	else{  
     //symtab tem um elemento -> o novo simbolo
 		symtab=newSymbol;
+	
+    }		
+	return newSymbol; 
+}
+
+symb_list insert_el_functions(char *str, char *type, int isParam)
+{
+    symb_list newSymbol = flist->table;
+	newSymbol =(symb_list) malloc(sizeof(_s));
+	symb_list aux;
+	symb_list previous;
+
+    newSymbol->name = strdup(str);
+    newSymbol->type = strdup(type);
+    newSymbol->next = NULL;
+    newSymbol->is_param = isParam;	
+	if(func_list)	//Se table ja tem elementos
+	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
+        for(aux=func_list; aux; previous=aux, aux=aux->next)
+			if(strcmp(aux->name, str)==0)
+				return NULL;
+		previous->next=newSymbol;	//adiciona ao final da lista
+	}
+	else{  
+    //symtab tem um elemento -> o novo simbolo
+		func_list=newSymbol;
 	
     }		
 	return newSymbol; 
@@ -297,13 +323,17 @@ void handle_ast(no* node){
 			printf("Encontrei Func Declaration.\n");
 			symb_list new_table;
 			flist = create_functions_list();
-			new_table = flist->table;
-			new_table = create_table(node->label);
             flist->args = create_params_list();
-            if(flist->args != NULL){
-                printf("Oiiiii!");
+            insert_el_functions(node->child->brother->value, node->child->label, 1);
+            while(strcmp(node->child->brother->brother->label, "ParamList") == 0){
+                printf("node %s\n", node->child->brother->brother->child->label);
+                if(node->child != NULL)
+			        handle_ast(node->child);
+			    if(node->brother != NULL)
+			        handle_ast(node->brother);
+			    return;	
+                //while(node->child->brother->brother->brother != NULL)
             }
-            //plist = create_params_list();
 			//inserir o simbolo na tabela global
             /*char *type = node->child->label;
             //printf("%s\n",type);
@@ -318,11 +348,7 @@ void handle_ast(no* node){
                     aux = aux->brother;
                 }
             }*/
-			if(node->child != NULL)
-			handle_ast(node->child);
-			if(node->brother != NULL)
-			handle_ast(node->brother);
-			return;		
+	
 	}
 
 	if(strcmp(node->label, "Declaration") ==0){
