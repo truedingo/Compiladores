@@ -110,29 +110,32 @@ void print_global_table()
     {
         // nao e funcao!
         functions_list lista = search_table_name(global_table->name);
-        if (lista == NULL)
+        if (global_table->name != NULL)
         {
-            printf("%s\t%s", global_table->name, global_table->type);
-        }
-        else
-        {
-            params_list auxP = lista->args;
-            printf("%s\t", lista->table->name);
-            printf("%s\t(",lista->table->type);
-            //printf("params type: %s\n", auxP->params);
-            while (auxP != NULL)
+            if (lista == NULL)
             {
-                printf("%s", auxP->type);
-                if (auxP->next != NULL)
-                {
-                    printf(",");
-                }
-                auxP = auxP->next;
+                printf("%s\t%s", global_table->name, global_table->type);
             }
-            printf(")");
+            else
+            {
+                params_list auxP = lista->args;
+                printf("%s\t", lista->table->name);
+                printf("%s(", lista->table->type);
+                //printf("params type: %s\n", auxP->params);
+                while (auxP != NULL)
+                {
+                    printf("%s", auxP->type);
+                    if (auxP->next != NULL)
+                    {
+                        printf(",");
+                    }
+                    auxP = auxP->next;
+                }
+                printf(")");
+            }
+            printf("\n");
+            global_table = global_table->next;
         }
-        printf("\n");
-        global_table = global_table->next;
     }
     aux = global->next;
     while (aux != NULL)
@@ -178,6 +181,7 @@ functions_list insert_function(char *name, char *type)
     newSymbol->name = strdup(name);
     newSymbol->type = strdup(type);
     newSymbol->next = NULL;
+    //change_types(type);
     insert_el(name, type);
     functions_list nova_funcao = (functions_list)malloc(sizeof(_t));
 
@@ -245,15 +249,28 @@ void print_local_table(functions_list atual)
     params_list param_aux = atual->args;
     printf("\n===== Function %s Symbol Table =====\n", sym_aux->name);
     printf("return\t%s\n", atual->table->type);
+    char *copia = sym_aux->name;
+
+    //printf("copia: %s\n", copia);
+
     while (param_aux != NULL)
-    {
+    {  
+        if (strcmp(param_aux->type, "Void")!=0){
         printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
+        }
         param_aux = param_aux->next;
+
     }
+
     while (sym_aux != NULL)
-    {
-        printf("%s\t%s\n", sym_aux->name, sym_aux->type);
+    {      
+        if (strcmp(sym_aux->type, "Void")!=0){
+            if(strcmp(sym_aux->name, copia)!=0){
+                printf("%s\t%s\n", sym_aux->name, sym_aux->type);
+            }
+        }
         sym_aux = sym_aux->next;
+
     }
     //printf("\n");
 }
@@ -336,6 +353,67 @@ void change_types(no *type_spec)
     }
 }
 
+functions_list change_func_types(no *type_spec)
+{
+    no *id = type_spec->brother;
+    if (strcmp(type_spec->label, "Int") == 0)
+    {
+        if (id == NULL)
+        {
+            //insert_function(id->value, type_spec->label);
+            insert_function(NULL, "int");
+        }
+        else
+        {
+            insert_function(id->value, "int");
+        }
+    }
+    if (strcmp(type_spec->label, "Void") == 0)
+    {
+        if (id == NULL)
+        {
+            insert_function(NULL, "void");
+        }
+        else
+        {
+            insert_function(id->value, "void");
+        }
+    }
+    if (strcmp(type_spec->label, "Double") == 0)
+    {
+        if (id == NULL)
+        {
+            insert_function(NULL, "double");
+        }
+        else
+        {
+            insert_function(id->value, "double");
+        }
+    }
+    if (strcmp(type_spec->label, "Short") == 0)
+    {
+        if (id == NULL)
+        {
+            insert_function(NULL, "short");
+        }
+        else
+        {
+            insert_function(id->value, "short");
+        }
+    }
+    if (strcmp(type_spec->label, "Char") == 0)
+    {
+        if (id == NULL)
+        {
+            insert_function(NULL, "char");
+        }
+        else
+        {
+            insert_function(id->value, "char");
+        }
+    }
+}
+
 void handle_ast(no *node)
 {
 
@@ -406,13 +484,12 @@ void handle_ast(no *node)
     }
     else if (strcmp(node->label, "FuncDeclaration") == 0)
     {
-       // printf("sasasas\n");
+        // printf("sasasas\n");
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-
         functions_list funcao = insert_function(id->value, type_spec->label);
-
+    
         if (strcmp(param_list->label, "ParamList") == 0)
         {
             no *param_declaration = param_list->child;
@@ -448,12 +525,11 @@ void handle_ast(no *node)
         //printf("Encontrei Declaration.\n");
         //inserir o simbolo na tabela atual
         no *type_spec = node->child;
-        no *id = type_spec->brother;
         //tipo de funcao
         //printf("%s %s\n",id->label, id->value);
         //printf("%s\n", type_spec->label);
-        //change_types(type_spec);
-        insert_el(id->value, type_spec->label);
+        change_types(type_spec);
+        //insert_el(id->value, type_spec->label);
         if (node->child != NULL)
             handle_ast(node->child);
         if (node->brother != NULL)
