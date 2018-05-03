@@ -2187,7 +2187,7 @@ int main(int argc, char* argv[]){
             yyparse();
             if(error_check!=1){
                 handle_ast(root);
-                print_global_table(symtab);
+                print_global_table();
                 printAST(root,0);
             }
             yylex_destroy();

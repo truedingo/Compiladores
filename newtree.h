@@ -16,12 +16,11 @@ typedef struct table{
 	char *name; //nome
     char *type; //tipo da variavel
 	symb_list next; //apontador para next
-	int is_param; //bool 0 ou 1 (tem parametro ou nao)
 }_s;
 typedef struct plist * params_list;
 typedef struct plist{
     char *name;
-	char *params;
+	char *type;
 	params_list next; //apontador next
 }_pl;
 
@@ -32,9 +31,8 @@ typedef struct functions{
 	functions_list next; //apontador next
 }_t;
 
-symb_list insert_el(char *str,  char *type, int isParam);
-symb_list search_el(char *str);
-void show_table();
+symb_list insert_el(char *str,  char *type);
+symb_list search_el(functions_list list, char *str);
 symb_list create_table();
 void handle_ast(no* root);
 no *createNode(char *label, char *value);
@@ -43,8 +41,10 @@ void addBrother(no* oldbro, no* newbro);
 void printAST(no *current, int n);
 int cntBrothers(no* root);
 void change_types(no* type_spec);
-void print_global_table(symb_list tabela_atual);
-
+void print_global_table();
+void print_local_table(functions_list atual);
 params_list create_params_list();
 functions_list create_functions_list();
 functions_list search_table_name(char *str);
+functions_list global;
+functions_list tabela_atual;

@@ -1,4 +1,6 @@
-int main(void,int a) {
+int a;
+short c;
+int main(void) {
 	int i = 1;
 	while (i != 0) {
 		i = readint();
@@ -6,3 +8,9 @@ int main(void,int a) {
 		putchar('\n');
 	}
 }
+
+int oi(int a);
+int oi(int b){}
+
+
+
