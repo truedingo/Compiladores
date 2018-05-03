@@ -266,22 +266,6 @@ void change_types(no* type_spec){
     }
 }
 
-// PERCORRER ARVORE E ADICIONAR A TABELA
-void handle_funcdefinition(no* node){
-	no *aux = node->child;
-	// O primeiro filho é label da funcao
-	aux = aux->brother;
-
-    tabela_atual = search_el(aux->label);
-	if(tabela_atual == NULL){
-    	tabela_atual = create_table(aux->label); //current table vai ter a tabela da função que estamos a tratar, para mais tarde sabermos em que tabela inserir os simbolos
-    	tabela_atual->is_param = 0;
-	}
-    change_types(aux);
-	insert_el(tabela_atual->name,"Id",0);
-	handle_ast(aux->brother);
-	}
-
 void handle_ast(no* node){
 	if (node == NULL){
 		return;
@@ -310,12 +294,18 @@ void handle_ast(no* node){
     	return;
 	}
 		if(strcmp(node->label, "FuncDeclaration") ==0){
-			//printf("Encontrei Func Declaration.\n");
-			//criar tabela func
-            plist = create_params_list();
-            flist = create_functions_list();
+			printf("Encontrei Func Declaration.\n");
+			symb_list new_table;
+			flist = create_functions_list();
+			new_table = flist->table;
+			new_table = create_table(node->label);
+			if(new_table != NULL){
+				printf("OLAAA\n");
+				printf("oiii %s\n", new_table->name);
+			}
+            //plist = create_params_list();
 			//inserir o simbolo na tabela global
-            char *type = node->child->label;
+            /*char *type = node->child->label;
             //printf("%s\n",type);
             char *id_func = node->child->brother->value;
             //printf("%s\n",id_func);
@@ -327,7 +317,7 @@ void handle_ast(no* node){
                     //printf("label: %s\n", aux->child->label);
                     aux = aux->brother;
                 }
-            }
+            }*/
 			if(node->child != NULL)
 			handle_ast(node->child);
 			if(node->brother != NULL)

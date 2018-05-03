@@ -45,5 +45,5 @@ int cntBrothers(no* root);
 void change_types(no* type_spec);
 void print_global_table(symb_list tabela_atual);
 
-params_list create_params_list(char *name, char *params);
+params_list create_params_list(char *name);
 functions_list create_functions_list();
