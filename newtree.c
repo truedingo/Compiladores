@@ -206,12 +206,12 @@ symb_list create_table(char *name){
   	return new_table;
 }
 
-params_list create_params_list(char *name){
-	params_list new_table = (params_list)malloc(sizeof(struct plist));
-	new_table->next = NULL;
-	new_table->name = strdup(name);
-    new_table->params = NULL;
-  	return new_table;
+params_list create_params_list(){
+    params_list param_p;
+    param_p = (params_list)malloc(sizeof(struct plist));
+	param_p->next = NULL;
+    param_p->params = NULL;
+  	return param_p;
 }
 
 functions_list create_functions_list(){
@@ -299,10 +299,10 @@ void handle_ast(no* node){
 			flist = create_functions_list();
 			new_table = flist->table;
 			new_table = create_table(node->label);
-			if(new_table != NULL){
-				printf("OLAAA\n");
-				printf("oiii %s\n", new_table->name);
-			}
+            flist->args = create_params_list();
+            if(flist->args != NULL){
+                printf("Oiiiii!");
+            }
             //plist = create_params_list();
 			//inserir o simbolo na tabela global
             /*char *type = node->child->label;
