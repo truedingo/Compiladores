@@ -173,31 +173,29 @@ params_list insert_param(char *name, char *type){
 	params_list aux;
 	params_list previous;
 
+    if(name == NULL)
+        newParam->name = NULL;
+    else
     newParam->name = strdup(name);
-    newParam->params = strdup(type);
 
-    if(plist)	//Se table ja tem elementos
+    newParam->params = strdup(type);
+    if(plist!= NULL)	//Se table ja tem elementos
 	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
-        for(aux=plist; aux; previous=aux, aux=aux->next)
-			if(strcmp(aux->name, name)==0)
+
+        for(aux=plist; aux; previous=aux, aux=aux->next){
+            if(name != NULL && aux->name != NULL)
+			if(strcmp(aux->name, name)==0){
 				return NULL;
+            }
+        }
 		previous->next=newParam;	//adiciona ao final da lista
 	}
 	else{  
     //symtab tem um elemento -> o novo simbolo
 		plist=newParam;
-	
     }		
 	return newParam; 
 }
-
-/*functions_list insert_function(symb_list table, params_list params){
-    if(table == NULL){
-        table = create_functions_table();
-    }
-    functions_list new_func 
-
-}*/
 
 void show_table()
 {
@@ -207,6 +205,17 @@ void show_table()
 		printf("symbol %s, type %s, has param %d\n", aux->name, aux->type, aux->is_param);
 }
 
+void print_local_table(functions_list atual, params_list plist){
+    symb_list aux = atual->table;
+    params_list aux2 = plist;
+    while(aux != NULL){
+        printf("===== Function %s Symbol Table =====\n",  aux->name);
+        while(aux2 != NULL){
+        printf("%s\t%s",aux2->name, aux2->params);
+        }
+    aux= aux->next;
+    }
+}
 //Procura um identificador, devolve 0 caso nao exista
 symb_list search_el(char *str){
 	symb_list aux;
@@ -216,6 +225,13 @@ symb_list search_el(char *str){
 return NULL;
 }
 
+functions_list search_table_name(char *str){
+	functions_list aux;
+	for(aux=flist; aux; aux=aux->next)
+		if(strcmp(aux->table->name, str)==0)
+			return aux;
+return NULL;
+}
 /*functions_list search_table(char *str){
 	functions_list aux;
 	for(aux=tlist; aux; aux=aux->next)
@@ -307,12 +323,30 @@ void handle_ast(no* node){
     	return;
 	}
 	if(strcmp(node->label, "FuncDefinition") ==0){
-		//printf("Encontrei Func Definition.\n");
-		//criar tabela func
-		//global = create_table();
-		//dizer que e tabela atual 
-		//inserir o simbolo na tabela global
+        
+        params_list amigo = create_params_list();
+        no * type_spec = node->child;
+        no * id = type_spec->brother;
+        no * param_list = id->brother;
 
+        //printf("Change_types\n");
+        change_types(type_spec);
+        //printf("Change_types\n");
+
+        if(strcmp(param_list->label, "ParamList")==0){
+                no * param_declaration = param_list->child;
+                while(param_declaration != NULL){
+                    no * param_type = param_declaration->child;
+                    no * param_id = param_type->brother;
+                    if(param_id != NULL)
+                        insert_param(param_id->value, param_type->label);
+                    else
+                        insert_param(NULL, param_type->label);
+
+                    param_declaration = param_declaration->brother;
+                }
+
+        }
 		if(node->child != NULL)
 		handle_ast(node->child);
 		if(node->brother != NULL)
@@ -320,8 +354,7 @@ void handle_ast(no* node){
     	return;
 	}
 		if(strcmp(node->label, "FuncDeclaration") ==0){
-			printf("Encontrei Func Declaration.\n");
-			symb_list new_table;
+			//printf("Encontrei Func Declaration.\n");
 			flist = create_functions_list();
             flist->args = create_params_list();
             insert_el_functions(node->child->brother->value, node->child->label, 1);
@@ -329,6 +362,7 @@ void handle_ast(no* node){
                 printf("node %s\n", node->child->brother->brother->child->label);
                 if(node->child != NULL)
 			        handle_ast(node->child);
+
 			    if(node->brother != NULL)
 			        handle_ast(node->brother);
 			    return;	
@@ -352,11 +386,10 @@ void handle_ast(no* node){
 	}
 
 	if(strcmp(node->label, "Declaration") ==0){
-		//printf("Encontrei Declaration.\n");
+		printf("Encontrei Declaration.\n");
 		//inserir o simbolo na tabela atual
         no * type_spec = node->child;
         //tipo de funcao
-        //insert_el(id->value,type_spec->label,0);
         //printf("%s %s\n",id->label, id->value);
         //printf("%s\n", type_spec->label);
         change_types(type_spec);

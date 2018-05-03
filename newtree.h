@@ -47,3 +47,4 @@ void print_global_table(symb_list tabela_atual);
 
 params_list create_params_list();
 functions_list create_functions_list();
+functions_list search_table_name(char *str);

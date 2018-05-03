@@ -1,4 +1,8 @@
-int a;
-int b;
-short c;
-void printint(int n, short amigo, double friend);
+int main(void,int a) {
+	int i = 1;
+	while (i != 0) {
+		i = readint();
+		printint(i);
+		putchar('\n');
+	}
+}
