@@ -11,7 +11,6 @@ typedef struct no{
     int nChildren;          //number of children of said node
 } no;
 
-
 typedef struct table * symb_list;
 typedef struct table{
 	char *name; //nome
@@ -19,11 +18,18 @@ typedef struct table{
 	symb_list next; //apontador para next
 	int is_param; //bool 0 ou 1 (tem parametro ou nao)
 }_s;
-typedef struct functions * table_list;
+typedef struct plist * params_list;
+typedef struct plist{
+    char *name;
+	char *params;
+	params_list next; //apontador next
+}_pl;
+
+typedef struct functions * functions_list;
 typedef struct functions{
 	symb_list table; //table element para table
-	symb_list args;
-	table_list next; //apontador next
+	params_list args;
+	functions_list next; //apontador next
 }_t;
 
 symb_list insert_el(char *str,  char *type, int isParam);
@@ -38,3 +44,6 @@ void printAST(no *current, int n);
 int cntBrothers(no* root);
 void change_types(no* type_spec);
 void print_global_table(symb_list tabela_atual);
+
+params_list create_params_list(char *name, char *params);
+functions_list create_functions_list();

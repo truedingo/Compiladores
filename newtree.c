@@ -7,7 +7,8 @@
 extern symb_list symtab;
 symb_list global;
 symb_list tabela_atual;
-extern table_list tlist;
+functions_list flist;
+params_list plist;
 
 
 no *createNode(char *label, char *value){
@@ -115,7 +116,6 @@ void print_global_table(symb_list global){
     printf("\n");
 }
 
-
 //Insere um novo identificador na cauda de uma lista ligada de simbolo
 symb_list insert_el(char *str, char *type, int isParam)
 {
@@ -124,14 +124,9 @@ symb_list insert_el(char *str, char *type, int isParam)
 	symb_list previous;
 
     newSymbol->name = strdup(str);
-
     newSymbol->type = strdup(type);
-
     newSymbol->next = NULL;
-
     newSymbol->is_param = isParam;	
-
-
 	if(symtab)	//Se table ja tem elementos
 	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
         for(aux=symtab; aux; previous=aux, aux=aux->next)
@@ -146,6 +141,37 @@ symb_list insert_el(char *str, char *type, int isParam)
     }		
 	return newSymbol; 
 }
+
+params_list insert_param(char *name, char *type){
+    params_list newParam=(params_list) malloc(sizeof(_pl));
+	params_list aux;
+	params_list previous;
+
+    newParam->name = strdup(name);
+    newParam->params = strdup(type);
+
+    if(plist)	//Se table ja tem elementos
+	{	//Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
+        for(aux=plist; aux; previous=aux, aux=aux->next)
+			if(strcmp(aux->name, name)==0)
+				return NULL;
+		previous->next=newParam;	//adiciona ao final da lista
+	}
+	else{  
+    //symtab tem um elemento -> o novo simbolo
+		plist=newParam;
+	
+    }		
+	return newParam; 
+}
+
+/*functions_list insert_function(symb_list table, params_list params){
+    if(table == NULL){
+        table = create_functions_table();
+    }
+    functions_list new_func 
+
+}*/
 
 void show_table()
 {
@@ -164,8 +190,8 @@ symb_list search_el(char *str){
 return NULL;
 }
 
-/*table_list search_table(char *str){
-	table_list aux;
+/*functions_list search_table(char *str){
+	functions_list aux;
 	for(aux=tlist; aux; aux=aux->next)
 		if(strcmp(aux->table->name, str)==0)
 			return aux;
@@ -177,6 +203,22 @@ symb_list create_table(char *name){
 	new_table->next = NULL;
 	new_table->name = strdup(name);
 	new_table->is_param = 0;
+  	return new_table;
+}
+
+params_list create_params_list(char *name){
+	params_list new_table = (params_list)malloc(sizeof(struct plist));
+	new_table->next = NULL;
+	new_table->name = strdup(name);
+    new_table->params = NULL;
+  	return new_table;
+}
+
+functions_list create_functions_list(){
+	functions_list new_table = (functions_list)malloc(sizeof(struct functions));
+	new_table->next = NULL;
+	new_table->table= NULL;
+    new_table->args= NULL;
   	return new_table;
 }
 
@@ -270,6 +312,8 @@ void handle_ast(no* node){
 		if(strcmp(node->label, "FuncDeclaration") ==0){
 			//printf("Encontrei Func Declaration.\n");
 			//criar tabela func
+            plist = create_params_list();
+            flist = create_functions_list();
 			//inserir o simbolo na tabela global
             char *type = node->child->label;
             //printf("%s\n",type);
@@ -279,6 +323,7 @@ void handle_ast(no* node){
             if(strcmp(node->child->brother->brother->label, "ParamList")==0){
                 no *aux = node->child->brother->brother->child;
                 while(aux != NULL){
+                    insert_param(flist->args->params, aux->child->label);
                     //printf("label: %s\n", aux->child->label);
                     aux = aux->brother;
                 }
