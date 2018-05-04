@@ -1,5 +1,4 @@
-int main(void);
-
-char blah(int q){}
-
-char blah(int);
+int amigo(int a){
+    int lol;
+    int amigo;
+}

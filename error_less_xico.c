@@ -380,9 +380,7 @@ int f3 (char x) {
 int f4 (char x) {
 
 }
-int amigo(int a){
-    int amigo;
-}
+
 
 void recursiva(int a){
     recursiva(a);

@@ -161,6 +161,7 @@ symb_list insert_el(char *str, char *type)
 
     if (tabela_atual) //Se table ja tem elementos
     {                 //Procura fim da lista e verifica se simbolo ja existe
+        
         params_list aux_args = tabela_atual->args;
         while (aux_args != NULL)
         {
@@ -169,10 +170,18 @@ symb_list insert_el(char *str, char *type)
                     return NULL;
             aux_args = aux_args->next;
         }
-        for (aux = tabela_atual->table; aux; previous = aux, aux = aux->next)
+        //printf("-- %s\n", str);
+        /*for (aux = tabela_atual->table; aux; previous = aux, aux = aux->next){
+            printf("sou o aux->name %s %s\n",aux->name,str);
             if (strcmp(aux->name, str) == 0)
                 return NULL;
+        }*/
+        while(tabela_atual->table != NULL){
+            tabela_atual->table = tabela_atual->table->next;
+        }
+        tabela_atual -> table = newSymbol;
         previous->next = newSymbol; //adiciona ao final da lista
+        printf("entrei aqui com %s\n", tabela_atual->table->name);
     }
     else
     {
@@ -311,12 +320,14 @@ void change_types(no *type_spec)
     no *id = type_spec->brother;
     if (strcmp(type_spec->label, "Int") == 0)
     {
+        
         if (id == NULL)
         {
             insert_el(NULL, "int");
         }
         else
         {
+            printf("netreioa dasasd %s\n", id->value);
             insert_el(id->value, "int");
         }
     }
@@ -413,6 +424,7 @@ void handle_ast(no *node)
 
         if (funcao->args != NULL)
             funcao->args = NULL;
+            
         if (strcmp(param_list->label, "ParamList") == 0)
         {
             no *param_declaration = param_list->child;
@@ -424,7 +436,7 @@ void handle_ast(no *node)
                 no *param_id = param_type->brother;
                 char *param_minusculo = malloc(sizeof(param_type->label));
                 int i = 0;
-                
+
                 while (param_type->label[i])
                 {
                     param_minusculo[i] = tolower(param_type->label[i]);
@@ -471,8 +483,13 @@ void handle_ast(no *node)
         {
             funcao = insert_function(id->value, label_minusculo);
         }
-        if (funcao->args != NULL)
+
+        params_list aux3;
+
+        if (funcao->args != NULL){
+            aux3 = funcao->args;
             funcao->args = NULL;
+        }
 
         if (strcmp(param_list->label, "ParamList") == 0)
         {
@@ -497,12 +514,24 @@ void handle_ast(no *node)
                     insert_param(funcao, param_id->value, param_minusculo);
                 }
                 else
-                {
+                {   
+                    if(aux3 != NULL){
                     //printf("ashajsha null    %s\n", param_type->label);
-                    insert_param(funcao, NULL, param_minusculo);
+                        //printf("entrei com: %s\n", aux3->name);
+                        if(aux3->name != NULL){
+                            insert_param(funcao, aux3->name, param_minusculo);
+                        }
+                        else{
+                            insert_param(funcao,NULL, param_minusculo);
+
+                        }
+                    }
+
                 }
                 param_declaration = param_declaration->brother;
+                aux3 = aux3 -> next;
             }
+            
         }
 
         if (node->brother != NULL)
