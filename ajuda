@@ -13,10 +13,6 @@ no *createNode(char *label, char *value)
     {
         node->value = (char *)strdup(value);
     }
-    else
-    {
-        node->value = NULL;
-    }
 
     node->label = (char *)strdup(label);
     node->brother = NULL;
@@ -114,41 +110,33 @@ void print_global_table()
     while (global_table != NULL)
     {
         // nao e funcao!
-        if (global_table->is_function)
+        functions_list lista = search_table_name(global_table->name);
+        if (global_table->name != NULL)
         {
-            functions_list lista = search_table_name(global_table->name);
-            if (global_table->name != NULL)
+            if (lista == NULL)
             {
-                if (lista == NULL)
-                {
-                    printf("%s\t%s", global_table->name, global_table->type);
-                }
-                else
-                {
-                    params_list auxP = lista->args;
-                    printf("%s\t", lista->table->name);
-                    printf("%s(", lista->table->type);
-                    //printf("params type: %s\n", auxP->params);
-                    while (auxP != NULL)
-                    {
-                        printf("%s", auxP->type);
-                        if (auxP->next != NULL)
-                        {
-                            printf(",");
-                        }
-                        auxP = auxP->next;
-                    }
-                    printf(")");
-                }
-                printf("\n");
+                printf("%s\t%s", global_table->name, global_table->type);
             }
+            else
+            {
+                params_list auxP = lista->args;
+                printf("%s\t", lista->table->name);
+                printf("%s(", lista->table->type);
+                //printf("params type: %s\n", auxP->params);
+                while (auxP != NULL)
+                {
+                    printf("%s", auxP->type);
+                    if (auxP->next != NULL)
+                    {
+                        printf(",");
+                    }
+                    auxP = auxP->next;
+                }
+                printf(")");
+            }
+            printf("\n");
+            global_table = global_table->next;
         }
-        else
-        {
-
-            printf("%s\t%s\n", global_table->name, global_table->type);
-        }
-        global_table = global_table->next;
     }
     aux = global->next;
     while (aux != NULL)
@@ -161,55 +149,29 @@ void print_global_table()
 }
 
 //insere simbolo na lista da funcao atual
-symb_list insert_el(char *str, char *type, int is_function)
+symb_list insert_el(char *str, char *type)
 {
     symb_list newSymbol = (symb_list)malloc(sizeof(_s));
     symb_list aux;
+    symb_list previous;
 
     newSymbol->name = strdup(str);
     newSymbol->type = strdup(type);
-    newSymbol->is_function = is_function;
-
     newSymbol->next = NULL;
 
-    if (tabela_atual->table != NULL) //Se table ja tem elementos
-    {                                //Procura fim da lista e verifica se simbolo ja existe
-        params_list aux_args = tabela_atual->args;
-        while (aux_args != NULL)
-        {
-            if (aux_args->name != NULL)
-                if (strcmp(aux_args->name, str) == 0)
-                {
-                    return NULL;
-                }
-
-            aux_args = aux_args->next;
-        }
-        aux = tabela_atual->table->next;
-        if (aux != NULL)
-        {
-            while (aux->next != NULL)
-            {
-                if (strcmp(aux->name, str) == 0)
-                {
-                    return NULL;
-                }
-
-                aux = aux->next;
-            }
-            aux->next = newSymbol; //adiciona ao final da lista
-        }
-        else
-        {
-            tabela_atual->table->next = newSymbol;
-        }
+    if (tabela_atual) //Se table ja tem elementos
+    {                 //Procura fim da lista e verifica se simbolo ja existe
+        for (aux = tabela_atual->table; aux; previous = aux, aux = aux->next)
+            if (strcmp(aux->name, str) == 0)
+                return NULL;
+        previous->next = newSymbol; //adiciona ao final da lista
     }
     else
     {
         //Se nao tiver elementos a lista passa a ser este elemento
         tabela_atual->table = newSymbol;
     }
-    //printf("Inseri isto: %s em %s\n", str, tabela_atual->table->name);
+    //printf("Inseri %s em %s\n", str, tabela_atual->table->name);
     return newSymbol;
 }
 
@@ -219,24 +181,17 @@ functions_list insert_function(char *name, char *type)
 
     newSymbol->name = strdup(name);
     newSymbol->type = strdup(type);
-    newSymbol->is_function = 1;
     newSymbol->next = NULL;
     //change_types(type);
-    insert_el(name, type, 1);
+    insert_el(name, type);
     functions_list nova_funcao = (functions_list)malloc(sizeof(_t));
-    //printf("vou tentar inserir %s\n", name);
+
     if (global->next != NULL) //Se table ja tem elementos
     {
-        //printf("a lista nao esta vazia\n");
-
         functions_list aux; //Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
         for (aux = global->next; aux->next != NULL; aux = aux->next)
             if (strcmp(aux->table->name, name) == 0)
-            {
-                //printf("entrei aqui porque já existo %s\n", name);
                 return NULL;
-            }
-
         nova_funcao->args = NULL;
         nova_funcao->next = NULL;
         nova_funcao->table = newSymbol;
@@ -298,8 +253,9 @@ void print_local_table(functions_list atual)
     params_list param_aux = atual->args;
     printf("\n===== Function %s Symbol Table =====\n", sym_aux->name);
     printf("return\t%s\n", atual->table->type);
+    char *copia = sym_aux->name;
 
-    int first = 0;
+ 
     while (param_aux != NULL)
     {
         //printf("tipo param: %s\n" ,param_aux->name);
@@ -307,7 +263,7 @@ void print_local_table(functions_list atual)
         {
             printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
         }
-
+    
         param_aux = param_aux->next;
     }
 
@@ -315,12 +271,11 @@ void print_local_table(functions_list atual)
     {
         if (strcmp(sym_aux->type, "void") != 0)
         {
-            if (first != 0)
+            if (strcmp(sym_aux->name, copia) != 0)
             {
                 printf("%s\t%s\n", sym_aux->name, sym_aux->type);
             }
         }
-        first++;
         sym_aux = sym_aux->next;
     }
 }
@@ -348,57 +303,59 @@ void change_types(no *type_spec)
     no *id = type_spec->brother;
     if (strcmp(type_spec->label, "Int") == 0)
     {
+        
         if (id == NULL)
         {
-            insert_el(NULL, "int", 0);
+            insert_el(NULL, "int");
         }
         else
         {
-            insert_el(id->value, "int", 0);
+            printf("netreioa dasasd %s\n", id->value);
+            insert_el(id->value, "int");
         }
     }
     if (strcmp(type_spec->label, "Void") == 0)
     {
         if (id == NULL)
         {
-            insert_el(NULL, "void", 0);
+            insert_el(NULL, "void");
         }
         else
         {
-            insert_el(id->value, "void", 0);
+            insert_el(id->value, "void");
         }
     }
     if (strcmp(type_spec->label, "Double") == 0)
     {
         if (id == NULL)
         {
-            insert_el(NULL, "double", 0);
+            insert_el(NULL, "double");
         }
         else
         {
-            insert_el(id->value, "double", 0);
+            insert_el(id->value, "double");
         }
     }
     if (strcmp(type_spec->label, "Short") == 0)
     {
         if (id == NULL)
         {
-            insert_el(NULL, "short", 0);
+            insert_el(NULL, "short");
         }
         else
         {
-            insert_el(id->value, "short", 0);
+            insert_el(id->value, "short");
         }
     }
     if (strcmp(type_spec->label, "Char") == 0)
     {
         if (id == NULL)
         {
-            insert_el(NULL, "char", 0);
+            insert_el(NULL, "char");
         }
         else
         {
-            insert_el(id->value, "char", 0);
+            insert_el(id->value, "char");
         }
     }
 }
@@ -419,7 +376,6 @@ void handle_ast(no *node)
         global->table->type = NULL;
         global->table->name = "global";
         global->table->next = NULL;
-        global->table->is_function = 0;
         global->args = NULL;
         global->next = NULL;
         tabela_atual = global;
@@ -432,64 +388,55 @@ void handle_ast(no *node)
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-        /*symb_list variavel_antiga = search_el(global, id->value);
-        if (variavel_antiga == NULL)
-        {*/
-        symb_list variavel_antiga = search_el(global, id->value);
-        functions_list funcao = search_table_name(id->value);
 
-        if (variavel_antiga == NULL || funcao->args != NULL)
-        { //printf("%s %s\n", id->value, type_spec->label);
-            if (funcao == NULL || funcao->is_defined == 0)
+        functions_list funcao = search_table_name(id->value);
+        //printf("%s %s\n", id->value, type_spec->label);
+        char *label_minusculo = malloc(sizeof(type_spec->label));
+        int i = 0;
+        while (type_spec->label[i])
+        {
+            label_minusculo[i] = tolower(type_spec->label[i]);
+            i++;
+        }
+
+        if (funcao == NULL)
+        {
+            funcao = insert_function(id->value, label_minusculo);
+        }
+        funcao->is_defined = 1;
+
+        if (funcao->args != NULL)
+            funcao->args = NULL;
+            
+        if (strcmp(param_list->label, "ParamList") == 0)
+        {
+            no *param_declaration = param_list->child;
+            //printf("sasasas\n");
+            while (param_declaration != NULL)
             {
-                char *label_minusculo = malloc(sizeof(type_spec->label));
+                //printf("sasasas\n");
+                no *param_type = param_declaration->child;
+                no *param_id = param_type->brother;
+                char *param_minusculo = malloc(sizeof(param_type->label));
                 int i = 0;
-                while (type_spec->label[i])
+
+                while (param_type->label[i])
                 {
-                    label_minusculo[i] = tolower(type_spec->label[i]);
+                    param_minusculo[i] = tolower(param_type->label[i]);
                     i++;
                 }
-
-                if (funcao == NULL)
+                if (param_id != NULL)
                 {
-                    funcao = insert_function(id->value, label_minusculo);
+                    insert_param(funcao, param_id->value, param_minusculo);
                 }
-                funcao->is_defined = 1;
-
-                if (funcao->args != NULL)
-                    funcao->args = NULL;
-                if (strcmp(param_list->label, "ParamList") == 0)
+                else
                 {
-                    no *param_declaration = param_list->child;
-                    //printf("sasasas\n");
-                    while (param_declaration != NULL)
-                    {
-                        //printf("sasasas\n");
-                        no *param_type = param_declaration->child;
-                        no *param_id = param_type->brother;
-                        char *param_minusculo = malloc(sizeof(param_type->label));
-                        int i = 0;
-
-                        while (param_type->label[i])
-                        {
-                            param_minusculo[i] = tolower(param_type->label[i]);
-                            i++;
-                        }
-                        if (param_id != NULL)
-                        {
-                            insert_param(funcao, param_id->value, param_minusculo);
-                        }
-                        else
-                        {
-                            insert_param(funcao, NULL, param_minusculo);
-                        }
-                        param_declaration = param_declaration->brother;
-                    }
-                    //}
-                    tabela_atual = funcao;
+                    insert_param(funcao, NULL, param_minusculo);
                 }
+                param_declaration = param_declaration->brother;
             }
         }
+        tabela_atual = funcao;
         if (node->child != NULL)
             handle_ast(node->child);
         tabela_atual = global;
@@ -504,76 +451,72 @@ void handle_ast(no *node)
         no *param_list = id->brother;
         //if (search_el(tabela_atual, id->value) != NULL){
         //printf("Funcao %s nao definida!!\n",id->value);
-        symb_list variavel_antiga = search_el(global, id->value);
         functions_list funcao = search_table_name(id->value);
 
-        if (variavel_antiga == NULL && funcao == NULL)
+        //printf("%s %s\n", id->value, type_spec->label);
+        char *label_minusculo = malloc(sizeof(type_spec->label));
+        int i = 0;
+        while (type_spec->label[i])
         {
-            //printf("%s %s\n", id->value, type_spec->label);
-            char *label_minusculo = malloc(sizeof(type_spec->label));
-            int i = 0;
-            while (type_spec->label[i])
-            {
-                label_minusculo[i] = tolower(type_spec->label[i]);
-                i++;
-            }
-            //printf("...%s...\n", label_minusculo);
-            if (funcao == NULL)
-            {
-                funcao = insert_function(id->value, label_minusculo);
-            }
-            //params_list aux3;
-            if (funcao->args != NULL && funcao->is_defined == 0)
-            {
-                //aux3 = funcao->args;
-                funcao->args = NULL;
-            }
+            label_minusculo[i] = tolower(type_spec->label[i]);
+            i++;
+        }
+        //printf("...%s...\n", label_minusculo);
+        if (funcao == NULL)
+        {
+            funcao = insert_function(id->value, label_minusculo);
+        }
 
-            if (funcao->is_defined == 0)
-                if (strcmp(param_list->label, "ParamList") == 0)
+        params_list aux3;
+
+        if (funcao->args != NULL){
+            aux3 = funcao->args;
+            funcao->args = NULL;
+        }
+
+        if (strcmp(param_list->label, "ParamList") == 0)
+        {
+            no *param_declaration = param_list->child;
+            //printf("sasasas\n");
+            while (param_declaration != NULL)
+            {
+                //printf("sasasas\n");
+                no *param_type = param_declaration->child;
+                no *param_id = param_type->brother;
+                char *param_minusculo = malloc(sizeof(param_type->label));
+                int i = 0;
+                while (param_type->label[i])
                 {
-                    no *param_declaration = param_list->child;
-                    //printf("sasasas\n");
-                    while (param_declaration != NULL)
-                    {
-                        //printf("sasasas\n");
-                        no *param_type = param_declaration->child;
-                        no *param_id = param_type->brother;
-                        char *param_minusculo = malloc(sizeof(param_type->label));
-                        int i = 0;
-                        while (param_type->label[i])
-                        {
-                            param_minusculo[i] = tolower(param_type->label[i]);
-                            i++;
-                        }
+                    param_minusculo[i] = tolower(param_type->label[i]);
+                    i++;
+                }
 
-                        if (param_id != NULL)
-                        {
-                            //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
-                            insert_param(funcao, param_id->value, param_minusculo);
-                        }
-                        else
-                        {
-                            /*if(aux3 != NULL){
-
-                        if(aux3->name != NULL){
+                if (param_id != NULL)
+                {
+                    //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
+                    insert_param(funcao, param_id->value, param_minusculo);
+                }
+                else
+                {   
+                    if(aux3 != NULL){
                     //printf("ashajsha null    %s\n", param_type->label);
+                        //printf("entrei com: %s\n", aux3->name);
+                        if(aux3->name != NULL){
                             insert_param(funcao, aux3->name, param_minusculo);
                         }
                         else{
-                            insert_param(funcao, NULL, param_minusculo);
+                            insert_param(funcao,NULL, param_minusculo);
+
                         }
-                        aux3 = aux3 ->next;
                     }
-                    else{*/
-                            insert_param(funcao, NULL, param_minusculo);
-                        }
-                        //}
-                        param_declaration = param_declaration->brother;
-                    }
-                    //}
+
                 }
+                param_declaration = param_declaration->brother;
+                aux3 = aux3 -> next;
+            }
+            
         }
+
         if (node->brother != NULL)
             handle_ast(node->brother);
         return;
@@ -583,17 +526,10 @@ void handle_ast(no *node)
         //printf("Encontrei Declaration.\n");
         //inserir o simbolo na tabela atual
         no *type_spec = node->child;
-        no *id = type_spec->brother;
         //tipo de funcao
         //printf("%s %s\n",id->label, id->value);
         //printf("%s\n", type_spec->label);
-        symb_list simbolo = search_el(tabela_atual, id->value);
-        if (simbolo == NULL)
-        {
-            change_types(type_spec);
-        }
-        //}
-
+        change_types(type_spec);
         //insert_el(id->value, type_spec->label);
 
         if (node->child != NULL)

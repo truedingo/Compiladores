@@ -12,20 +12,13 @@ meta3	int(int,char,double,short)
 f2	int(char,char)
 f6	int(char,int)
 __	void(int,double,double,char,char,double,int)
-a	int
-e	double
-b	short
-y	int
-h	int
 f3	int(char)
 f4	int(char)
 recursiva	void(int)
 f	int(char)
 f1	int(char,int)
+b	int(char)
 f5	int(int,int)
-n	int
-n	int
-c	int
 f7	int(char,int)
 k	int
 v	int
@@ -39,6 +32,8 @@ help1	void(int,char)
 help2	int(int,int)
 f10	void(void)
 f12	void(short)
+c	int
+e	int
 g	int(void)
 
 ===== Function x Symbol Table =====
@@ -68,9 +63,11 @@ b	int
 c	int
 d	int
 variable	int
+x	double
 
 ===== Function statements Symbol Table =====
 return	int
+x	int
 
 ===== Function oi Symbol Table =====
 return	int
@@ -95,6 +92,22 @@ ups	double	param
 huehue	short	param
 v	double
 
+===== Function __ Symbol Table =====
+return	void
+e	int	param
+z	double	param
+a	double	param
+b	char	param
+c	char	param
+d	double	param
+t	int	param
+y	int
+h	int
+
+===== Function f3 Symbol Table =====
+return	int
+x	char	param
+
 ===== Function f4 Symbol Table =====
 return	int
 x	char	param
@@ -108,6 +121,19 @@ return	int
 x	char	param
 y	int	param
 
+===== Function b Symbol Table =====
+return	int
+c	char	param
+x	int
+
+===== Function f5 Symbol Table =====
+return	int
+a	int	param
+b	int	param
+f	double
+n	int
+c	int
+
 ===== Function f7 Symbol Table =====
 return	int
 a	char	param
@@ -116,6 +142,7 @@ b	int	param
 ===== Function f8 Symbol Table =====
 return	int
 y	char	param
+x	char
 
 ===== Function teste Symbol Table =====
 return	int
@@ -123,7 +150,6 @@ b	int
 
 ===== Function main1 Symbol Table =====
 return	void
-c	int
 c	int
 m	int
 
@@ -142,6 +168,9 @@ x	int	param
 y	int	param
 wgdsg	int
 gsfrgs	char
+
+===== Function f10 Symbol Table =====
+return	void
 
 ===== Function f12 Symbol Table =====
 return	void

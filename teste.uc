@@ -1,4 +1,9 @@
-int amigo(int a){
-    int lol;
-    int amigo;
+short x(int a);
+char x;
+short x(int f){
+
 }
+double x;
+double x(short d);
+
+

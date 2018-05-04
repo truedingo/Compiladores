@@ -15,6 +15,7 @@ typedef struct table * symb_list;
 typedef struct table{
 	char *name; //nome
     char *type; //tipo da variavel
+	int is_function;
 	symb_list next; //apontador para next
 }_s;
 typedef struct plist * params_list;
@@ -32,7 +33,7 @@ typedef struct functions{
 	int is_defined;
 }_t;
 
-symb_list insert_el(char *str,  char *type);
+symb_list insert_el(char *str,  char *type, int is_function);
 symb_list search_el(functions_list list, char *str);
 symb_list create_table();
 void handle_ast(no* root);
