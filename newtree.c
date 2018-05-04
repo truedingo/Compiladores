@@ -384,6 +384,14 @@ void handle_ast(no *node)
         no *id = type_spec->brother;
         no *param_list = id->brother;
 
+        //eprintf("Valor da Funcao: %s !!\n",id->value);
+
+        //printf("Estou nesta funcao: %s !!\n",id->value);
+
+        /*if (search_el(tabela_atual, id->value) == NULL){
+            printf("Funcao %s nao declarada!!\n",id->value);
+        }*/
+
         functions_list funcao = search_table_name(id->value);
         //printf("%s %s\n", id->value, type_spec->label);
         char *label_minusculo = malloc(sizeof(type_spec->label));
@@ -415,8 +423,6 @@ void handle_ast(no *node)
                 }
                 if (param_id != NULL)
                 {
-                    //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
-                    //printf("lll %s lll\n",param_minusculo);
                     insert_param(funcao, param_id->value, param_minusculo);
                 }
                 else
@@ -445,7 +451,8 @@ void handle_ast(no *node)
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-
+        if (search_el(tabela_atual, id->value) != NULL){
+            //printf("Funcao %s nao definida!!\n",id->value);
         char *label_minusculo = malloc(sizeof(type_spec->label));
         int i = 0;
         while (type_spec->label[i])
@@ -482,12 +489,20 @@ void handle_ast(no *node)
                 {
                     //printf("ashajsha null    %s\n", param_type->label);
                     insert_param(funcao, NULL, param_minusculo);
-                    //ver se a funcao ja tem algum parametro
-                    //se nao tiver, a lista passa a ser este novo parametro
-                    //caso contrario, encontram o fim da lista e metem la o param
                 }
                 param_declaration = param_declaration->brother;
             }
+        }
+        }
+        else{
+               char *label_minusculo = malloc(sizeof(type_spec->label));
+                int i = 0;
+                while (type_spec->label[i])
+                {
+                    label_minusculo[i] = tolower(type_spec->label[i]);
+                    i++;
+                }
+                functions_list funcao = insert_function(id->value, label_minusculo);
         }
 
         if (node->brother != NULL)
@@ -504,6 +519,7 @@ void handle_ast(no *node)
         //printf("%s\n", type_spec->label);
         change_types(type_spec);
         //insert_el(id->value, type_spec->label);
+
         if (node->child != NULL)
             handle_ast(node->child);
         if (node->brother != NULL)
