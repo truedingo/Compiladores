@@ -29,6 +29,7 @@ typedef struct functions{
 	symb_list table; //table element para table
 	params_list args;
 	functions_list next; //apontador next
+	int is_defined;
 }_t;
 
 symb_list insert_el(char *str,  char *type);

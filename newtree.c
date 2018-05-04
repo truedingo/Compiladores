@@ -161,6 +161,14 @@ symb_list insert_el(char *str, char *type)
 
     if (tabela_atual) //Se table ja tem elementos
     {                 //Procura fim da lista e verifica se simbolo ja existe
+        params_list aux_args = tabela_atual->args;
+        while (aux_args != NULL)
+        {
+            if (aux_args->name != NULL)
+                if (strcmp(aux_args->name, str) == 0)
+                    return NULL;
+            aux_args = aux_args->next;
+        }
         for (aux = tabela_atual->table; aux; previous = aux, aux = aux->next)
             if (strcmp(aux->name, str) == 0)
                 return NULL;
@@ -195,6 +203,7 @@ functions_list insert_function(char *name, char *type)
         nova_funcao->args = NULL;
         nova_funcao->next = NULL;
         nova_funcao->table = newSymbol;
+        nova_funcao->is_defined = 0;
         aux->next = nova_funcao; //adiciona ao final da lista
     }
     else
@@ -246,20 +255,23 @@ void insert_param(functions_list function, char *name, char *type)
 
 void print_local_table(functions_list atual)
 {
+    if (atual->is_defined == 0)
+        return;
     symb_list sym_aux = atual->table;
     params_list param_aux = atual->args;
     printf("\n===== Function %s Symbol Table =====\n", sym_aux->name);
     printf("return\t%s\n", atual->table->type);
     char *copia = sym_aux->name;
 
-    //printf("copia: %s\n", copia);
-
+ 
     while (param_aux != NULL)
     {
+        //printf("tipo param: %s\n" ,param_aux->name);
         if (strcmp(param_aux->type, "void") != 0)
         {
             printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
         }
+    
         param_aux = param_aux->next;
     }
 
@@ -274,7 +286,6 @@ void print_local_table(functions_list atual)
         }
         sym_aux = sym_aux->next;
     }
-    //printf("\n");
 }
 //Procura um identificador, devolve 0 caso nao exista
 symb_list search_el(functions_list list, char *str)
@@ -384,14 +395,6 @@ void handle_ast(no *node)
         no *id = type_spec->brother;
         no *param_list = id->brother;
 
-        //eprintf("Valor da Funcao: %s !!\n",id->value);
-
-        //printf("Estou nesta funcao: %s !!\n",id->value);
-
-        /*if (search_el(tabela_atual, id->value) == NULL){
-            printf("Funcao %s nao declarada!!\n",id->value);
-        }*/
-
         functions_list funcao = search_table_name(id->value);
         //printf("%s %s\n", id->value, type_spec->label);
         char *label_minusculo = malloc(sizeof(type_spec->label));
@@ -401,10 +404,15 @@ void handle_ast(no *node)
             label_minusculo[i] = tolower(type_spec->label[i]);
             i++;
         }
-        //printf("...%s...\n", label_minusculo);
-        if (funcao == NULL)
-            funcao = insert_function(id->value, label_minusculo);
 
+        if (funcao == NULL)
+        {
+            funcao = insert_function(id->value, label_minusculo);
+        }
+        funcao->is_defined = 1;
+
+        if (funcao->args != NULL)
+            funcao->args = NULL;
         if (strcmp(param_list->label, "ParamList") == 0)
         {
             no *param_declaration = param_list->child;
@@ -416,6 +424,7 @@ void handle_ast(no *node)
                 no *param_id = param_type->brother;
                 char *param_minusculo = malloc(sizeof(param_type->label));
                 int i = 0;
+                
                 while (param_type->label[i])
                 {
                     param_minusculo[i] = tolower(param_type->label[i]);
@@ -427,12 +436,7 @@ void handle_ast(no *node)
                 }
                 else
                 {
-                    //printf("lll %s lll\n",param_minusculo);
-                    //printf("ashajsha null    %s\n", param_type->label);
                     insert_param(funcao, NULL, param_minusculo);
-                    //ver se a funcao ja tem algum parametro
-                    //se nao tiver, a lista passa a ser este novo parametro
-                    //caso contrario, encontram o fim da lista e metem la o param
                 }
                 param_declaration = param_declaration->brother;
             }
@@ -447,12 +451,14 @@ void handle_ast(no *node)
     }
     else if (strcmp(node->label, "FuncDeclaration") == 0)
     {
-        // printf("sasasas\n");
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-        if (search_el(tabela_atual, id->value) != NULL){
-            //printf("Funcao %s nao definida!!\n",id->value);
+        //if (search_el(tabela_atual, id->value) != NULL){
+        //printf("Funcao %s nao definida!!\n",id->value);
+        functions_list funcao = search_table_name(id->value);
+
+        //printf("%s %s\n", id->value, type_spec->label);
         char *label_minusculo = malloc(sizeof(type_spec->label));
         int i = 0;
         while (type_spec->label[i])
@@ -460,8 +466,13 @@ void handle_ast(no *node)
             label_minusculo[i] = tolower(type_spec->label[i]);
             i++;
         }
-
-        functions_list funcao = insert_function(id->value, label_minusculo);
+        //printf("...%s...\n", label_minusculo);
+        if (funcao == NULL)
+        {
+            funcao = insert_function(id->value, label_minusculo);
+        }
+        if (funcao->args != NULL)
+            funcao->args = NULL;
 
         if (strcmp(param_list->label, "ParamList") == 0)
         {
@@ -492,17 +503,6 @@ void handle_ast(no *node)
                 }
                 param_declaration = param_declaration->brother;
             }
-        }
-        }
-        else{
-               char *label_minusculo = malloc(sizeof(type_spec->label));
-                int i = 0;
-                while (type_spec->label[i])
-                {
-                    label_minusculo[i] = tolower(type_spec->label[i]);
-                    i++;
-                }
-                functions_list funcao = insert_function(id->value, label_minusculo);
         }
 
         if (node->brother != NULL)
