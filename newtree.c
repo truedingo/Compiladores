@@ -328,7 +328,7 @@ void print_local_table(functions_list atual)
 symb_list search_el(functions_list list, char *str)
 {
     symb_list aux;
-    for (aux = list->table; aux; aux = aux->next)
+    for (aux = list->table->next; aux; aux = aux->next)
         if (strcmp(aux->name, str) == 0)
             return aux;
     return NULL;

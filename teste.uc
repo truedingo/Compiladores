@@ -1,9 +1,7 @@
-short x(int a);
-char x;
-short x(int f){
-
+short x(double x);
+short x(double y){
+    char x;
 }
-double x;
-double x(short d);
-
-
+int v(double v){
+    char d;
+}
