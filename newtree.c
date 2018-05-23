@@ -22,6 +22,7 @@ no *createNode(char *label, char *value)
     node->brother = NULL;
     node->child = NULL;
     node->nChildren = 0;
+    node->annotation = NULL;
 
     return node;
 }
@@ -79,7 +80,7 @@ void printAST(no *current, int n)
         printAST(current->brother, n);
         return;
     }
-
+    
     if (strcmp(current->label, "NULL") != 0)
     {
         for (i = 0; i < n; i++)
@@ -89,17 +90,27 @@ void printAST(no *current, int n)
 
         if (current->value != NULL)
         {
-            printf("%s(%s)\n", current->label, current->value);
+
+		if (current->annotation == NULL) 
+            		printf("%s(%s)\n", current->label, current->value);
+		else
+           
+			printf("%s(%s) - %s\n", current->label, current->value, current->annotation);
         }
         else
         {
-            printf("%s\n", current->label);
+		if (current->annotation == NULL)
+            		printf("%s\n", current->label);
+		else
+			printf("%s - %s\n", current->label, current->annotation);
         }
     }
 
     printAST(current->child, n + 1);
     printAST(current->brother, n);
 }
+// ---------------- SEMANTICS --------------------------------
+
 // ---------------- SEMANTICS --------------------------------
 
 //print global table
@@ -128,7 +139,6 @@ void print_global_table()
                     params_list auxP = lista->args;
                     printf("%s\t", lista->table->name);
                     printf("%s(", lista->table->type);
-                    //printf("params type: %s\n", auxP->params);
                     while (auxP != NULL)
                     {
                         printf("%s", auxP->type);
@@ -206,10 +216,8 @@ symb_list insert_el(char *str, char *type, int is_function)
     }
     else
     {
-        //Se nao tiver elementos a lista passa a ser este elemento
         tabela_atual->table = newSymbol;
     }
-    //printf("Inseri isto: %s em %s\n", str, tabela_atual->table->name);
     return newSymbol;
 }
 
@@ -224,16 +232,13 @@ functions_list insert_function(char *name, char *type)
     //change_types(type);
     insert_el(name, type, 1);
     functions_list nova_funcao = (functions_list)malloc(sizeof(_t));
-    //printf("vou tentar inserir %s\n", name);
     if (global->next != NULL) //Se table ja tem elementos
     {
-        //printf("a lista nao esta vazia\n");
 
         functions_list aux; //Procura cauda da lista e verifica se simbolo ja existe (NOTA: assume-se uma tabela de simbolos globais!)
         for (aux = global->next; aux->next != NULL; aux = aux->next)
             if (strcmp(aux->table->name, name) == 0)
             {
-                //printf("entrei aqui porque já existo %s\n", name);
                 return NULL;
             }
 
@@ -245,14 +250,12 @@ functions_list insert_function(char *name, char *type)
     }
     else
     {
-        //printf("boas\n");
         //a lista esta vazia
         nova_funcao->args = NULL;
         nova_funcao->next = NULL;
         nova_funcao->table = newSymbol;
         global->next = nova_funcao;
     }
-    //printf("Inseri %s em Global\n", name);
 
     return nova_funcao;
 }
@@ -260,21 +263,17 @@ functions_list insert_function(char *name, char *type)
 void insert_param(functions_list function, char *name, char *type)
 {
     params_list newParam = (params_list)malloc(sizeof(_pl));
-    //printf("no insert\n");
 
     if (name == NULL)
         newParam->name = NULL;
     else
         newParam->name = strdup(name);
-    //printf("depois do name\n");
 
     newParam->type = strdup(type);
     newParam->next = NULL;
 
-    //printf("morri no aux\n");
 
     params_list aux = function->args;
-    //printf("fake\n");
 
     if (aux != NULL)
     {
@@ -302,7 +301,6 @@ void print_local_table(functions_list atual)
     int first = 0;
     while (param_aux != NULL)
     {
-        //printf("tipo param: %s\n" ,param_aux->name);
         if (strcmp(param_aux->type, "void") != 0)
         {
             printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
@@ -425,22 +423,20 @@ void handle_ast(no *node)
         tabela_atual = global;
         if (node->child != NULL)
             handle_ast(node->child);
-        return;
+        //return;
     }
     else if (strcmp(node->label, "FuncDefinition") == 0)
     {
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-        /*symb_list variavel_antiga = search_el(global, id->value);
-        if (variavel_antiga == NULL)
-        {*/
+      
         symb_list variavel_antiga = search_el(global, id->value);
         functions_list funcao = search_table_name(id->value);
 
         if (variavel_antiga == NULL || funcao->args != NULL)
-        { //printf("%s %s\n", id->value, type_spec->label);
-            if (funcao == NULL || funcao->is_defined == 0)
+{
+         if (funcao == NULL || funcao->is_defined == 0)
             {
                 char *label_minusculo = malloc(sizeof(type_spec->label));
                 int i = 0;
@@ -461,10 +457,8 @@ void handle_ast(no *node)
                 if (strcmp(param_list->label, "ParamList") == 0)
                 {
                     no *param_declaration = param_list->child;
-                    //printf("sasasas\n");
                     while (param_declaration != NULL)
                     {
-                        //printf("sasasas\n");
                         no *param_type = param_declaration->child;
                         no *param_id = param_type->brother;
                         char *param_minusculo = malloc(sizeof(param_type->label));
@@ -485,7 +479,7 @@ void handle_ast(no *node)
                         }
                         param_declaration = param_declaration->brother;
                     }
-                    //}
+                    
                     tabela_atual = funcao;
                 }
             }
@@ -495,21 +489,18 @@ void handle_ast(no *node)
         tabela_atual = global;
         if (node->brother != NULL)
             handle_ast(node->brother);
-        return;
+        //return;
     }
     else if (strcmp(node->label, "FuncDeclaration") == 0)
     {
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-        //if (search_el(tabela_atual, id->value) != NULL){
-        //printf("Funcao %s nao definida!!\n",id->value);
         symb_list variavel_antiga = search_el(global, id->value);
         functions_list funcao = search_table_name(id->value);
 
         if (variavel_antiga == NULL && funcao == NULL)
         {
-            //printf("%s %s\n", id->value, type_spec->label);
             char *label_minusculo = malloc(sizeof(type_spec->label));
             int i = 0;
             while (type_spec->label[i])
@@ -517,15 +508,12 @@ void handle_ast(no *node)
                 label_minusculo[i] = tolower(type_spec->label[i]);
                 i++;
             }
-            //printf("...%s...\n", label_minusculo);
             if (funcao == NULL)
             {
                 funcao = insert_function(id->value, label_minusculo);
             }
-            //params_list aux3;
             if (funcao->args != NULL && funcao->is_defined == 0)
             {
-                //aux3 = funcao->args;
                 funcao->args = NULL;
             }
 
@@ -533,10 +521,8 @@ void handle_ast(no *node)
                 if (strcmp(param_list->label, "ParamList") == 0)
                 {
                     no *param_declaration = param_list->child;
-                    //printf("sasasas\n");
                     while (param_declaration != NULL)
                     {
-                        //printf("sasasas\n");
                         no *param_type = param_declaration->child;
                         no *param_id = param_type->brother;
                         char *param_minusculo = malloc(sizeof(param_type->label));
@@ -549,34 +535,21 @@ void handle_ast(no *node)
 
                         if (param_id != NULL)
                         {
-                            //printf("ashajsha %s    %s\n", param_id->value, param_type->label);
                             insert_param(funcao, param_id->value, param_minusculo);
                         }
                         else
                         {
-                            /*if(aux3 != NULL){
-
-                        if(aux3->name != NULL){
-                    //printf("ashajsha null    %s\n", param_type->label);
-                            insert_param(funcao, aux3->name, param_minusculo);
-                        }
-                        else{
                             insert_param(funcao, NULL, param_minusculo);
                         }
-                        aux3 = aux3 ->next;
-                    }
-                    else{*/
-                            insert_param(funcao, NULL, param_minusculo);
-                        }
-                        //}
+                      
                         param_declaration = param_declaration->brother;
                     }
-                    //}
+                   
                 }
         }
         if (node->brother != NULL)
             handle_ast(node->brother);
-        return;
+        //return;
     }
     else if (strcmp(node->label, "Declaration") == 0)
     {
@@ -585,22 +558,68 @@ void handle_ast(no *node)
         no *type_spec = node->child;
         no *id = type_spec->brother;
         //tipo de funcao
-        //printf("%s %s\n",id->label, id->value);
-        //printf("%s\n", type_spec->label);
+        
         symb_list simbolo = search_el(tabela_atual, id->value);
         if (simbolo == NULL)
         {
             change_types(type_spec);
         }
-        //}
-
-        //insert_el(id->value, type_spec->label);
-
+        
         if (node->child != NULL)
             handle_ast(node->child);
         if (node->brother != NULL)
             handle_ast(node->brother);
-        return;
+        //return;
+    }
+    else if(strcmp(node->label, "Not") == 0 || strcmp(node->label, "Or") == 0 || strcmp(node->label, "And") == 0 || strcmp(node->label, "Eq") == 0 || strcmp(node->label, "Ne") == 0 || strcmp(node->label, "Lt") == 0 || strcmp(node->label, "Gt") == 0 || strcmp(node->label, "Le") == 0 || strcmp(node->label, "Ge") == 0 || strcmp(node->label, "Mod") == 0 || strcmp(node->label, "ChrLit") == 0 || strcmp(node->label, "IntLit") == 0){
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+
+        node->annotation = strdup("int");
+    }
+        else if (strcmp(node->label, "Minus") == 0 || strcmp(node->label, "Plus") == 0)
+    {
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+
+        node->annotation = strdup(node->child->annotation);
+    }
+    else if (strcmp(node->label, "RealLit") == 0)
+    {
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+
+        node->annotation = strdup("double");
+    }
+    else if (strcmp(node->label, "Store") == 0)
+    {
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+        //node->child->annotation
+        //printf("valor do no %s \n",node->child->annotation);
+        if(node->child->annotation != NULL){
+            node->annotation = node->child->annotation;
+        } 
+
+    }
+    else if (strcmp(node->label, "Comma") == 0)
+    {
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+
+        if(node->child->brother->annotation != NULL){
+            node->annotation = strdup(node->child->brother->annotation);
+        }
     }
     else
     {

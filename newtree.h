@@ -9,6 +9,7 @@ typedef struct no{
     char *label;               //label of node
     char *value;            //value of the node if it has any         
     int nChildren;          //number of children of said node
+	char *annotation;
 } no;
 
 typedef struct table * symb_list;
