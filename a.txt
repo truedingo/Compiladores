@@ -1,36 +1,26 @@
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
-x	int(char)
+readint	int(void)
 
-===== Function x Symbol Table =====
+===== Function readint Symbol Table =====
 return	int
-e	char	param
-a	int
-b	double
+read	int
+sign	int
 
 Program
 ..FuncDefinition
 ....Int
-....Id(x)
+....Id(readint) - int
 ....ParamList
 ......ParamDeclaration
-........Char
-........Id(e)
+........Void
 ....FuncBody
 ......Declaration
 ........Int
-........Id(a)
+........Id(read) - int
 ........IntLit(0) - int
 ......Declaration
-........Double
-........Id(b)
-........RealLit(2.1) - double
-......If
-........Ne - int
-..........Id(d)
-..........IntLit(3) - int
-........Store
-..........Id(a)
-..........IntLit(1)
-........Null
+........Int
+........Id(sign) - int
+........IntLit(1) - int

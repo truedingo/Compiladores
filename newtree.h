@@ -51,4 +51,6 @@ functions_list create_functions_list();
 functions_list search_table_name(char *str);
 functions_list global;
 functions_list tabela_atual;
+params_list search_par(functions_list list, char *str);
+
 

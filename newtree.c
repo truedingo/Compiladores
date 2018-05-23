@@ -80,7 +80,7 @@ void printAST(no *current, int n)
         printAST(current->brother, n);
         return;
     }
-    
+
     if (strcmp(current->label, "NULL") != 0)
     {
         for (i = 0; i < n; i++)
@@ -91,18 +91,18 @@ void printAST(no *current, int n)
         if (current->value != NULL)
         {
 
-		if (current->annotation == NULL) 
-            		printf("%s(%s)\n", current->label, current->value);
-		else
-           
-			printf("%s(%s) - %s\n", current->label, current->value, current->annotation);
+            if (current->annotation == NULL)
+                printf("%s(%s)\n", current->label, current->value);
+            else
+
+                printf("%s(%s) - %s\n", current->label, current->value, current->annotation);
         }
         else
         {
-		if (current->annotation == NULL)
-            		printf("%s\n", current->label);
-		else
-			printf("%s - %s\n", current->label, current->annotation);
+            if (current->annotation == NULL)
+                printf("%s\n", current->label);
+            else
+                printf("%s - %s\n", current->label, current->annotation);
         }
     }
 
@@ -272,7 +272,6 @@ void insert_param(functions_list function, char *name, char *type)
     newParam->type = strdup(type);
     newParam->next = NULL;
 
-
     params_list aux = function->args;
 
     if (aux != NULL)
@@ -329,6 +328,21 @@ symb_list search_el(functions_list list, char *str)
     for (aux = list->table->next; aux; aux = aux->next)
         if (strcmp(aux->name, str) == 0)
             return aux;
+    return NULL;
+}
+//procura parametro
+params_list search_par(functions_list list, char *str)
+{
+    params_list aux = list->args;
+
+    while (aux != NULL)
+    {
+        if (aux->name != NULL && strcmp(aux->name, str) == 0)
+            return aux;
+
+        aux = aux->next;
+    }
+
     return NULL;
 }
 
@@ -430,13 +444,13 @@ void handle_ast(no *node)
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-      
+
         symb_list variavel_antiga = search_el(global, id->value);
         functions_list funcao = search_table_name(id->value);
 
         if (variavel_antiga == NULL || funcao->args != NULL)
-{
-         if (funcao == NULL || funcao->is_defined == 0)
+        {
+            if (funcao == NULL || funcao->is_defined == 0)
             {
                 char *label_minusculo = malloc(sizeof(type_spec->label));
                 int i = 0;
@@ -479,7 +493,7 @@ void handle_ast(no *node)
                         }
                         param_declaration = param_declaration->brother;
                     }
-                    
+
                     tabela_atual = funcao;
                 }
             }
@@ -541,10 +555,9 @@ void handle_ast(no *node)
                         {
                             insert_param(funcao, NULL, param_minusculo);
                         }
-                      
+
                         param_declaration = param_declaration->brother;
                     }
-                   
                 }
         }
         if (node->brother != NULL)
@@ -559,19 +572,22 @@ void handle_ast(no *node)
         no *id = type_spec->brother;
         //tipo de funcao
         
+
         symb_list simbolo = search_el(tabela_atual, id->value);
         if (simbolo == NULL)
         {
             change_types(type_spec);
         }
-        
+
         if (node->child != NULL)
+
             handle_ast(node->child);
         if (node->brother != NULL)
             handle_ast(node->brother);
         //return;
     }
-    else if(strcmp(node->label, "Not") == 0 || strcmp(node->label, "Or") == 0 || strcmp(node->label, "And") == 0 || strcmp(node->label, "Eq") == 0 || strcmp(node->label, "Ne") == 0 || strcmp(node->label, "Lt") == 0 || strcmp(node->label, "Gt") == 0 || strcmp(node->label, "Le") == 0 || strcmp(node->label, "Ge") == 0 || strcmp(node->label, "Mod") == 0 || strcmp(node->label, "ChrLit") == 0 || strcmp(node->label, "IntLit") == 0){
+    else if (strcmp(node->label, "Not") == 0 || strcmp(node->label, "Or") == 0 || strcmp(node->label, "And") == 0 || strcmp(node->label, "Eq") == 0 || strcmp(node->label, "Ne") == 0 || strcmp(node->label, "Lt") == 0 || strcmp(node->label, "Gt") == 0 || strcmp(node->label, "Le") == 0 || strcmp(node->label, "Ge") == 0 || strcmp(node->label, "Mod") == 0 || strcmp(node->label, "ChrLit") == 0 || strcmp(node->label, "IntLit") == 0)
+    {
         if (node->child != NULL)
             handle_ast(node->child);
         if (node->brother != NULL)
@@ -579,7 +595,7 @@ void handle_ast(no *node)
 
         node->annotation = strdup("int");
     }
-        else if (strcmp(node->label, "Minus") == 0 || strcmp(node->label, "Plus") == 0)
+    else if (strcmp(node->label, "Minus") == 0 || strcmp(node->label, "Plus") == 0)
     {
         if (node->child != NULL)
             handle_ast(node->child);
@@ -605,10 +621,10 @@ void handle_ast(no *node)
             handle_ast(node->brother);
         //node->child->annotation
         //printf("valor do no %s \n",node->child->annotation);
-        if(node->child->annotation != NULL){
+        if (node->child->annotation != NULL)
+        {
             node->annotation = node->child->annotation;
-        } 
-
+        }
     }
     else if (strcmp(node->label, "Comma") == 0)
     {
@@ -617,8 +633,133 @@ void handle_ast(no *node)
         if (node->brother != NULL)
             handle_ast(node->brother);
 
-        if(node->child->brother->annotation != NULL){
+        if (node->child->brother->annotation != NULL)
+        {
             node->annotation = strdup(node->child->brother->annotation);
+        }
+    }
+    else if (strcmp(node->label, "Id") == 0)
+    {
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+
+        if (strcmp(node->value, "getchar") == 0)
+            node->annotation = strdup("int(void)");
+        else if (strcmp(node->value, "putchar") == 0)
+            node->annotation = strdup("int(int)");
+        else
+        {
+            symb_list aux = search_el(tabela_atual, node->value);
+            params_list tmp;
+
+            if (aux != NULL)
+            {
+                node->annotation = strdup(aux->type);
+            }
+            else
+            {
+                aux = search_el(global, node->value);
+
+                if (aux != NULL)
+                {
+                    node->annotation = strdup(aux->type);
+                }
+                else
+                {
+                    tmp = search_par(tabela_atual, node->value);
+
+                    if (tmp != NULL)
+                    {
+                        node->annotation = strdup(tmp->type);
+                    }
+                }
+            }
+        }
+    }
+    else if (strcmp(node->label, "Add") == 0 || strcmp(node->label, "Sub") == 0 || strcmp(node->label, "Mul") == 0 || strcmp(node->label, "Div") == 0 || strcmp(node->label, "BitWiseAnd") == 0 || strcmp(node->label, "BitWiseOr") == 0 || strcmp(node->label, "BitWiseXor") == 0)
+    {
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+
+        if (strcmp(node->child->annotation, node->child->brother->annotation) == 0)
+        {
+            if (node->child->brother->annotation != NULL)
+                node->annotation = strdup(node->child->annotation);
+        }
+        else if (strcmp(node->child->annotation, "double") == 0 || strcmp(node->child->brother->annotation, "double") == 0)
+        {
+            if (node->child->brother->annotation != NULL)
+                node->annotation = strdup("double");
+        }
+        else if (strcmp(node->child->annotation, "int") == 0 || strcmp(node->child->brother->annotation, "int") == 0)
+        {
+            if (node->child->brother->annotation != NULL)
+                node->annotation = strdup("int");
+        }
+        else if (strcmp(node->child->annotation, "short") == 0 || strcmp(node->child->brother->annotation, "short") == 0)
+        {
+            if (node->child->brother->annotation != NULL)
+                node->annotation = strdup("short");
+        }
+        else if (strcmp(node->child->annotation, "char") == 0 || strcmp(node->child->brother->annotation, "char") == 0)
+        {
+            if (node->child->brother->annotation != NULL)
+                node->annotation = strdup("char");
+        }
+        else
+        {
+            if (node->child->brother->annotation != NULL)
+                node->annotation = strdup("undef");
+        }
+    }
+    else if (strcmp(node->label, "Call") == 0)
+    {
+        if (node->child != NULL)
+            handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
+
+        if (strcmp(node->child->value, "getchar") == 0)
+        {
+            if (node->child->value != NULL)
+                node->annotation = strdup("int");
+        }
+        else if (strcmp(node->child->value, "putchar") == 0)
+        {
+            if (node->child->value != NULL)
+                node->annotation = strdup("int");
+        }
+
+        else
+        {
+            symb_list aux = search_el(global, node->child->value);
+
+            if (aux != NULL)
+            {
+                node->annotation = strdup(aux->type);
+                node->annotation[0] = tolower(node->annotation[0]);
+                strcat(node->child->annotation, "(");
+
+                functions_list local = search_table_name(aux->name);
+
+                params_list param = local->args;
+
+                while (param != NULL)
+                {
+                    strcat(node->child->annotation, param->type);
+
+                    if (param->next != NULL)
+                        strcat(node->child->annotation, ",");
+
+                    param = param->next;
+                }
+
+                strcat(node->child->annotation, ")");
+            }
         }
     }
     else
