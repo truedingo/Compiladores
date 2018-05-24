@@ -187,7 +187,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(e) - char
+........Id(e)
 ....FuncBody
 ......Declaration
 ........Char
@@ -224,13 +224,13 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(x) - int
+........Id(x)
 ......ParamDeclaration
 ........Int
-........Id(y) - int
+........Id(y)
 ......ParamDeclaration
 ........Int
-........Id(z) - int
+........Id(z)
 ....FuncBody
 ......Declaration
 ........Int
@@ -462,10 +462,10 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(tudo) - int
+........Id(tudo)
 ......ParamDeclaration
 ........Int
-........Id(bem) - int
+........Id(bem)
 ....FuncBody
 ......Declaration
 ........Char
@@ -500,7 +500,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(x) - int
+........Id(x)
 ....FuncBody
 ......Return
 ........IntLit(3) - int
@@ -510,16 +510,16 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(xd) - int
+........Id(xd)
 ......ParamDeclaration
 ........Char
-........Id(lmao) - double
+........Id(lmao)
 ......ParamDeclaration
 ........Double
-........Id(ups) - double
+........Id(ups)
 ......ParamDeclaration
 ........Short
-........Id(huehue) - int
+........Id(huehue)
 ....FuncBody
 ......Declaration
 ........Double
@@ -620,25 +620,25 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(e) - int
+........Id(e)
 ......ParamDeclaration
 ........Double
-........Id(z) - double
+........Id(z)
 ......ParamDeclaration
 ........Double
-........Id(a) - double
+........Id(a)
 ......ParamDeclaration
 ........Char
-........Id(b) - char
+........Id(b)
 ......ParamDeclaration
 ........Char
-........Id(c) - char
+........Id(c)
 ......ParamDeclaration
 ........Double
-........Id(d) - double
+........Id(d)
 ......ParamDeclaration
 ........Int
-........Id(t) - int
+........Id(t)
 ....FuncBody
 ......Declaration
 ........Int
@@ -674,7 +674,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(x) - int
+........Id(x)
 ....FuncBody
 ..FuncDefinition
 ....Int
@@ -682,7 +682,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(x) - int
+........Id(x)
 ....FuncBody
 ..FuncDefinition
 ....Void
@@ -690,7 +690,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(a) - int
+........Id(a)
 ....FuncBody
 ......Call - void
 ........Id(recursiva) - void(int)
@@ -708,10 +708,10 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(x) - int
+........Id(x)
 ......ParamDeclaration
 ........Int
-........Id(y) - int
+........Id(y)
 ....FuncBody
 ......Declaration
 ........Char
@@ -729,7 +729,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(c) - char
+........Id(c)
 ....FuncBody
 ......Declaration
 ........Int
@@ -751,10 +751,10 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(a) - int
+........Id(a)
 ......ParamDeclaration
 ........Int
-........Id(b) - int
+........Id(b)
 ....FuncBody
 ......Declaration
 ........Double
@@ -780,10 +780,10 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(a) - char
+........Id(a)
 ......ParamDeclaration
 ........Int
-........Id(b) - int
+........Id(b)
 ....FuncBody
 ..Declaration
 ....Int
@@ -797,7 +797,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-........Id(y) - char
+........Id(y)
 ....FuncBody
 ......Declaration
 ........Char
@@ -873,10 +873,10 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(x) - int
+........Id(x)
 ......ParamDeclaration
 ........Char
-........Id(y) - char
+........Id(y)
 ....FuncBody
 ......Declaration
 ........Char
@@ -887,10 +887,10 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(x) - int
+........Id(x)
 ......ParamDeclaration
 ........Int
-........Id(y) - int
+........Id(y)
 ....FuncBody
 ......Declaration
 ........Int
@@ -920,7 +920,7 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Short
-........Id(a) - short
+........Id(a)
 ....FuncBody
 ......Declaration
 ........Double

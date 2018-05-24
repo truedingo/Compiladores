@@ -22,6 +22,7 @@ no *createNode(char *label, char *value)
     node->brother = NULL;
     node->child = NULL;
     node->nChildren = 0;
+    node->print_annotation = 0;
     node->annotation = NULL;
 
     return node;
@@ -444,7 +445,7 @@ void handle_ast(no *node)
         no *type_spec = node->child;
         no *id = type_spec->brother;
         no *param_list = id->brother;
-
+        id->print_annotation = 1;
         symb_list variavel_antiga = search_el(global, id->value);
         functions_list funcao = search_table_name(id->value);
 
@@ -470,21 +471,25 @@ void handle_ast(no *node)
                     funcao->args = NULL;
                 if (strcmp(param_list->label, "ParamList") == 0)
                 {
+
                     no *param_declaration = param_list->child;
                     while (param_declaration != NULL)
                     {
                         no *param_type = param_declaration->child;
                         no *param_id = param_type->brother;
+                        param_type->print_annotation = 1;
                         char *param_minusculo = malloc(sizeof(param_type->label));
                         int i = 0;
 
                         while (param_type->label[i])
                         {
+                            param_type->print_annotation = 1;
                             param_minusculo[i] = tolower(param_type->label[i]);
                             i++;
                         }
                         if (param_id != NULL)
                         {
+                            param_id->print_annotation = 1;
                             insert_param(funcao, param_id->value, param_minusculo);
                         }
                         else
@@ -512,6 +517,7 @@ void handle_ast(no *node)
         no *param_list = id->brother;
         symb_list variavel_antiga = search_el(global, id->value);
         functions_list funcao = search_table_name(id->value);
+        id->print_annotation = 0;
 
         if (variavel_antiga == NULL && funcao == NULL)
         {
@@ -543,16 +549,19 @@ void handle_ast(no *node)
                         int i = 0;
                         while (param_type->label[i])
                         {
+                            param_type->print_annotation = 1;
                             param_minusculo[i] = tolower(param_type->label[i]);
                             i++;
                         }
 
                         if (param_id != NULL)
                         {
+                            param_id->print_annotation = 1;
                             insert_param(funcao, param_id->value, param_minusculo);
                         }
                         else
                         {
+                            
                             insert_param(funcao, NULL, param_minusculo);
                         }
 
@@ -566,12 +575,12 @@ void handle_ast(no *node)
     }
     else if (strcmp(node->label, "Declaration") == 0)
     {
-        //printf("Encontrei Declaration.\n");
         //inserir o simbolo na tabela atual
+        
         no *type_spec = node->child;
         no *id = type_spec->brother;
+        id->print_annotation = 1;
         //tipo de funcao
-        
 
         symb_list simbolo = search_el(tabela_atual, id->value);
         if (simbolo == NULL)
@@ -580,7 +589,6 @@ void handle_ast(no *node)
         }
 
         if (node->child != NULL)
-
             handle_ast(node->child);
         if (node->brother != NULL)
             handle_ast(node->brother);
@@ -638,7 +646,7 @@ void handle_ast(no *node)
             node->annotation = strdup(node->child->brother->annotation);
         }
     }
-    else if (strcmp(node->label, "Id") == 0)
+    else if ((strcmp(node->label, "Id") == 0) && (node->print_annotation == 0))
     {
         if (node->child != NULL)
             handle_ast(node->child);
@@ -653,9 +661,10 @@ void handle_ast(no *node)
         {
             symb_list aux = search_el(tabela_atual, node->value);
             params_list tmp;
-
+            //se node for funcao
             if (aux != NULL)
             {
+                //printf("sou o no %s e apareco %d vezes\n",node->label, node->number_times);
                 node->annotation = strdup(aux->type);
             }
             else
@@ -664,6 +673,7 @@ void handle_ast(no *node)
 
                 if (aux != NULL)
                 {
+                    //printf("sou o no %s - %s e apareco %d vezes\n",node->label, node->value,node->number_times);
                     node->annotation = strdup(aux->type);
                 }
                 else
@@ -672,7 +682,9 @@ void handle_ast(no *node)
 
                     if (tmp != NULL)
                     {
+                        //printf("sou o no %s e apareco %d vezes\n",node->label, node->number_times);
                         node->annotation = strdup(tmp->type);
+
                     }
                 }
             }
@@ -757,7 +769,6 @@ void handle_ast(no *node)
 
                     param = param->next;
                 }
-
                 strcat(node->child->annotation, ")");
             }
         }
