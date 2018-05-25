@@ -25,21 +25,19 @@
 %token <string> ID CHRLIT REALLIT RESERVED INTLIT
 %type <node> Start ExprComma ExprCall ErrorStatement AuxStatement AuxDeclarator ExprPrim ExprFunction ExprLogic ExprRelat ExprOper ExprSingleOp FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
 
-%left COMMA
+%left COMMA 
 %right ASSIGN
-%left OR
+%left OR 
 %left AND
 %left BITWISEOR
 %left BITWISEXOR
 %left BITWISEAND
 %left EQ NE
-%left GT GE
-%left LE LT
-%right PLUS MINUS
+%left LT LE GT GE
+%left PLUS MINUS
 %left MUL DIV MOD
 %right NOT
-%left LPAR RPAR
-
+%left LPAR
 %nonassoc ELSE
 
 %union{

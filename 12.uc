@@ -15,16 +15,11 @@ int main(char x, int y, int z) {
         return 0;
     }
 }
-void foo(void){
-    int a;
-    char b;
-}
+
 int expressions(void) {
     int i = 2,a = 3 ,b = 4,c,d;
     int variable = 1;
-    int y = x('a');
-    char a = getchar();
-    foo();
+    double x;
     variable = +variable;
     variable = variable + 2;
     variable = variable - 2;

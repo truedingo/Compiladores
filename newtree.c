@@ -303,9 +303,10 @@ void print_local_table(functions_list atual)
     {
         if (strcmp(param_aux->type, "void") != 0)
         {
+            if(param_aux->name != NULL){
             printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
+            }
         }
-
         param_aux = param_aux->next;
     }
 
@@ -561,7 +562,7 @@ void handle_ast(no *node)
                         }
                         else
                         {
-                            
+
                             insert_param(funcao, NULL, param_minusculo);
                         }
 
@@ -576,18 +577,28 @@ void handle_ast(no *node)
     else if (strcmp(node->label, "Declaration") == 0)
     {
         //inserir o simbolo na tabela atual
-        
+
         no *type_spec = node->child;
         no *id = type_spec->brother;
         id->print_annotation = 1;
+
         //tipo de funcao
+        no *aux_print = type_spec->brother->brother;
 
         symb_list simbolo = search_el(tabela_atual, id->value);
+
+        if (strcmp(type_spec->label, "Double") != 0 && aux_print != NULL)
+        {
+            if (strcmp("RealLit", aux_print->label) == 0)
+            {
+        
+                aux_print->print_annotation = 1;
+            }
+        }
         if (simbolo == NULL)
         {
             change_types(type_spec);
         }
-
         if (node->child != NULL)
             handle_ast(node->child);
         if (node->brother != NULL)
@@ -612,12 +623,14 @@ void handle_ast(no *node)
 
         node->annotation = strdup(node->child->annotation);
     }
-    else if (strcmp(node->label, "RealLit") == 0)
+    else if (strcmp(node->label, "RealLit") == 0 && (node->print_annotation == 0))
     {
         if (node->child != NULL)
             handle_ast(node->child);
         if (node->brother != NULL)
             handle_ast(node->brother);
+
+        node->print_annotation = 1;
 
         node->annotation = strdup("double");
     }
@@ -659,32 +672,33 @@ void handle_ast(no *node)
             node->annotation = strdup("int(int)");
         else
         {
-            symb_list aux = search_el(tabela_atual, node->value);
-            params_list tmp;
+            symb_list aux;
+            params_list tmp = search_par(tabela_atual, node->value);
             //se node for funcao
-            if (aux != NULL)
+            if (tmp != NULL) //symb list
             {
-                //printf("sou o no %s e apareco %d vezes\n",node->label, node->number_times);
-                node->annotation = strdup(aux->type);
+
+                //printf("sou o aux->type : %s \n",aux->type);
+                node->annotation = strdup(tmp->type);
             }
             else
             {
-                aux = search_el(global, node->value);
+                aux = search_el(tabela_atual, node->value);
 
-                if (aux != NULL)
+                if (aux != NULL) //symb list
                 {
                     //printf("sou o no %s - %s e apareco %d vezes\n",node->label, node->value,node->number_times);
                     node->annotation = strdup(aux->type);
                 }
                 else
                 {
-                    tmp = search_par(tabela_atual, node->value);
+                    aux = search_el(global, node->value);
 
-                    if (tmp != NULL)
+                    if (aux != NULL) //param list
                     {
-                        //printf("sou o no %s e apareco %d vezes\n",node->label, node->number_times);
-                        node->annotation = strdup(tmp->type);
 
+                        //printf("sou o no %s e apareco %d vezes\n",node->label, node->number_times);
+                        node->annotation = strdup(aux->type);
                     }
                 }
             }
