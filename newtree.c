@@ -303,8 +303,9 @@ void print_local_table(functions_list atual)
     {
         if (strcmp(param_aux->type, "void") != 0)
         {
-            if(param_aux->name != NULL){
-            printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
+            if (param_aux->name != NULL)
+            {
+                printf("%s\t%s\tparam\n", param_aux->name, param_aux->type);
             }
         }
         param_aux = param_aux->next;
@@ -437,8 +438,11 @@ void handle_ast(no *node)
         global->args = NULL;
         global->next = NULL;
         tabela_atual = global;
+
         if (node->child != NULL)
             handle_ast(node->child);
+        if (node->brother != NULL)
+            handle_ast(node->brother);
         //return;
     }
     else if (strcmp(node->label, "FuncDefinition") == 0)
@@ -591,7 +595,7 @@ void handle_ast(no *node)
         {
             if (strcmp("RealLit", aux_print->label) == 0)
             {
-        
+
                 aux_print->print_annotation = 1;
             }
         }

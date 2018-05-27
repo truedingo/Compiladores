@@ -1,43 +1,43 @@
+/* Diogo Amores 2015231975 damores@student.uc.pt */
+/* Maria Roseiro 2015233281 miroseiro@student.uc.pt */
+
 %{
     #include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
 	#include <stdarg.h>
     #include "newtree.h"
-
-
     void yyerror(const char* s);
     int yylex();
     int yyparse();
     int cnt;
-    int num_erros=0;
 	no *root;
     no *aux1;
 	no *aux;
 	no *aux2;
     no *aux3;
-    int error_check = 0;
     int stat_check=0;
-    symb_list *symtab=NULL;
+    int error_check=0;
 %}
 
 %token CHAR ELSE IF INT SHORT DOUBLE RETURN VOID WHILE BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LT MINUS MOD NE NOT OR PLUS RBRACE RPAR LPAR SEMI
 %token <string> ID CHRLIT REALLIT RESERVED INTLIT
 %type <node> Start ExprComma ExprCall ErrorStatement AuxStatement AuxDeclarator ExprPrim ExprFunction ExprLogic ExprRelat ExprOper ExprSingleOp FuncAndDeclarations DeclarationAndStates FuncDefinition FuncDeclaration Declaration TypeSpec FuncDeclarator FuncBody Statement ParamList ParamDeclaration Declarator Expr
 
-%left COMMA 
+%left COMMA
 %right ASSIGN
-%left OR 
+%left OR
 %left AND
 %left BITWISEOR
 %left BITWISEXOR
 %left BITWISEAND
 %left EQ NE
-%left LT LE GT GE
+%left GT GE LE LT
 %left PLUS MINUS
 %left MUL DIV MOD
 %right NOT
-%left LPAR
+%left LPAR RPAR
+
 %nonassoc ELSE
 
 %union{
@@ -54,9 +54,9 @@ FuncAndDeclarations:
                     FuncDefinition {$$ = $1;} 
                     |FuncDeclaration {$$ = $1;}
                     |Declaration {$$ = $1;}
-                    |FuncDefinition FuncAndDeclarations {$$ = $1; addBrother($1, $2);}
-                    |FuncDeclaration FuncAndDeclarations {$$ = $1; addBrother($1, $2);}
-                    |Declaration FuncAndDeclarations {$$ = $1; addBrother($1, $2);}
+                    |FuncAndDeclarations FuncDefinition  {$$ = $1; addBrother($1, $2);}
+                    |FuncAndDeclarations FuncDeclaration  {$$ = $1; addBrother($1, $2);}
+                    |FuncAndDeclarations Declaration  {$$ = $1; addBrother($1, $2);}
                     ;
 
 FuncDefinition: TypeSpec FuncDeclarator FuncBody {$$=createNode("FuncDefinition", NULL);
@@ -95,7 +95,7 @@ FuncDeclarator: ID LPAR ParamList RPAR {$$=createNode("Id", $1);
 
 ParamList:
                     ParamDeclaration {$$=$1;}
-                    |ParamDeclaration COMMA ParamList { $$=$1;
+                    |ParamList COMMA ParamDeclaration { $$=$1;
                                                         addBrother($1,$3);}
                     ;
 
@@ -195,7 +195,7 @@ Statement:
 									}								
 									else{
                                         addBrother($3,$5);
-									}}                     
+									}} 
                     |RETURN SEMI {$$=createNode("Return", NULL);
                                 addChild($$, createNode("Null", NULL));
                                 }
@@ -231,8 +231,7 @@ Expr:
                     |ExprSingleOp {$$=$1;}
                     |ExprFunction {$$=$1;}
                     |ExprPrim {$$=$1;}
-                    |ID LPAR error RPAR {$$=createNode("Error", NULL);error_check=1;
-                    }
+                    |ID LPAR error RPAR {$$=createNode("Error", NULL);error_check=1;free($1);}
                     ;
 ExprOper:
                     Expr PLUS Expr {$$=createNode("Add", NULL);addChild($$,$1);addBrother($1,$3);}
@@ -267,7 +266,7 @@ ExprSingleOp:
 
 ExprFunction:
                     ID LPAR RPAR {$$=createNode("Call", NULL);aux=createNode("Id",$1); addChild($$,aux);}
-                    |ID LPAR ExprCall RPAR {$$=createNode("Call", NULL);aux=createNode("Id",$1); addChild($$,aux);addBrother(aux,$3);}
+                    |ID LPAR ExprCall RPAR {$$=createNode("Call", NULL); aux=createNode("Id",$1); addChild($$,aux);addBrother(aux,$3);}
                     ;
 
 ExprPrim:
