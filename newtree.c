@@ -5,6 +5,9 @@
 #include <ctype.h>
 #include "newtree.h"
 
+int contador_llvm = 1;
+int check_entry = 0;
+
 no *createNode(char *label, char *value)
 {
     no *node = (no *)malloc(sizeof(no));
@@ -23,6 +26,7 @@ no *createNode(char *label, char *value)
     node->child = NULL;
     node->nChildren = 0;
     node->print_annotation = 0;
+    node->llvm_counter = NULL;
     node->annotation = NULL;
 
     return node;
@@ -803,6 +807,33 @@ void handle_ast(no *node)
 
 // ------- llvm -------
 
+char *convert_c_type_to_llvm_type(char *c_type)
+{
+    int i;
+    char buffer[1024];
+
+    if (strstr(c_type, "int") != NULL)
+    {
+        sprintf(buffer, "i32");
+    }
+    else if (strcmp(c_type, "void") == 0)
+    {
+        return strdup("void");
+    }
+    else
+    {
+        sprintf(buffer, "i8");
+    }
+
+    for (i = 0; i < strlen(c_type); i++)
+    {
+        if (c_type[i] == '*')
+            strcat(buffer, "*");
+    }
+
+    return strdup(buffer);
+}
+
 void generate_llvm(no *node)
 {
 
@@ -822,7 +853,7 @@ void generate_llvm(no *node)
             generate_llvm(node->child);
         if (node->brother != NULL)
             generate_llvm(node->brother);
-        //return;
+        return;
     }
     if (strcmp(node->label, "FuncDefinition") == 0)
     {
@@ -869,7 +900,7 @@ void generate_llvm(no *node)
                 //printf(".. %s",param_type->label);
                 if (strcmp(param_type->label, "Void") == 0)
                 {
-                    printf("){\n");
+                    printf(") {\n");
                 }
 
                 if (param_declaration->brother != NULL)
@@ -929,12 +960,12 @@ void generate_llvm(no *node)
             generate_llvm(node->child);
         if (node->brother != NULL)
             generate_llvm(node->brother);
+        return;
     }
     else if (strcmp(node->label, "Declaration") == 0)
     {
         no *type = node->child;
         no *id = type->brother;
-        char *name = id->label;
         no *value = id->brother;
 
         //variavel global
@@ -959,11 +990,13 @@ void generate_llvm(no *node)
                 printf("double ");
             }
 
-            if(value != NULL){
+            if (value != NULL)
+            {
                 //printf("dou assign de algum valor\n");
-                printf("%s",id->brother->value);
+                printf("%s", id->brother->value);
             }
-            else{
+            else
+            {
                 printf("0");
             }
             if (strcmp(type->label, "Int") == 0)
@@ -983,14 +1016,194 @@ void generate_llvm(no *node)
                 printf(", align 8");
             }
             printf("\n");
-
         }
-        print_global_table();
-    
+        else
+        {
+            if (check_entry == 0)
+                printf("entry:\n");
+            check_entry++;
+            //variavel local
+            if (id->brother != NULL && strcmp(id->brother->label, "Id") == 0)
+            {
+                printf("\t%%%s = alloca ", id->value);
+                if (strcmp(type->label, "Int") == 0)
+                {
+                    printf("i32");
+                }
+                else if (strcmp(type->label, "Short") == 0)
+                {
+                    printf("i16");
+                }
+                else if (strcmp(type->label, "Char") == 0)
+                {
+                    printf("i8");
+                }
+                else if (strcmp(type->label, "Double") == 0)
+                {
+                    printf("double");
+                }
+                if (strcmp(type->label, "Int") == 0)
+                {
+                    printf(", align 4");
+                }
+                else if (strcmp(type->label, "Short") == 0)
+                {
+                    printf(", align 2");
+                }
+                else if (strcmp(type->label, "Char") == 0)
+                {
+                    printf(", align 1");
+                }
+                else if (strcmp(type->label, "Double") == 0)
+                {
+                    printf(", align 8");
+                }
+                printf("\n\tstore ");
+
+                if (strcmp(type->label, "Int") == 0)
+                {
+                    printf("i32 ");
+                }
+                else if (strcmp(type->label, "Short") == 0)
+                {
+                    printf("i16 ");
+                }
+                else if (strcmp(type->label, "Char") == 0)
+                {
+                    printf("i8 ");
+                }
+                else if (strcmp(type->label, "Double") == 0)
+                {
+                    printf("double ");
+                }
+            }
+            else
+            {
+                printf("\t%%%s = alloca ", id->value);
+                if (strcmp(type->label, "Int") == 0)
+                {
+                    printf("i32");
+                }
+                else if (strcmp(type->label, "Short") == 0)
+                {
+                    printf("i16");
+                }
+                else if (strcmp(type->label, "Char") == 0)
+                {
+                    printf("i8");
+                }
+                else if (strcmp(type->label, "Double") == 0)
+                {
+                    printf("double");
+                }
+                if (strcmp(type->label, "Int") == 0)
+                {
+                    printf(", align 4");
+                }
+                else if (strcmp(type->label, "Short") == 0)
+                {
+                    printf(", align 2");
+                }
+                else if (strcmp(type->label, "Char") == 0)
+                {
+                    printf(", align 1");
+                }
+                else if (strcmp(type->label, "Double") == 0)
+                {
+                    printf(", align 8");
+                }
+
+                if (value != NULL && strcmp(value->label, "Id") != 0)
+                {
+                    //printf("tenho valor mas nao sou id %s \n", value->label);
+                    printf("\n\tstore ");
+
+                    if (strcmp(type->label, "Int") == 0)
+                    {
+                        printf("i32 ");
+                    }
+                    else if (strcmp(type->label, "Short") == 0)
+                    {
+                        printf("i16 ");
+                    }
+                    else if (strcmp(type->label, "Char") == 0)
+                    {
+                        printf("i8 ");
+                    }
+                    else if (strcmp(type->label, "Double") == 0)
+                    {
+                        printf("double ");
+                    }
+                    printf("%s,", id->brother->value);
+                    if (strcmp(type->label, "Int") == 0)
+                    {
+                        printf(" i32* ");
+                    }
+                    else if (strcmp(type->label, "Short") == 0)
+                    {
+                        printf(" i16* ");
+                    }
+                    else if (strcmp(type->label, "Char") == 0)
+                    {
+                        printf(" i8* ");
+                    }
+                    else if (strcmp(type->label, "Double") == 0)
+                    {
+                        printf(" double* ");
+                    }
+                    printf("%%%s", id->value);
+                    if (strcmp(type->label, "Int") == 0)
+                    {
+                        printf(", align 4");
+                    }
+                    else if (strcmp(type->label, "Short") == 0)
+                    {
+                        printf(", align 2");
+                    }
+                    else if (strcmp(type->label, "Char") == 0)
+                    {
+                        printf(", align 1");
+                    }
+                    else if (strcmp(type->label, "Double") == 0)
+                    {
+                        printf(", align 8");
+                    }
+                }
+                else
+                {
+                    // do tipo int a=b;
+                    printf("oiiiiii\n");
+                }
+                printf("\n");
+               
+            }
+        }
         if (node->child != NULL)
             generate_llvm(node->child);
         if (node->brother != NULL)
-            generate_llvm(node->brother);    
+            generate_llvm(node->brother);
+        return;
     }
-
+    else if (strcmp(node->label, "Minus") == 0)
+    {
+        /*printf("\t%%%d = sub i32 0, %s\n", contador_llvm, node->child->llvm_counter);
+        node->llvm_counter = malloc(512 * sizeof(char));
+        sprintf(node->llvm_counter, "%%%d", contador_llvm);
+        contador_llvm++;
+        if (node->child != NULL)
+            generate_llvm(node->child);
+        if (node->brother != NULL)
+            generate_llvm(node->brother);
+        return;
+        */
+    }
+    else
+    {
+        if (node->child != NULL)
+            generate_llvm(node->child);
+        if (node->brother != NULL)
+            generate_llvm(node->brother);
+        return;
+    }
+    return;
 }

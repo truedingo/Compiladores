@@ -11,6 +11,7 @@ typedef struct no{
     int nChildren;          //number of children of said node
 	int print_annotation;
 	char *annotation;
+	char * llvm_counter;
 } no;
 
 typedef struct table * symb_list;
@@ -53,7 +54,9 @@ functions_list search_table_name(char *str);
 
 functions_list global;
 functions_list tabela_atual;
+
 params_list search_par(functions_list list, char *str);
 
 void generate_llvm(no *node);
 
+char* convert_c_type_to_llvm_type(char* c_type);
