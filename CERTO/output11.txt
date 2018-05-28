@@ -1,0 +1,37 @@
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+b	int(char,char)
+
+===== Function b Symbol Table =====
+return	int
+c	char	param
+d	char	param
+x	int
+
+Program
+..FuncDeclaration
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(a)
+......ParamDeclaration
+........Char
+........Id(b)
+..FuncDefinition
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(c)
+......ParamDeclaration
+........Char
+........Id(d)
+....FuncBody
+......Declaration
+........Int
+........Id(x)
+........ChrLit('a') - int

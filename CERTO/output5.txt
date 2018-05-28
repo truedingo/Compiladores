@@ -1,0 +1,49 @@
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+ola	int(void)
+
+===== Function ola Symbol Table =====
+return	int
+a	int
+b	int
+c	int
+e	char
+
+Program
+..FuncDefinition
+....Int
+....Id(ola)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(a)
+......Declaration
+........Int
+........Id(b)
+......Declaration
+........Int
+........Id(c)
+......Declaration
+........Short
+........Id(a)
+......Declaration
+........Short
+........Id(b)
+......Declaration
+........Short
+........Id(c)
+......Declaration
+........Char
+........Id(a)
+......Declaration
+........Char
+........Id(c)
+......Declaration
+........Char
+........Id(e)
+......Return
+........IntLit(0) - int

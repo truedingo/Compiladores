@@ -1,0 +1,19 @@
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+ola	int
+
+Program
+..Declaration
+....Int
+....Id(ola)
+..FuncDefinition
+....Int
+....Id(ola)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(ola)

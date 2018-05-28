@@ -54,4 +54,5 @@ functions_list global;
 functions_list tabela_atual;
 params_list search_par(functions_list list, char *str);
 
+void generate_llvm(no *node, functions_list table);
 

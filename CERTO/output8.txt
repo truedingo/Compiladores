@@ -1,0 +1,141 @@
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+a	int
+b	int
+c	int
+d	int
+main	int(void)
+stuff	int(int,short,double,char)
+stuff2	int(int,short,double,char)
+
+===== Function main Symbol Table =====
+return	int
+
+===== Function stuff Symbol Table =====
+return	int
+a	int	param
+b	short	param
+c	double	param
+d	char	param
+
+===== Function stuff2 Symbol Table =====
+return	int
+a	int	param
+b	short	param
+c	double	param
+d	char	param
+
+Program
+..Declaration
+....Int
+....Id(a)
+....IntLit(10) - int
+..Declaration
+....Int
+....Id(b)
+....IntLit(20) - int
+..Declaration
+....Int
+....Id(c)
+..Declaration
+....Int
+....Id(d)
+....IntLit(40) - int
+..FuncDefinition
+....Int
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Return
+........IntLit(0) - int
+..FuncDeclaration
+....Int
+....Id(stuff)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Short
+......ParamDeclaration
+........Double
+......ParamDeclaration
+........Char
+..FuncDefinition
+....Int
+....Id(stuff)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(a)
+......ParamDeclaration
+........Short
+........Id(b)
+......ParamDeclaration
+........Double
+........Id(c)
+......ParamDeclaration
+........Char
+........Id(d)
+....FuncBody
+......Call - int
+........Id(stuff) - int(int,short,double,char)
+........Add - int
+..........IntLit(1) - uble,char)
+..........Call - int
+............Id(stuff) - int(int,short,double,char)
+............IntLit(1) - uble,char)
+............ChrLit('a') - int
+............RealLit(0.0) - double
+............IntLit(1) - int
+........ChrLit('a') - int
+........RealLit(0.0) - double
+........IntLit(1) - int
+......Call - int
+........Id(main) - int(void)
+..FuncDefinition
+....Int
+....Id(stuff2)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(a)
+......ParamDeclaration
+........Short
+........Id(b)
+......ParamDeclaration
+........Double
+........Id(c)
+......ParamDeclaration
+........Char
+........Id(d)
+....FuncBody
+......Call - int
+........Id(stuff) - int(int,short,double,char)
+........Add - int
+..........IntLit(1) - uble,char)
+..........Call - int
+............Id(stuff) - int(int,short,double,char)
+............IntLit(1) - uble,char)
+............ChrLit('a') - int
+............RealLit(0.0) - double
+............IntLit(1) - int
+........ChrLit('a') - int
+........RealLit(0.0) - double
+........IntLit(1) - int
+......Call - int
+........Id(main) - int(void)
+..FuncDeclaration
+....Int
+....Id(stuff2)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Short
+......ParamDeclaration
+........Double
+......ParamDeclaration
+........Char

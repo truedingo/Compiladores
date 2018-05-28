@@ -1,7 +1,16 @@
 {
     "files.associations": {
         "symbol_table.h": "c",
-        "newtree.h": "c"
+        "newtree.h": "c",
+        "__functional_base": "c",
+        "__functional_base_03": "c",
+        "__tuple": "c",
+        "functional": "c",
+        "limits": "c",
+        "memory": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
     },
     "git.ignoreLimitWarning": true
 }

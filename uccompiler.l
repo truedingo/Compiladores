@@ -167,6 +167,10 @@ int main(int argc, char* argv[]){
     else{
         flag=2;
         yyparse();
+        if(error_check != 1){
+            //funcao de gerar codigo llvm
+            generate_llvm(root,flist); 
+        }
         yylex_destroy();
     }
     return 0;

@@ -800,3 +800,149 @@ void handle_ast(no *node)
     }
     return;
 }
+
+// ------- llvm -------
+
+void generate_llvm(no *node, functions_list table)
+{
+
+    if (node == NULL)
+    {
+        return;
+    }
+    //printf("node label: %s\n", node->label);
+    if (strcmp(node->label, "Program") == 0)
+    {
+        //printf("Encontrei Program.\n");
+        printf("declare i32 @putchar(i32)\ndeclare i32 @getchar()\n");
+
+        global = table;
+        tabela_atual = global;
+
+        if (node->child != NULL)
+            generate_llvm(node->child, table);
+        if (node->brother != NULL)
+            generate_llvm(node->brother, table);
+        //return;
+    }
+    if (strcmp(node->label, "FuncDefinition") == 0)
+    {
+        
+        global = table;
+        tabela_atual = global;
+        char *func_name = node->child->brother->value;
+        char *type = node->child->label;
+
+        //printf("FuncDef - %s \n",type);
+        if (strcmp(type, "Int") == 0)
+        {
+            printf("define i32 ");
+        }
+        else if (strcmp(type, "Void") == 0)
+        {
+            printf("define void ");
+        }
+        else if (strcmp(type, "Short") == 0)
+        {
+            printf("define i16 ");
+        }
+        else if (strcmp(type, "Char") == 0)
+        {
+            printf("define i8 ");
+        }
+        else if (strcmp(type, "Double") == 0)
+        {
+            printf("define double ");
+        }
+        printf("@%s (", func_name);
+
+        no *type_spec = node->child;
+        no *id = type_spec->brother;
+        no *param_list = id->brother;
+
+        if (strcmp(param_list->label, "ParamList") == 0)
+        {
+
+            no *param_declaration = param_list->child;
+            while (param_declaration != NULL)
+            {
+                no *param_type = param_declaration->child;
+                no *param_id = param_type->brother;
+                //printf(".. %s",param_type->label);
+                if(strcmp(param_type->label, "Void") == 0){
+                    printf("){\n");
+                }
+
+                if (param_declaration->brother != NULL)
+                {
+                    if (param_id != NULL)
+                    {
+                        if (strcmp(param_type->label, "Int") == 0)
+                        {
+                            printf("i32 ");
+                        }
+                        else if (strcmp(param_type->label, "Short") == 0)
+                        {
+                            printf("i16 ");
+                        }
+                        else if (strcmp(param_type->label, "Char") == 0)
+                        {
+                            printf("i8 ");
+                        }
+                        else if (strcmp(param_type->label, "Double") == 0)
+                        {
+                            printf("double ");
+                        }
+                        printf("%%%s,", param_id->value);
+                    }
+                }
+                else{
+                    //ultimo parametro
+                    if (param_id != NULL)
+                    {
+                        if (strcmp(param_type->label, "Int") == 0)
+                        {
+                            printf("i32 ");
+                        }
+                        else if (strcmp(param_type->label, "Short") == 0)
+                        {
+                            printf("i16 ");
+                        }
+                        else if (strcmp(param_type->label, "Char") == 0)
+                        {
+                            printf("i8 ");
+                        }
+                        else if (strcmp(param_type->label, "Double") == 0)
+                        {
+                            printf("double ");
+                        }
+                        printf("%%%s){\n", param_id->value);
+                    }
+                }
+
+                param_declaration = param_declaration->brother;
+            }
+
+            tabela_atual = table;
+        }
+        if (node->child != NULL)
+            generate_llvm(node->child, table);
+        if (node->brother != NULL)
+            generate_llvm(node->brother, table);
+    }
+    else if (strcmp(node->label, "Declaration") == 0){
+
+        no *type_spec = node->child;
+        no *id = type_spec->brother;
+        char *name = id->label;
+
+        if (search_table_name(id->label) == NULL){
+            printf("oi\n");
+        }
+
+        
+        //tipo de funcao
+    
+    }
+
+}

@@ -1,0 +1,32 @@
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+a	int(void)
+
+===== Function a Symbol Table =====
+return	int
+a	int
+
+Program
+..FuncDeclaration
+....Int
+....Id(a)
+....ParamList
+......ParamDeclaration
+........Void
+..FuncDeclaration
+....Int
+....Id(a)
+....ParamList
+......ParamDeclaration
+........Void
+..FuncDefinition
+....Int
+....Id(a)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(a)
