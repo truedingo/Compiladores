@@ -1,1 +1,3 @@
-int a=1;
+void ola(void) {
+    int a =1;
+}

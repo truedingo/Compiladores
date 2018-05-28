@@ -803,7 +803,7 @@ void handle_ast(no *node)
 
 // ------- llvm -------
 
-void generate_llvm(no *node, functions_list table)
+void generate_llvm(no *node)
 {
 
     if (node == NULL)
@@ -816,19 +816,17 @@ void generate_llvm(no *node, functions_list table)
         //printf("Encontrei Program.\n");
         printf("declare i32 @putchar(i32)\ndeclare i32 @getchar()\n");
 
-        global = table;
         tabela_atual = global;
 
         if (node->child != NULL)
-            generate_llvm(node->child, table);
+            generate_llvm(node->child);
         if (node->brother != NULL)
-            generate_llvm(node->brother, table);
+            generate_llvm(node->brother);
         //return;
     }
     if (strcmp(node->label, "FuncDefinition") == 0)
     {
-        
-        global = table;
+
         tabela_atual = global;
         char *func_name = node->child->brother->value;
         char *type = node->child->label;
@@ -869,7 +867,8 @@ void generate_llvm(no *node, functions_list table)
                 no *param_type = param_declaration->child;
                 no *param_id = param_type->brother;
                 //printf(".. %s",param_type->label);
-                if(strcmp(param_type->label, "Void") == 0){
+                if (strcmp(param_type->label, "Void") == 0)
+                {
                     printf("){\n");
                 }
 
@@ -896,7 +895,8 @@ void generate_llvm(no *node, functions_list table)
                         printf("%%%s,", param_id->value);
                     }
                 }
-                else{
+                else
+                {
                     //ultimo parametro
                     if (param_id != NULL)
                     {
@@ -923,26 +923,74 @@ void generate_llvm(no *node, functions_list table)
                 param_declaration = param_declaration->brother;
             }
 
-            tabela_atual = table;
+            tabela_atual = global;
         }
         if (node->child != NULL)
-            generate_llvm(node->child, table);
+            generate_llvm(node->child);
         if (node->brother != NULL)
-            generate_llvm(node->brother, table);
+            generate_llvm(node->brother);
     }
-    else if (strcmp(node->label, "Declaration") == 0){
-
-        no *type_spec = node->child;
-        no *id = type_spec->brother;
+    else if (strcmp(node->label, "Declaration") == 0)
+    {
+        no *type = node->child;
+        no *id = type->brother;
         char *name = id->label;
+        no *value = id->brother;
 
-        if (search_table_name(id->label) == NULL){
-            printf("oi\n");
+        //variavel global
+        if (search_el(global, id->value) != NULL)
+        {
+            printf("@%s = global ", id->value);
+
+            if (strcmp(type->label, "Int") == 0)
+            {
+                printf("i32 ");
+            }
+            else if (strcmp(type->label, "Short") == 0)
+            {
+                printf("i16 ");
+            }
+            else if (strcmp(type->label, "Char") == 0)
+            {
+                printf("i8 ");
+            }
+            else if (strcmp(type->label, "Double") == 0)
+            {
+                printf("double ");
+            }
+
+            if(value != NULL){
+                //printf("dou assign de algum valor\n");
+                printf("%s",id->brother->value);
+            }
+            else{
+                printf("0");
+            }
+            if (strcmp(type->label, "Int") == 0)
+            {
+                printf(", align 4");
+            }
+            else if (strcmp(type->label, "Short") == 0)
+            {
+                printf(", align 2");
+            }
+            else if (strcmp(type->label, "Char") == 0)
+            {
+                printf(", align 1");
+            }
+            else if (strcmp(type->label, "Double") == 0)
+            {
+                printf(", align 8");
+            }
+            printf("\n");
+
         }
-
-        
-        //tipo de funcao
+        print_global_table();
     
+        if (node->child != NULL)
+            generate_llvm(node->child);
+        if (node->brother != NULL)
+            generate_llvm(node->brother);    
     }
 
 }
