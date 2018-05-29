@@ -2200,6 +2200,7 @@ int main(int argc, char* argv[]){
             //funcao de gerar codigo llvm
             handle_ast(root);
             generate_llvm(root); 
+            end_llvm();
         }
         yylex_destroy();
     }

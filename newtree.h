@@ -58,5 +58,7 @@ functions_list tabela_atual;
 params_list search_par(functions_list list, char *str);
 
 void generate_llvm(no *node);
+void end_llvm();
+
 
 char* convert_c_type_to_llvm_type(char* c_type);
